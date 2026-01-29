@@ -1,0 +1,20 @@
+@import '../../../styles/variables';
+
+.flowChart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 20px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 4px;
+    padding: 6px;
+  }
+}
+
+
+
+

@@ -1,0 +1,84 @@
+@import 'variables';
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: $font-pretendard;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background-color: $black;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Next.js 루트 요소
+#__next {
+  width: 100%;
+  position: relative;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+input, textarea {
+  font-family: inherit;
+}
+
+// Print Styles - 인쇄 시 헤더, 메뉴, 푸터 숨김
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  // Header 숨김 (header HTML element)
+  header {
+    display: none !important;
+  }
+
+  // Menu 숨김
+  .menu-wrapper,
+  .menu-overlay,
+  .menu-container {
+    display: none !important;
+  }
+
+  // Footer 숨김
+  footer,
+  .footer {
+    display: none !important;
+  }
+}

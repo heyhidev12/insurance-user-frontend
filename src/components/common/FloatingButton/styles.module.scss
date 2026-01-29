@@ -1,0 +1,115 @@
+@import '../../../styles/variables';
+
+// Accent color from Figma
+$accent-red: #D11F00;
+
+.floatingButton {
+  display: flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &Consult {
+    gap: 8px;
+    padding: 11px 12px 11px 20px;
+    border-radius: $radius-pill;
+    background: rgba($white, 0.1);
+    backdrop-filter: blur(15px);
+
+    &:hover {
+      background: rgba($white, 0.15);
+    }
+
+    &:active {
+      background: rgba($white, 0.2);
+    }
+
+    // 모바일: 아이콘만 표시
+    @media (max-width: $breakpoint-tablet) {
+      padding: 0;
+      background: transparent;
+      backdrop-filter: none;
+
+      &:hover,
+      &:active {
+        background: transparent;
+      }
+    }
+  }
+
+  &Top {
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: $gray-70;
+
+    &:hover {
+      background-color: $gray-60;
+    }
+
+    &:active {
+      background-color: $gray-80;
+    }
+
+    // 모바일
+    @media (max-width: $breakpoint-tablet) {
+      width: 48px;
+      height: 48px;
+      background-color: $black;
+
+      &:hover {
+        background-color: $gray-90;
+      }
+
+      &:active {
+        background-color: $gray-80;
+      }
+    }
+  }
+
+  &TopMobile {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.floatingButtonLabel {
+  @include pretendard-19-semibold;
+  color: $white;
+  white-space: nowrap;
+
+  // 모바일: 라벨 숨기기
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.floatingButtonIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &Write {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $accent-red;
+
+    svg {
+      color: $white;
+
+      path {
+        stroke: $white;
+      }
+    }
+
+    // 모바일: 아이콘 크기 조정
+    @media (max-width: $breakpoint-tablet) {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}

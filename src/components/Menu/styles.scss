@@ -1,0 +1,492 @@
+@import '../../styles/variables';
+
+// Keyframes
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+// Menu Wrapper
+.menu-wrapper {
+  display: none;
+
+  &.is-visible {
+    display: block;
+  }
+}
+
+// Overlay
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: $z-fixed + 800;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+
+  &.is-open {
+    animation: fadeIn 0.3s ease forwards;
+    pointer-events: auto;
+  }
+
+  &.is-closing {
+    animation: fadeOut 0.3s ease forwards;
+    pointer-events: none;
+  }
+}
+
+.overlay-logo {
+  position: absolute;
+  top: 32px;
+  left: 60px;
+  height: 40px;
+  width: auto;
+}
+
+// Menu Container
+.menu-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 65%;
+  height: 100vh;
+  background-color: #002046;
+  z-index: $z-fixed + 801;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+
+  @media (max-width: $breakpoint-desktop) {
+    width: 80%;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+
+  &.is-open {
+    animation: slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  &.is-closing {
+    animation: slideOut 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+}
+
+// Header
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #002046;
+
+  // 데스크탑: X 버튼만 오른쪽 정렬
+  @media (min-width: $breakpoint-tablet) {
+    justify-content: flex-end;
+    padding: 32px 64px 0;
+    background-color: transparent;
+    border-bottom: none;
+  }
+}
+
+.menu-logo {
+  cursor: pointer;
+  height: 38px;
+
+  img {
+    height: 100%;
+    width: auto;
+  }
+
+  // 모바일 로고
+  &--mobile {
+    display: block;
+
+    // 데스크탑에서 숨김
+    @media (min-width: $breakpoint-tablet) {
+      display: none;
+    }
+  }
+}
+
+.menu-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  // 모바일에서만 표시
+  &--mobile {
+    display: flex;
+
+    @media (min-width: $breakpoint-tablet) {
+      display: none;
+    }
+  }
+}
+
+.menu-toggle-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: $white;
+  transition: transform 0.3s ease;
+}
+
+// X 버튼 (모든 화면에서 표시)
+.menu-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.menu-close-line {
+  position: absolute;
+  width: 36px;
+  height: 2px;
+  background-color: $white;
+
+  &:first-child {
+    transform: rotate(45deg);
+  }
+
+  &:last-child {
+    transform: rotate(-45deg);
+  }
+}
+
+// Auth Section (로그인/회원가입)
+.menu-auth {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+  @media (min-width: $breakpoint-tablet) {
+    padding: 20px 64px;
+    padding-right: 120px; // X 버튼 왼쪽으로 이동
+  }
+}
+
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 0.8vw, 12px);
+}
+
+.auth-link {
+  background: transparent;
+  border: none;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: clamp(11px, 1vw, 15px);
+  line-height: 1.5;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  color: $white;
+  text-decoration: none;
+  transition: opacity $transition-normal;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &.my-page-link {
+    img.my-page-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    span {
+      white-space: nowrap;
+    }
+  }
+}
+
+.auth-divider {
+  width: 1px;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.close-button {
+  position: absolute;
+  right: clamp(16px, 4.5vw, 64px);
+  bottom: clamp(16px, 2.5vw, 36px);
+  width: clamp(24px, 3vw, 40px);
+  height: clamp(24px, 3vw, 40px);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform $transition-normal;
+
+  &:hover {
+    transform: rotate(90deg);
+  }
+}
+
+.close-icon {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: clamp(20px, 2.5vw, 36px);
+    height: 2px;
+    background-color: $white;
+
+    &:first-child {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    &:last-child {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+  }
+}
+
+// Menu Content
+.menu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: clamp(20px, 4vw, 60px);
+  padding-left: 24px;
+  padding-right: 24px;
+  overflow-y: auto;
+
+  // 데스크탑: 가로 배치 (메인 메뉴 + 서브메뉴)
+  @media (min-width: $breakpoint-tablet) {
+    flex-direction: row;
+    gap: 80px;
+    padding-left: 8%;
+    padding-right: 8%;
+  }
+}
+
+// Menu List
+.menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  // 데스크탑: gap 40px
+  @media (min-width: $breakpoint-tablet) {
+    gap: 40px;
+  }
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity $transition-normal;
+  opacity: 0.5;
+
+  &.is-selected,
+  &.is-hovered {
+    opacity: 1;
+  }
+}
+
+.menu-title-wrapper {
+  display: inline-block;
+  width: fit-content;
+}
+
+.menu-title {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 25px;
+  line-height: 1.45;
+  letter-spacing: 0.5px;
+  color: $white;
+
+  // 데스크탑: 50px
+  @media (min-width: $breakpoint-tablet) {
+    font-size: 50px;
+    letter-spacing: 1px;
+  }
+}
+
+.menu-underline {
+  width: 100%;
+  height: 1px;
+  background-color: $white;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  &.is-visible {
+    transform: scaleX(1);
+  }
+}
+
+// Sub Menu
+.sub-menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  // 모바일 전용 (메인 메뉴 아래)
+  &--mobile {
+    margin-top: 20px;
+    padding-left: 48px;
+
+    // 데스크탑에서 숨김
+    @media (min-width: $breakpoint-tablet) {
+      display: none;
+    }
+  }
+
+  // 데스크탑 전용 (오른쪽에 배치)
+  &--desktop {
+    display: none;
+    padding-top: 8px;
+
+    // 데스크탑에서만 표시
+    @media (min-width: $breakpoint-tablet) {
+      display: flex;
+      gap: 24px;
+    }
+  }
+}
+
+.sub-menu-item {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-light;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.3px;
+  color: $white;
+  cursor: pointer;
+  transition: opacity $transition-normal, font-weight $transition-normal;
+
+  // 데스크탑: 25px
+  @media (min-width: $breakpoint-tablet) {
+    font-size: 25px;
+    letter-spacing: -0.5px;
+  }
+
+  &.is-active {
+    font-weight: $font-weight-medium;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+// Menu Footer
+.menu-footer {
+  position: relative;
+  height: 120px;
+  background-color: $white;
+}
+
+.footer-button {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.5px;
+  color: #002046;
+  background: transparent;
+  border: 1px solid #002046;
+  border-radius: 100px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background-color $transition-normal, color $transition-normal;
+
+  @media (min-width: $breakpoint-tablet) {
+    left: 8%;
+    font-size: 32px;
+    padding: 12px 32px;
+  }
+
+  &:hover {
+    background-color: #002046;
+    color: $white;
+  }
+}

@@ -1,0 +1,59 @@
+@import '../../../styles/variables';
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  // Box styles
+  &__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 1px solid $gray-40; // #C6C6C6
+    background-color: transparent;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &--checked {
+      background-color: $navy-30; // #94B9E3
+      border-color: $navy-30;
+      color: $gray-90; // #151515 (검정색)
+    }
+  }
+
+  // Square variant
+  &--square {
+    .checkbox__box {
+      border-radius: 2px;
+    }
+  }
+
+  // Round variant
+  &--round {
+    .checkbox__box {
+      border-radius: 100px;
+    }
+  }
+
+  // Label
+  &__label {
+    @include pretendard-15-regular;
+    color: $gray-30;
+  }
+
+  // Icon
+  &__icon {
+    width: 12px;
+    height: 12px;
+  }
+}

@@ -1,0 +1,164 @@
+@import '../../../styles/variables';
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px;
+  border-radius: $radius-half;
+  cursor: pointer;
+  user-select: none;
+  transition: all $transition-fast;
+
+  // Vertical layout (label on top, checkbox below)
+  &--layout-vertical {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  // Sizes
+  &--size-48 {
+    min-height: 48px;
+
+    .chip__label {
+      @include pretendard-15-semibold;
+    }
+
+    // Vertical layout for size 48
+    &.chip--layout-vertical {
+      height: auto;
+      min-height: 48px;
+    }
+  }
+
+  &--size-44 {
+    min-height: 44px;
+
+    .chip__label {
+      @include pretendard-17-regular;
+    }
+
+    &.chip--layout-vertical {
+      height: auto;
+      min-height: 44px;
+    }
+  }
+
+  &--size-40 {
+    min-height: 40px;
+
+    .chip__label {
+      @include pretendard-13-regular;
+    }
+
+    // Vertical layout for size 40
+    &.chip--layout-vertical {
+      height: auto;
+      min-height: 40px;
+    }
+  }
+
+  &--size-38 {
+    height: 38px;
+
+    .chip__label {
+      @include pretendard-15-regular;
+    }
+  }
+
+  // Default state (unchecked)
+  background-color: transparent;
+  border: 1px solid $gray-70;
+
+  .chip__label {
+    color: $gray-30; // #D8D8D8 (Figma design)
+  }
+
+  // Checked state
+  &--checked {
+    background-color: $gray-80; // #2D2D2D
+    border-color: $gray-80;
+
+    .chip__label {
+      color: $gray-10; // #F0F0F0 (Figma design)
+    }
+  }
+
+  // Disabled
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  // Checkbox inside chip
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 1px solid $gray-40;
+    flex-shrink: 0;
+    transition: all $transition-fast;
+
+    &--square {
+      border-radius: 2px;
+    }
+
+    &--round {
+      border-radius: 100px;
+    }
+
+    &--checked {
+      background-color: $navy-30;
+      border-color: $navy-30;
+      color: $gray-90; // #1D1D1D for check icon color
+    }
+  }
+
+  &__check-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  // Arrow variant
+  &--arrow {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    gap: 8px;
+
+    .chip__label {
+      @include pretendard-15-regular;
+      color: $gray-30;
+    }
+
+    .chip__arrow-icon {
+      color: $gray-50;
+    }
+
+    &.chip--active {
+      background-color: $gray-80;
+      padding: 0 16px;
+      border-radius: $radius-half;
+
+      .chip__label {
+        color: $white;
+      }
+    }
+
+    &:hover {
+      .chip__label {
+        color: $gray-10;
+      }
+    }
+  }
+
+  &__arrow-icon {
+    width: 16px;
+    height: 16px;
+  }
+}

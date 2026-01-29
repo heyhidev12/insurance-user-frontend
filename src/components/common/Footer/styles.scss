@@ -1,0 +1,250 @@
+@import '../../../styles/variables';
+
+.footer {
+  width: 100%;
+  background-color: $black;
+
+  &__container {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+
+    // 웹
+    padding: 0 240px;
+
+    @media (max-width: $breakpoint-wide) {
+      padding: 0 120px;
+    }
+
+    @media (max-width: $breakpoint-desktop) {
+      padding: 0 60px;
+    }
+
+    // 모바일
+    @media (max-width: $breakpoint-tablet) {
+      padding: 0 20px;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+
+    // 웹
+    padding: 40px 0;
+    gap: 32px;
+
+    // 모바일
+    @media (max-width: $breakpoint-tablet) {
+      padding: 24px 0 40px;
+      gap: 24px;
+    }
+  }
+
+  // ==================== Row - Top (Logo + Family Site) ====================
+  &__row--top {
+    display: flex;
+
+    // 웹: 가로 배치
+    align-items: flex-start;
+    justify-content: space-between;
+
+    // 모바일: 세로 배치
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+
+  &__logo-wrapper {
+    flex-shrink: 0;
+
+    @media (max-width: $breakpoint-tablet) {
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+  }
+
+  &__logo {
+    width: auto;
+
+    // 웹 로고
+    &--web {
+      display: block;
+      height: 52px;
+
+      @media (max-width: $breakpoint-tablet) {
+        display: none;
+      }
+    }
+
+    // 모바일 로고
+    &--mobile {
+      display: none;
+      height: 45px;
+
+      @media (max-width: $breakpoint-tablet) {
+        display: block;
+      }
+    }
+  }
+
+  &__family-site-wrapper {
+    @media (max-width: $breakpoint-tablet) {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__family-site-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid $white;
+    border-radius: 100px;
+    background: transparent;
+    color: $white;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    span {
+      @include pretendard-17-medium;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &__arrow-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  // ==================== Divider ====================
+  &__divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  // ==================== Row - Middle (Terms + Nav) ====================
+  &__row--middle {
+    display: flex;
+
+    // 웹: 가로 배치
+    align-items: center;
+    justify-content: space-between;
+
+    // 모바일: 세로 배치 (Nav만 표시)
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  // ==================== Terms ====================
+  &__terms {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    // 웹 전용 약관 (middle row에서 표시)
+    &--web {
+      display: flex;
+
+      @media (max-width: $breakpoint-tablet) {
+        display: none;
+      }
+    }
+
+    // 모바일 전용 약관 (top row에서 표시)
+    &--mobile {
+      display: none;
+
+      @media (max-width: $breakpoint-tablet) {
+        display: flex;
+      }
+    }
+  }
+
+  &__terms-link {
+    @include pretendard-13-regular;
+    color: $gray-30;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
+  &__terms-divider {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  // ==================== Nav ====================
+  &__nav {
+    display: flex;
+
+    // 웹: 가로 배치
+    align-items: center;
+    gap: 56px;
+
+    // 모바일: 세로 배치
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      gap: 12px;
+    }
+  }
+
+  &__nav-link {
+    @include pretendard-17-semibold;
+    color: $navy-30;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $navy-20;
+    }
+
+    // 모바일: 밑줄 제거
+    @media (max-width: $breakpoint-tablet) {
+      text-decoration: none;
+    }
+  }
+
+  // ==================== Row - Bottom (Copyright) ====================
+  &__row--bottom {
+    display: flex;
+    align-items: center;
+
+    @media (max-width: $breakpoint-tablet) {
+      width: 100%;
+    }
+  }
+
+  &__copyright {
+    @include pretendard-13-regular;
+    color: $gray-50;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex: 1;
+      font-family: $font-pretendard;
+      font-size: 11px;
+      font-weight: $font-weight-regular;
+      line-height: 1.5;
+      letter-spacing: -0.0275px;
+    }
+  }
+}

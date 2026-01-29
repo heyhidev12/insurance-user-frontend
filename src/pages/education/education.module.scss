@@ -1,0 +1,1195 @@
+@import '../../styles/variables';
+
+.page {
+  min-height: 100vh;
+  background-color: #151515;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 56px;
+  }
+}
+
+.container {
+  flex: 1;
+  padding: 0 240px;
+  max-width: 1920px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0 120px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 24px;
+  }
+}
+
+.pageHeaderWrapper {
+  padding-top: 136px;
+  padding-bottom: 64px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding-top: 80px;
+    padding-bottom: 16px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding-top: 64px;
+    padding-bottom: 12px;
+  }
+}
+
+.tabSection {
+  margin-top: 8px;
+  margin-bottom: 48px;
+
+  @media (max-width: $breakpoint-tablet) {
+    margin-top: 4px;
+    margin-bottom: 32px;
+  }
+}
+
+.heroSection {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  height: 549px;
+  overflow: hidden;
+  margin-top: 64px;
+
+  @media (max-width: $breakpoint-desktop) {
+    height: 400px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    height: 420px;
+    margin-top: 40px;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/education/hero/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heroContent {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  text-align: center;
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 240px 80px;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 40px;
+    padding: 0 120px 60px;
+    bottom: 20px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 16px;
+    padding: 0 20px 30px;
+    bottom: auto;
+    top: 260px;
+  }
+}
+
+.heroLabel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: white;
+  margin: 0;
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  pointer-events: none;
+  text-align: center;
+
+  @media (max-width: $breakpoint-desktop) {
+    top: 100px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 15px;
+    font-weight: $font-weight-semibold;
+    top: 60px;
+  }
+}
+
+.heroTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 31px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 120px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+  color: white;
+  mix-blend-mode: difference;
+  position: absolute;
+  top: calc(50% - 50px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 80px;
+    gap: 24px;
+    top: calc(50% - 40px);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    font-size: 44px;
+    font-weight: 300;
+    gap: 0;
+    top: 100px;
+    transform: translateX(-50%);
+    line-height: 110%;
+    letter-spacing: -3px;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    white-space: nowrap;
+  }
+}
+
+.heroTitleItalic {
+  font-style: italic;
+}
+
+.heroDescription {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 12px;
+  }
+}
+
+.heroDescriptionMain {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 40px;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  color: white;
+  margin: 24px 0 0 0;
+  text-align: center;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 32px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 21px;
+    line-height: 150%;
+    letter-spacing: -0.105px;
+  }
+}
+
+.heroDescriptionItalic {
+  font-style: normal;
+}
+
+.heroDescriptionSub {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  color: white;
+  margin: 0;
+  text-align: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+    line-height: 150%;
+    letter-spacing: -0.065px;
+  }
+
+  strong {
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.mobileBreak {
+  display: none;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: block;
+  }
+}
+
+.content {
+  padding: 100px 0;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 80px 0;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 0;
+  }
+}
+
+.newSection,
+.allSection {
+  margin-bottom: 160px;
+
+  @media (max-width: $breakpoint-desktop) {
+    margin-bottom: 120px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    margin-bottom: 80px;
+  }
+}
+
+// newSection의 그리드는 1줄만 표시 (최대 3개)
+.newSection {
+  @media (max-width: $breakpoint-tablet) {
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .educationGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-desktop) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      display: flex;
+      overflow-x: auto;
+      margin-left: -24px;
+      margin-right: -24px;
+      padding-left: 24px;
+      padding-right: 24px;
+      width: calc(100% + 48px);
+    }
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 64px;
+
+  @media (max-width: $breakpoint-tablet) {
+    margin-bottom: 40px;
+  }
+}
+
+.sectionTitleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 8px;
+  }
+}
+
+.sectionTitleBg {
+  opacity: 0.2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+
+  h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 120px;
+    line-height: 1;
+    letter-spacing: -3px;
+    color: white;
+    margin: 0;
+    padding: 0;
+
+    @media (max-width: $breakpoint-desktop) {
+      font-size: 80px;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 48px;
+    }
+  }
+}
+
+.sectionTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 32px;
+  line-height: 1.5;
+  letter-spacing: -0.16px;
+  color: #bfd8f3;
+  margin: 0;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 28px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 24px;
+  }
+}
+
+.sectionNav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.navButton {
+  width: 48px;
+  height: 48px;
+  border: 1px solid white;
+  border-radius: 100px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 40px;
+    height: 40px;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 120px 0;
+  min-height: 400px;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 80px 0;
+    min-height: 300px;
+  }
+
+  p {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-regular;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #717171;
+    margin: 0;
+  }
+}
+
+.emptyIcon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.5;
+}
+
+.allContent {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  max-width: 1440px;
+
+  @media (max-width: $breakpoint-desktop) {
+    flex-direction: column;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 342px;
+  padding-right: 64px;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-desktop) {
+    width: 100%;
+    padding-right: 0;
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    gap: 0;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 16px;
+    padding-bottom: 0;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+}
+
+.sidebarTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: none;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: #8e8e8e;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  @media (max-width: $breakpoint-desktop) {
+    white-space: nowrap;
+    padding: 12px 20px;
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0;
+    border: none;
+    border-right: none;
+    font-size: 15px;
+    gap: 6px;
+    font-weight: $font-weight-regular;
+    color: #717171;
+  }
+
+  &:hover {
+    color: white;
+  }
+}
+
+.sidebarTabActive {
+  color: white !important;
+  font-weight: $font-weight-semibold !important;
+  border-bottom: 1px solid white;
+
+  @media (max-width: $breakpoint-desktop) {
+    border-bottom: none;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    border-bottom: none;
+  }
+}
+
+.sidebarDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #d11f00;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 80px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 60px;
+  }
+
+  // 전체 교육 섹션의 그리드는 2열 유지 (가로 스크롤 X)
+  .educationGrid {
+    @media (max-width: $breakpoint-tablet) {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      overflow-x: visible;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
+      gap: 16px;
+    }
+  }
+
+  .educationCard {
+    @media (max-width: $breakpoint-tablet) {
+      width: 100%;
+      min-width: unset;
+      height: 280px;
+      border: none;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0 0;
+}
+
+.educationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 16px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.educationCard {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #2d2d2d;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 240px;
+    min-width: 240px;
+    height: 346px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 400 / 300;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    aspect-ratio: 240 / 160;
+  }
+}
+
+.cardContent {
+  padding: 12px 8px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 12px 12px 24px;
+    gap: 12px;
+    position: relative;
+    flex: 1;
+  }
+}
+
+.cardLabels {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.labelRed {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #fb7058;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+}
+
+.labelWhite {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f8f8fc;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+}
+
+.labelGray {
+  background: #555;
+  padding: 8px;
+  border-radius: 4px;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f0f0f0;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+}
+
+.cardTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: white;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @media (max-width: $breakpoint-tablet) {
+    position: absolute;
+    bottom: 24px;
+    left: 12px;
+    right: 12px;
+    gap: 16px;
+  }
+}
+
+.cardLocation {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #d8d8d8;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 12px;
+  }
+}
+
+.cardDateWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 4px;
+  }
+}
+
+.cardDateIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.cardDate {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #d8d8d8;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 11px;
+  }
+}
+
+.educationList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.educationListItem {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #2d2d2d;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+  }
+}
+
+.listItemImage {
+  width: 200px;
+  height: 150px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    height: 200px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.listItemContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.listItemLabels {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.listItemTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 25px;
+  line-height: 1.5;
+  letter-spacing: -0.125px;
+  color: white;
+  margin: 0;
+}
+
+.listItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.listItemLocation,
+.listItemDate {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+// Newsletter Section
+.newsletterSection {
+  width: 100%;
+  padding: 48px 0 240px;
+}
+
+.newsletterHero {
+  position: relative;
+  width: 100%;
+  min-height: 600px;
+  padding: 100px 120px 88px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  background: #000;
+
+  @media (max-width: $breakpoint-desktop) {
+    min-height: 500px;
+    padding: 80px 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    min-height: 400px;
+    padding: 60px 24px;
+    border-radius: 16px;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/education/hero/newspaper.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    border-radius: 24px;
+
+    @media (max-width: $breakpoint-tablet) {
+      border-radius: 16px;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 78, 179, 0) 21.635%,
+      rgba(0, 78, 179, 0.5) 100%
+    ),
+    linear-gradient(90deg, rgba(33, 33, 33, 0.9) 0%, rgba(33, 33, 33, 0.9) 100%);
+    z-index: 1;
+    border-radius: 24px;
+
+    @media (max-width: $breakpoint-tablet) {
+      border-radius: 16px;
+    }
+  }
+}
+
+.newsletterHeroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 24px;
+
+  @media (max-width: $breakpoint-tablet) {
+    border-radius: 16px;
+  }
+}
+
+.newsletterHeroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 120px;
+  align-items: flex-start;
+  max-width: 1440px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 80px;
+    flex-direction: column;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 60px;
+  }
+}
+
+.newsletterLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 24px;
+    width: 100%;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 20px;
+  }
+}
+
+.newsletterLabel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 150%;
+  letter-spacing: -0.075px;
+  color: white;
+  margin: 0;
+}
+
+.newsletterTitle {
+  font-family: $font-montserrat;
+  font-weight: 300;
+  font-size: 66px;
+  line-height: 110%;
+  letter-spacing: -3px;
+  color: white;
+  margin: 0;
+  mix-blend-mode: difference;
+  text-align: left;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 44px;
+    letter-spacing: -2px;
+  }
+}
+
+.newsletterDescription {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 17px;
+  line-height: 150%;
+  letter-spacing: -0.085px;
+  color: white;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 15px;
+    letter-spacing: -0.075px;
+  }
+}
+
+.newsletterRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  padding-top: 56px;
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 60px;
+    padding-top: 0;
+    width: 100%;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 40px;
+  }
+}
+
+.newsletterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+}
+
+.newsletterFormFields {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.newsletterTextField {
+  :global(.textfield__label) {
+    color: #f0f0f0;
+  }
+
+  :global(.textfield__required) {
+    color: #f35064;
+  }
+
+  :global(.textfield__input) {
+    color: #f0f0f0;
+    border-bottom-color: #555;
+
+    &::placeholder {
+      color: #717171;
+    }
+
+    &:focus {
+      border-bottom-color: #94b9e3;
+    }
+  }
+
+  :global(.textfield__display-text) {
+    color: #f0f0f0;
+  }
+
+  :global(.textfield__display-text--placeholder) {
+    color: #717171;
+  }
+
+  :global(.textfield__error-message) {
+    color: #f35064;
+  }
+
+  :global(.textfield--error) {
+    .textfield__container {
+      border-bottom-color: #f35064;
+    }
+  }
+}
+
+.newsletterCheckboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px;
+}
+
+.newsletterCheckboxRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  :global(.checkbox) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  :global(.checkbox__label) {
+    color: #d8d8d8;
+  }
+}
+
+.newsletterLink {
+  background: none;
+  border: none;
+  padding: 0;
+  @include pretendard-15-regular;
+  color: #94b9e3;
+  text-decoration: underline;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 30px;
+  text-align: right;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+// Floating Buttons
+.floatingButtons {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 1000;
+
+  @media (max-width: $breakpoint-tablet) {
+    bottom: 20px;
+    right: 16px;
+    gap: 16px;
+  }
+}
+

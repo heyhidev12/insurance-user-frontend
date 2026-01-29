@@ -1,0 +1,67 @@
+@import '../../../styles/variables';
+
+.pagination {
+  display: flex;
+  align-items: center;
+
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 8px 2px;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    // Navigation buttons (arrows)
+    &--nav {
+      color: $gray-40;
+
+      &:hover:not(:disabled) {
+        color: $gray-10;
+      }
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    // Page number buttons
+    &--page {
+      @include pretendard-19-regular;
+      color: $gray-50;
+
+      &:hover:not(:disabled) {
+        color: $gray-10;
+      }
+    }
+
+    // Active page
+    &--active {
+      background-color: $white;
+      color: $black;
+      font-weight: $font-weight-semibold;
+
+      &:hover {
+        background-color: $white;
+        color: $black;
+      }
+    }
+  }
+}

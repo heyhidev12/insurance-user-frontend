@@ -1,0 +1,82 @@
+@import '../../../styles/variables';
+
+// Label colors from Figma
+$label-skyblue-bg: $navy-20; // #BFD8F3
+$label-skyblue-text: $primary-70; // #002046
+$label-navy-bg: $primary-50; // #003675
+$label-navy-text: #F8F8FC;
+$label-gray-bg: $gray-70; // #555555
+$label-gray-text: $gray-10; // #F0F0F0
+$label-red-text: #FB7058;
+$label-white-bg: rgba(255, 255, 255, 0.1);
+$label-white-text: #F8F8FC;
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: $radius-tiny;
+
+  &__text {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-semibold;
+    line-height: 1.5;
+  }
+
+  // Sizes
+  &--s {
+    .label__text {
+      font-size: 13px;
+      letter-spacing: -0.065px;
+    }
+  }
+
+  &--m {
+    .label__text {
+      font-size: 15px;
+      letter-spacing: -0.075px;
+    }
+  }
+
+  // Colors
+  &--skyblue {
+    background-color: $label-skyblue-bg;
+
+    .label__text {
+      color: $label-skyblue-text;
+    }
+  }
+
+  &--navy {
+    background-color: $label-navy-bg;
+
+    .label__text {
+      color: $label-navy-text;
+    }
+  }
+
+  &--gray {
+    background-color: $label-gray-bg;
+
+    .label__text {
+      color: $label-gray-text;
+    }
+  }
+
+  &--red {
+    background-color: transparent;
+
+    .label__text {
+      color: $label-red-text;
+    }
+  }
+
+  &--white {
+    background-color: $label-white-bg;
+
+    .label__text {
+      color: $label-white-text;
+    }
+  }
+}

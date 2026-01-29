@@ -1,0 +1,99 @@
+@import '../../../styles/variables';
+
+.flowBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 12px 8px;
+  }
+}
+
+.text {
+  font-family: $font-pretendard;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.15px;
+  text-align: center;
+  word-break: keep-all;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 14px;
+  }
+}
+
+// Variants
+.variant-primary {
+  background-color: #BFD8F3;
+  border: 2px solid #5B9CE6;
+  
+  .text {
+    font-weight: $font-weight-bold;
+    color: #003675;
+  }
+}
+
+.variant-secondary {
+  background-color: #253C55;
+  border: none;
+  
+  .text {
+    font-weight: $font-weight-medium;
+    color: #E2E9F1;
+  }
+}
+
+.variant-tertiary {
+  background-color: rgba(51, 61, 72, 0.4);
+  border: 1px solid rgba(61, 75, 92, 0.6);
+  
+  .text {
+    font-weight: $font-weight-regular;
+    color: #F0F0F0;
+  }
+}
+
+.variant-result {
+  background-color: #002B5E;
+  border: none;
+  
+  .text {
+    font-weight: $font-weight-bold;
+    color: #FFFFFF;
+  }
+}
+
+// Sizes
+.size-small {
+  width: 84px;
+  min-height: 51px;
+  padding: 16px 8px;
+}
+
+.size-medium {
+  width: 124px;
+  min-height: 70px;
+  padding: 50px 8px;
+}
+
+.size-large {
+  width: 128px;
+  min-height: 119px;
+  padding: 50px 8px;
+}
+
+.size-auto {
+  flex: 1;
+  min-width: 0;
+  height: 51px;
+  padding: 16px 8px;
+}
+
+
+
+

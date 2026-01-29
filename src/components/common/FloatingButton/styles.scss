@@ -1,0 +1,77 @@
+@import '../../../styles/variables';
+
+// Accent color from Figma
+$accent-red: #D11F00;
+
+.floating-button {
+  display: flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &--consult {
+    gap: 8px;
+    padding: 11px 12px 11px 20px;
+    border-radius: $radius-pill;
+    background: rgba($white, 0.1);
+    backdrop-filter: blur(15px);
+
+    &:hover {
+      background: rgba($white, 0.15);
+    }
+
+    &:active {
+      background: rgba($white, 0.2);
+    }
+  }
+
+  &--top {
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: $gray-70;
+
+    &:hover {
+      background-color: $gray-60;
+    }
+
+    &:active {
+      background-color: $gray-80;
+    }
+  }
+
+  &--top-mobile {
+    width: 40px;
+    height: 40px;
+  }
+
+  &__label {
+    @include pretendard-19-semibold;
+    color: $white;
+    white-space: nowrap;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &--write {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: $accent-red;
+
+      svg {
+        color: $white;
+
+        path {
+          stroke: $white;
+        }
+      }
+    }
+  }
+}

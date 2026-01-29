@@ -1,0 +1,3510 @@
+@import '@/styles/_variables';
+
+.page {
+  min-height: 100vh;
+  background-color: #151515;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 56px;
+  }
+}
+
+.container {
+  flex: 1;
+  padding: 0 240px;
+  max-width: 1920px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0 120px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 24px;
+  }
+}
+
+.pageHeaderWrapper {
+  padding-top: 136px;
+  padding-bottom: 64px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding-top: 80px;
+    padding-bottom: 16px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding-top: 64px;
+    padding-bottom: 12px;
+  }
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 18px;
+  color: white;
+}
+
+// Profile Section
+.profileSection {
+  display: flex;
+  gap: 64px;
+  align-items: flex-end;
+  padding: 40px 0;
+  margin-bottom: 32px;
+
+  @media (max-width: $breakpoint-desktop) {
+    flex-direction: column;
+    gap: 40px;
+    align-items: stretch;
+  }
+}
+
+.profileCard {
+  background-color: #2d2d2d;
+  border-radius: 12px;
+  padding: 24px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  max-width: 366px;
+
+  @media (max-width: $breakpoint-desktop) {
+    max-width: 100%;
+  }
+}
+
+.profileHeader {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.profileAvatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background-color: #000;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.profileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 0;
+}
+
+.profileGreeting {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.profileName {
+  @include pretendard-21-semibold;
+  color: #f0f0f0;
+  margin: 0;
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.profileWelcome {
+  @include pretendard-21-semibold;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+.profileDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.memberTypeCard {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.memberTypeLabel {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  p {
+    @include pretendard-17-semibold;
+    color: white;
+    margin: 0;
+  }
+}
+
+.memberTypeIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.memberTypeBadge {
+  background: #BFD8F3;
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 48px;
+
+  p {
+    @include pretendard-15-medium;
+    color: #151515;
+    margin: 0;
+    white-space: nowrap;
+  }
+}
+
+.applicationSummary {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-left: 64px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding-left: 0;
+  }
+}
+
+.summaryTitle {
+  @include pretendard-25-bold;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+.summaryDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.summaryCards {
+  display: flex;
+  gap: 24px;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+  }
+}
+
+.summaryCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.summaryCardTitle {
+  @include pretendard-19-semibold;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+.summaryCardContent {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summaryCount {
+  width: 80px;
+  height: 80px;
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    @include pretendard-25-bold;
+    color: white;
+    margin: 0;
+  }
+}
+
+.summaryLink {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+
+  p {
+    @include pretendard-15-regular;
+    color: #d8d8d8;
+    margin: 0;
+  }
+}
+
+.arrowIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.contentDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 32px 0;
+}
+
+// Tab Section
+.tabSection {
+  display: flex;
+  gap: 64px;
+  padding: 56px 0;
+  align-items: flex-start;
+
+  @media (max-width: $breakpoint-desktop) {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
+
+.sidebar {
+  width: 342px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-top: 24px;
+
+  @media (max-width: $breakpoint-desktop) {
+    width: 100%;
+  }
+}
+
+.sidebarTabs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebarTab {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 18px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+
+  @include pretendard-21-semibold;
+  color: #8e8e8e;
+
+  &:hover {
+    color: white;
+  }
+
+  &.sidebarTabActive {
+    color: white;
+    border-bottom-color: white;
+  }
+}
+
+.tabDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #d11f00;
+  flex-shrink: 0;
+}
+
+.sidebarFooter {
+  padding-top: 32px;
+}
+
+.logoutButton {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  padding-left: 64px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding-left: 0;
+  }
+}
+
+.contentTitle {
+  @include pretendard-40-semibold;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+// Profile Content
+.profileContent {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.profileForm {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 120px 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 80px 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 24px;
+  }
+}
+
+.profileFormContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.formRow {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+
+  @include pretendard-17-medium;
+}
+
+.formLabel {
+  width: 120px;
+  flex-shrink: 0;
+  color: #8e8e8e;
+  margin: 0;
+  
+  @include pretendard-15-semibold;
+  color: #f0f0f0;
+}
+
+.formRequired {
+  @include pretendard-15-regular;
+  color: #f35064;
+  margin: 0;
+}
+
+.formValue {
+  color: #f0f0f0;
+  margin: 0;
+}
+
+.formDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.newsletterRow {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  padding: 20px 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.newsletterBadge {
+  background-color: #2d2d2d;
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    @include pretendard-15-semibold;
+    color: #f8f8fc;
+    margin: 0;
+  }
+}
+
+.unsubscribeButton {
+  @include pretendard-13-regular;
+  color: #a0a0a0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: auto;
+
+  &:hover:not(:disabled) {
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.withdrawButton {
+  @include pretendard-15-regular;
+  color: #e54343;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  margin: 0;
+  align-self: flex-start;
+
+  &:hover {
+    color: #ff6666;
+  }
+}
+
+.editButton {
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 0 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  @include pretendard-17-medium;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Applications Content
+.applicationsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.subTabSection {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.subTabs {
+  display: flex;
+  gap: 12px;
+}
+
+.subTab {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2d2d2d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  @include pretendard-17-semibold;
+  color: #8e8e8e;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &.subTabActive {
+    background-color: white;
+    color: #151515;
+  }
+}
+
+.subTabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.trainingContent {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+}
+
+.filterLeft {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.filterLabel {
+  @include pretendard-15-semibold;
+  color: white;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.periodButtons {
+  display: flex;
+  gap: 8px;
+  background-color: #2d2d2d;
+  border-radius: 100px;
+  padding: 0;
+}
+
+.periodButton {
+  padding: 12px;
+  border: none;
+  border-radius: 100px;
+  background-color: #2d2d2d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  @include pretendard-15-regular;
+  color: #d8d8d8;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &.periodButtonActive {
+    background-color: white;
+    color: #151515;
+  }
+}
+
+.filterRight {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.dateInput {
+  border-bottom: 1px solid #555;
+  padding: 20px 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  cursor: pointer;
+
+  p {
+    @include pretendard-15-regular;
+    color: #f0f0f0;
+    margin: 0;
+    flex: 1;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.calendarIcon {
+  width: 17px;
+  height: 19px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.dateSeparator {
+  @include pretendard-17-semibold;
+  color: white;
+  margin: 0;
+}
+
+.searchButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchIcon {
+  width: 17px;
+  height: 16px;
+  display: block;
+}
+
+.filterDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.trainingList {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.listHeaderLeft {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  p {
+    @include pretendard-15-regular;
+    color: #8e8e8e;
+    margin: 0;
+  }
+}
+
+.countHighlight {
+  @include pretendard-15-semibold;
+  color: #94b9e3;
+}
+
+.listHeaderRight {
+  p {
+    @include pretendard-15-regular;
+    color: #8e8e8e;
+    margin: 0;
+    text-align: right;
+  }
+}
+
+.trainingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trainingCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.trainingThumbnail {
+  aspect-ratio: 400 / 300;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.trainingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 8px;
+}
+
+.trainingBadges {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.badge {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include pretendard-15-semibold;
+  color: #f8f8fc;
+}
+
+.trainingTitle {
+  @include pretendard-21-semibold;
+  color: white;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.trainingLocation {
+  @include pretendard-15-semibold;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+.trainingDate {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  span {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  p {
+    @include pretendard-13-regular;
+    color: #d8d8d8;
+    margin: 0;
+  }
+}
+
+// Education Card Style (same as /education page)
+.educationCard {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #2d2d2d;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 400 / 300;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.cardContent {
+  padding: 12px 8px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cardLabels {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.labelStatus {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  @include pretendard-15-semibold;
+  color: #fb7058;
+}
+
+.labelType {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  @include pretendard-15-semibold;
+  color: #f8f8fc;
+}
+
+.cardTitle {
+  @include pretendard-21-semibold;
+  color: white;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cardLocation {
+  @include pretendard-15-semibold;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+.cardDateWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardDateIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.cardDate {
+  @include pretendard-13-regular;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 0;
+  min-height: 400px;
+
+  p {
+    @include pretendard-17-regular;
+    color: #d8d8d8;
+    margin: 0;
+  }
+}
+
+// Member Content (Consultation Table)
+.memberContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.consultationTable {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0;
+}
+
+.tableHeader {
+  background-color: #2d2d2d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tableRow {
+  display: flex;
+  gap: 20px;
+  padding: 16px 12px;
+  align-items: flex-start;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.tableCell {
+  @include pretendard-13-regular;
+  color: #d8d8d8;
+  margin: 0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:nth-child(3) {
+    text-align: left;
+    white-space: normal;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
+.tableHeader .tableCell {
+  @include pretendard-13-semibold;
+  color: #d8d8d8;
+
+  &:nth-child(3) {
+    text-align: left;
+  }
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 7px 8px;
+  border-radius: 4px;
+  @include pretendard-13-semibold;
+  text-align: center;
+}
+
+.statusCompleted {
+  background-color: #bfd8f3;
+  color: #002046;
+}
+
+.statusReceived {
+  background-color: #003675;
+  color: #f8f8fc;
+}
+
+.statusPending {
+  background-color: #555;
+  color: #f0f0f0;
+}
+
+.statusWaiting {
+  background-color: #555;
+  color: #f0f0f0;
+}
+
+// Pagination
+.pagination {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginationButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+
+  @include pretendard-19-semibold;
+  color: white;
+
+  &:hover:not(:disabled) {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.paginationButtonActive {
+    background-color: white;
+    color: #151515;
+    opacity: 1;
+  }
+}
+
+// Modal
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: $z-modal-backdrop;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: #151515;
+  border: 1px solid #555;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 1194px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: $z-modal;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 40px;
+  height: 88px;
+}
+
+.modalClose {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  padding: 0;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.modalBody {
+  flex: 1;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
+
+.modalStatusRow {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  margin-top: 0;
+}
+
+.modalDate {
+  @include pretendard-15-regular;
+  color: #8e8e8e;
+  margin: 0;
+  flex: 1;
+  text-align: right;
+}
+
+.modalMainContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.modalField {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  margin-top: 0;
+}
+
+.modalFieldLabel {
+  @include pretendard-17-semibold;
+  color: #94b9e3;
+  margin: 0;
+}
+
+.modalTitle {
+  @include pretendard-25-bold;
+  color: white;
+  margin: 0;
+  margin-top: 0;
+  margin-bottom: 24px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+}
+
+.modalDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 0;
+  margin-bottom: 32px;
+}
+
+.modalConsultantCard + .modalDivider {
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.modalDescription {
+  @include pretendard-17-regular;
+  color: #d8d8d8;
+  margin: 0;
+  margin-bottom: 64px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.modalConsultantCard {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 205px;
+  margin-top: 0;
+}
+
+.modalConsultantCard:has(+ .modalDivider) {
+  margin-bottom: 0;
+}
+
+.consultantInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 16px;
+}
+
+.consultantIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.consultantLabel {
+  @include pretendard-17-semibold;
+  color: white;
+  margin: 0;
+}
+
+.consultantNameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.consultantName {
+  @include pretendard-17-regular;
+  color: $gray-30;
+  margin: 0;
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.redDot {
+  width: 4px;
+  height: 4px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.modalFooter {
+  padding: 24px 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalConfirmButton {
+  width: 230px;
+  height: 56px;
+  border-radius: 100px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  @include pretendard-17-medium;
+  color: #151515;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.modalReplySection {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid #2d2d2d;
+  border-radius: 12px;
+  padding: 40px 40px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  margin-top: 80px;
+}
+
+.modalReplyHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modalReplyDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.modalReplyTitle {
+  @include pretendard-25-bold;
+  color: white;
+  margin: 0;
+  margin-bottom: 24px;
+}
+
+.modalReplyContent {
+  @include pretendard-17-regular;
+  color: #d8d8d8;
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+// 회원 탈퇴 모달 스타일
+.deleteModalContent {
+  background-color: #151515;
+  border: 1px solid #555;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: $z-modal;
+  overflow: hidden;
+}
+
+.deleteModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+
+  h3 {
+    @include pretendard-21-semibold;
+    color: white;
+    margin: 0;
+  }
+}
+
+.deleteModalBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.deleteModalDescription {
+  @include pretendard-15-regular;
+  color: #a0a0a0;
+  margin: 0;
+  text-align: center;
+}
+
+.deleteModalField {
+  width: 100%;
+}
+
+.deleteModalFooter {
+  padding: 0 24px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.deleteModalCancelButton {
+  flex: 1;
+  height: 48px;
+  border-radius: 100px;
+  background-color: transparent;
+  border: 1px solid #555;
+  cursor: pointer;
+  @include pretendard-15-medium;
+  color: white;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.deleteModalConfirmButton {
+  flex: 1;
+  height: 48px;
+  border-radius: 100px;
+  background-color: #e54343;
+  border: none;
+  cursor: pointer;
+  @include pretendard-15-medium;
+  color: white;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #ff5555;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Mobile Modal Styles
+@media (max-width: 767px) {
+  .modalOverlay {
+    padding: 0;
+    align-items: flex-start;
+    background-color: #151515;
+    z-index: 9999;
+  }
+
+  .modalContent {
+    border-radius: 0;
+    border: none;
+    max-width: 100%;
+    min-height: 100vh;
+    max-height: 100vh;
+    background-color: #151515;
+    z-index: 10000;
+  }
+
+  .modalHeader {
+    padding: 12px 20px;
+    height: auto;
+    background-color: #151515;
+  }
+
+  .modalClose {
+    font-size: 24px;
+    color: white;
+  }
+
+  .modalBody {
+    padding: 24px 20px;
+    padding-bottom: 120px;
+    background-color: #151515;
+    flex: 1;
+  }
+
+  .modalStatusRow {
+    padding-top: 0;
+    margin-bottom: 24px;
+  }
+
+  .statusBadge {
+    padding: 7px;
+    @include pretendard-13-semibold;
+  }
+
+  .statusReceived {
+    background-color: #003675;
+    color: #f8f8fc;
+  }
+
+  .modalDate {
+    @include pretendard-13-regular;
+    color: #8e8e8e;
+  }
+
+  .modalField {
+    margin-bottom: 24px;
+  }
+
+  .modalFieldLabel {
+    @include pretendard-15-semibold;
+    color: #94b9e3;
+  }
+
+  .modalMainContent {
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .modalTitle {
+    @include pretendard-21-semibold;
+    color: white;
+    margin-bottom: 24px;
+  }
+
+  .modalDivider {
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 32px;
+  }
+
+  .modalDescription {
+    @include pretendard-15-regular;
+    color: #d8d8d8;
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+
+  .modalConsultantCard {
+    background-color: #1f1f1f;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .consultantInfo {
+    gap: 8px;
+  }
+
+  .consultantIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .consultantLabel {
+    @include pretendard-15-semibold;
+    color: white;
+  }
+
+  .consultantName {
+    @include pretendard-15-regular;
+    color: #d8d8d8;
+  }
+
+  .modalReplySection {
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid #2d2d2d;
+    border-radius: 12px;
+    padding: 32px 20px 48px;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .modalReplyHeader {
+    gap: 24px;
+  }
+
+  .modalReplyTitle {
+    @include pretendard-19-semibold;
+    color: white;
+    margin-bottom: 0;
+  }
+
+  .modalReplyDivider {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .modalReplyContent {
+    @include pretendard-15-regular;
+    color: #d8d8d8;
+    line-height: 1.5;
+  }
+
+  .modalFooter {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #151515;
+    padding: 12px 20px 40px;
+  }
+
+  .modalConfirmButton {
+    width: 100%;
+    height: 56px;
+    border: none;
+    background-color: white;
+    color: #151515;
+    border-radius: 100px;
+
+    @include pretendard-17-medium;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  // 회원 탈퇴 모달 모바일 스타일
+  .deleteModalContent {
+    max-width: calc(100% - 40px);
+    margin: 20px;
+    border-radius: 16px;
+  }
+
+  .deleteModalHeader {
+    padding: 20px 20px 0;
+
+    h3 {
+      @include pretendard-17-semibold;
+    }
+  }
+
+  .deleteModalBody {
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .deleteModalDescription {
+    @include pretendard-13-regular;
+  }
+
+  .deleteModalFooter {
+    padding: 0 20px 20px;
+  }
+
+  .deleteModalCancelButton,
+  .deleteModalConfirmButton {
+    height: 44px;
+    @include pretendard-14-medium;
+  }
+}
+
+// 비밀번호 확인 모달
+.passwordVerifyContent {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  padding: 120px 200px;
+  width: 100%;
+
+  .modalTitle {
+    @include pretendard-40-semibold;
+    color: #f0f0f0;
+    margin: 0;
+  }
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 80px 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 24px;
+  }
+}
+
+.passwordVerifySection {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 120px 200px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 80px 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 24px;
+  }
+}
+
+.passwordVerifyForm {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+  width: 100%;
+}
+
+.passwordVerifyDescription {
+  @include pretendard-19-semibold;
+  color: white;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.passwordVerifyField {
+  width: 100%;
+}
+
+.passwordVerifyButton {
+  width: 240px;
+  height: 56px;
+  border-radius: 100px;
+  background-color: #555;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  @include pretendard-17-medium;
+  color: #8e8e8e;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.passwordVerifyButtonActive {
+    background-color: white;
+    color: #151515;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// 회원정보 수정 폼
+.editProfileForm {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+.editFormField {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.editFormFieldLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  .formLabel {
+    width: auto;
+    @include pretendard-15-semibold;
+    color: #f0f0f0;
+    margin: 0;
+  }
+  
+  .formRequired {
+    @include pretendard-15-regular;
+    color: #f35064;
+    margin: 0;
+  }
+}
+
+.editFormFieldRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.changePasswordButton {
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 0 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  @include pretendard-17-medium;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.emailFieldRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.emailInput {
+  flex: 1;
+}
+
+.emailAt {
+  @include pretendard-17-medium;
+  color: white;
+  margin: 0;
+  padding-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.emailDomainInput {
+  flex: 1;
+}
+
+.emailDomainSelectWrapper {
+  position: relative;
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.emailDomainSelect {
+  border-bottom: 1px solid #555;
+  padding: 20px 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+  position: relative;
+
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+  text-align: left;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.selectArrow {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  transform: rotate(90deg);
+}
+
+.selectArrowOpen {
+  transform: rotate(-90deg);
+}
+
+.emailDomainDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #2d2d2d;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 4px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.emailDomainOption {
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.phoneFieldRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.phoneCarrierSelectWrapper {
+  position: relative;
+  width: 160px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.phoneCarrierSelect {
+  border-bottom: 1px solid #555;
+  padding: 20px 0;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+  text-align: left;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.phoneCarrierDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #2d2d2d;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 4px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.phoneCarrierOption {
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.phoneNumberInput {
+  flex: 1;
+}
+
+.changePhoneButton {
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 0 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  @include pretendard-17-medium;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.saveProfileButton {
+  width: 240px;
+  height: 56px;
+  border-radius: 100px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  align-self: center;
+  margin-top: 16px;
+
+  @include pretendard-17-medium;
+  color: #151515;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// 비밀번호 변경 모달
+.changePasswordContent {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 120px 200px;
+  width: 100%;
+
+  .modalTitle {
+    @include pretendard-40-semibold;
+    color: #f0f0f0;
+    margin: 0;
+  }
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 80px 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 24px;
+  }
+}
+
+.changePhoneSection {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 120px 200px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 80px 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 24px;
+  }
+}
+
+.changePhoneForm {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+.phoneChangeField {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.phoneChangeInputRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.requestVerificationButton {
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  @include pretendard-17-medium;
+  color: rgba(255, 255, 255, 0.5);
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.requestVerificationButtonActive {
+    border-color: white;
+    color: white;
+    opacity: 1;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.verificationCodeRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  position: relative;
+}
+
+.verificationCodeInput {
+  flex: 1;
+  
+  // clear 버튼과 타이머가 겹치지 않도록 padding 추가
+  :global(.textfield__container) {
+    padding-right: 80px;
+  }
+}
+
+.timer {
+  position: absolute;
+  right: 140px;
+  top: 50%;
+  transform: translateY(-50%);
+  @include pretendard-12-regular;
+  color: #bfd8f3;
+  white-space: nowrap;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.verifyCodeButton {
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  @include pretendard-17-medium;
+  color: rgba(255, 255, 255, 0.5);
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.verifyCodeButtonActive {
+    border-color: white;
+    color: white;
+    opacity: 1;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.phoneChangeError {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+
+  @include pretendard-13-regular;
+  color: #f35064;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}
+
+.changePhoneSubmitButton {
+  width: 240px;
+  height: 56px;
+  border-radius: 100px;
+  background-color: #555;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  align-self: center;
+  margin-top: 16px;
+
+  @include pretendard-17-medium;
+  color: #8e8e8e;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.changePhoneSubmitButtonActive {
+    background-color: white;
+    color: #151515;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+.changePasswordSection {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 120px 200px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 80px 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 24px;
+  }
+}
+
+.changePasswordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+.passwordField {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.changePasswordSubmitButton {
+  width: 240px;
+  height: 56px;
+  border-radius: 100px;
+  background-color: #555;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  align-self: center;
+  margin-top: 16px;
+
+  @include pretendard-17-medium;
+  color: #8e8e8e;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.changePasswordSubmitButtonActive {
+    background-color: white;
+    color: #151515;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// Mobile Layout Styles
+.mobileMyPage {
+  display: none;
+
+  @media (max-width: 767px) {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 40px;
+  }
+}
+
+.mobileHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.mobileBackButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.mobileTitle {
+  @include pretendard-21-semibold;
+  color: white;
+  margin: 0;
+  flex: 1;
+}
+
+.mobileProfileCard {
+  background-color: #2d2d2d;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.mobileProfileHeader {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.mobileProfileAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background-color: #000;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.mobileProfileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobileProfileGreeting {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobileProfileName {
+  @include pretendard-19-semibold;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+.mobileProfileWelcome {
+  @include pretendard-15-regular;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+.mobileProfileDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.mobileMemberTypeCard {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobileMemberTypeLabel {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  p {
+    @include pretendard-15-semibold;
+    color: white;
+    margin: 0;
+  }
+}
+
+.mobileMemberTypeIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.mobileMemberTypeBadge {
+  background: #BFD8F3;
+  border-radius: 4px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    @include pretendard-13-semibold;
+    color: #151515;
+    margin: 0;
+    white-space: nowrap;
+  }
+}
+
+.mobileMenuList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mobileMenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  span {
+    @include pretendard-17-medium;
+    color: #f0f0f0;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.mobileLogoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-top: 24px;
+
+  @include pretendard-15-regular;
+  color: #8e8e8e;
+  text-decoration: underline;
+
+  &:hover {
+    color: white;
+  }
+}
+
+// Hide desktop layout on mobile
+.pageHeaderWrapper {
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+.profileSection {
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+.tabSection {
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+// Mobile Profile Content
+.mobileProfileContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobileProfileForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: transparent;
+  padding: 24px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.mobileFormRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 0;
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.mobileFormDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 8px 0;
+}
+
+.mobileFormLabel {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+  margin: 0;
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.mobileFormValue {
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+  margin: 0;
+  flex: 1;
+}
+
+.mobileNewsletterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.mobileNewsletterActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobileNewsletterBadge {
+  background-color: #2d2d2d;
+  border-radius: 4px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    @include pretendard-13-semibold;
+    color: #f8f8fc;
+    margin: 0;
+  }
+}
+
+.mobileUnsubscribeButton {
+  @include pretendard-12-regular;
+  color: #a0a0a0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+
+  &:hover:not(:disabled) {
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.mobileWithdrawButton {
+  @include pretendard-13-regular;
+  color: #e54343;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 12px 0 0;
+  margin: 0;
+  text-align: left;
+
+  &:hover {
+    color: #ff6666;
+  }
+}
+
+.mobileFormFooterDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 24px 0 0;
+}
+
+.mobileEditButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(50% - 16px);
+  padding: 8px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 24px;
+
+  @include pretendard-15-regular;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Mobile Password Verify
+.mobilePasswordVerifySection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobilePasswordVerifyBox {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 24px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.mobilePasswordVerifyDescription {
+  @include pretendard-15-regular;
+  color: white;
+  text-align: left;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.mobilePasswordVerifyField {
+  width: 100%;
+}
+
+.mobilePasswordVerifyButton {
+  width: 50%;
+  height: 44px;
+  border-radius: 100px;
+  background-color: #555;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  transition: all 0.2s ease;
+
+  @include pretendard-15-regular;
+  color: #8e8e8e;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.mobilePasswordVerifyButtonActive {
+    background-color: white;
+    color: #151515;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// Mobile Edit Profile Form
+.mobileEditProfileSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mobileEditProfileBox {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.mobileEditFormField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.mobileEditFormFieldRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.mobileChangeButton {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  @include pretendard-13-regular;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.mobileEmailRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.mobileEmailAt {
+  @include pretendard-15-regular;
+  color: white;
+  margin: 0;
+  padding-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.mobileEmailDomainSelect {
+  width: 100%;
+  border-bottom: 1px solid #555;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+
+  @include pretendard-15-regular;
+  color: #8e8e8e;
+}
+
+.mobilePhoneRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.mobileCarrierSelect {
+  width: 100%;
+  border-bottom: 1px solid #555;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+}
+
+.mobileDropdownWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.mobileDropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 8px;
+  z-index: 100;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.mobileDropdownItem {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+
+  &:hover {
+    background: #3a3a3a;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #444;
+  }
+}
+
+.mobileConfirmButton {
+  width: 50%;
+  height: 44px;
+  border-radius: 100px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px auto 0;
+  transition: all 0.2s ease;
+
+  @include pretendard-15-regular;
+  color: #151515;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  &:disabled {
+    background-color: #555;
+    color: #8e8e8e;
+    cursor: not-allowed;
+  }
+}
+
+// Mobile Password Change Form
+.mobilePasswordChangeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobilePasswordChangeBox {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.mobilePasswordChangeField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.mobilePasswordChangeButton {
+  width: 50%;
+  height: 44px;
+  border-radius: 100px;
+  background-color: #555;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: all 0.2s ease;
+
+  @include pretendard-15-regular;
+  color: #8e8e8e;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.mobilePasswordChangeButtonActive {
+    background-color: white;
+    color: #151515;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// Mobile Phone Change Form
+.mobilePhoneChangeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobilePhoneChangeBox {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.mobilePhoneChangeField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.mobilePhoneChangeLabel {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+  margin: 0;
+}
+
+.mobilePhoneCarrierSelect {
+  width: 100%;
+  border-bottom: 1px solid #555;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+
+  @include pretendard-15-regular;
+  color: #f0f0f0;
+}
+
+.mobilePhoneInputRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.mobileVerifyRequestButton {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  @include pretendard-13-regular;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:disabled {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+  }
+}
+
+.mobileVerificationField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.mobileVerificationInputRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+  position: relative;
+}
+
+.mobileVerificationTimer {
+  position: absolute;
+  right: 100px;
+  bottom: 12px;
+  @include pretendard-13-regular;
+  color: #bfd8f3;
+}
+
+.mobileVerifyCodeButton {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  @include pretendard-13-regular;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:disabled {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+  }
+}
+
+.mobilePhoneChangeButton {
+  width: 50%;
+  height: 44px;
+  border-radius: 100px;
+  background-color: #555;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: all 0.2s ease;
+
+  @include pretendard-15-regular;
+  color: #8e8e8e;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.mobilePhoneChangeButtonActive {
+    background-color: white;
+    color: #151515;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// Mobile Application History Styles
+.mobileApplicationTabs {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px;
+  margin-bottom: 0;
+}
+
+.mobileTabDivider {
+  width: 100%;
+  height: 1px;
+  background-color: #555;
+  margin: 24px 0;
+}
+
+.mobileAppTab {
+  padding: 8px 10px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  background-color: #2d2d2d;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @include pretendard-13-semibold;
+  color: #8e8e8e;
+
+  &.mobileAppTabActive {
+    background-color: white;
+    color: #151515;
+  }
+}
+
+.mobileTabDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #fb7058;
+}
+
+.mobileTrainingContent {
+  padding: 0 20px;
+}
+
+.mobileDateFilter {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobilePeriodRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.mobilePeriodLabel {
+  @include pretendard-13-semibold;
+  color: white;
+  width: 52px;
+  text-align: center;
+}
+
+.mobilePeriodTabs {
+  display: flex;
+  background-color: #2d2d2d;
+  border-radius: 100px;
+}
+
+.mobilePeriodTab {
+  padding: 8px 10px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+
+  @include pretendard-13-regular;
+  color: #d8d8d8;
+
+  &.mobilePeriodTabActive {
+    background-color: white;
+    color: #151515;
+  }
+}
+
+.mobileDateInputRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.mobileDateInputWrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mobileDateIcon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.mobileDateInput {
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #555;
+  background: transparent;
+  cursor: pointer;
+
+  @include pretendard-13-regular;
+  color: #f0f0f0;
+
+  &:focus {
+    outline: none;
+    border-bottom-color: white;
+  }
+}
+
+.mobileDateSeparator {
+  @include pretendard-17-semibold;
+  color: white;
+}
+
+.mobileSearchButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+  }
+}
+
+.mobileDivider {
+  width: 100%;
+  height: 1px;
+  background-color: #555;
+  margin: 32px 0;
+}
+
+.mobileResultsSummary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.mobileResultsCount {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+  margin: 0;
+}
+
+.mobileCountHighlight {
+  @include pretendard-13-semibold;
+  color: #94b9e3;
+}
+
+.mobileResultsDate {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+  margin: 0;
+  text-align: right;
+}
+
+.mobileCardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.mobileEducationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  padding-bottom: 16px;
+}
+
+.mobileCardImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 4px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.mobileCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobileCardLabels {
+  display: flex;
+  gap: 4px;
+}
+
+.mobileCardLabelStatus {
+  padding: 7px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+
+  @include pretendard-13-semibold;
+  color: #fb7058;
+}
+
+.mobileCardLabelType {
+  padding: 7px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+
+  @include pretendard-13-semibold;
+  color: #f8f8fc;
+}
+
+.mobileCardTitle {
+  @include pretendard-15-semibold;
+  color: white;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 38px;
+}
+
+.mobileCardLocation {
+  @include pretendard-13-regular;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+.mobileCardDate {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+
+  span {
+    @include pretendard-13-regular;
+    color: #d8d8d8;
+  }
+}
+
+.mobileMemberList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobileMemberCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.mobileMemberCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobileMemberCardField {
+  @include pretendard-13-semibold;
+  color: #94b9e3;
+}
+
+.mobileMemberCardStatus {
+  @include pretendard-13-semibold;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.mobileMemberCardStatusCompleted {
+  background-color: #bfd8f3;
+  color: #002046;
+}
+
+.mobileMemberCardStatusReceived {
+  background-color: #003675;
+  color: #f8f8fc;
+}
+
+.mobileMemberCardStatusWaiting {
+  background-color: #555;
+  color: #f0f0f0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.mobileMemberCardContent {
+  @include pretendard-13-regular;
+  color: #d8d8d8;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+}
+
+.mobileMemberCardTags {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #2d2d2d;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.mobileMemberCardTag {
+  @include pretendard-13-semibold;
+  color: white;
+}
+
+.mobileMemberCardTagDivider {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+}
+
+.mobileMemberCardTagValue {
+  @include pretendard-13-regular;
+  color: #d8d8d8;
+}
+
+.mobileMemberCardFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobileMemberCardNo {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+}
+
+.mobileMemberCardDivider {
+  @include pretendard-13-regular;
+  color: #555;
+}
+
+.mobileMemberCardDate {
+  @include pretendard-13-regular;
+  color: #8e8e8e;
+}
+
+.mobileMemberCardSeparator {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-top: 0;
+}
+

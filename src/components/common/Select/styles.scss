@@ -1,0 +1,128 @@
+@import '../../../styles/variables';
+
+.select {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &--error {
+    .select__trigger {
+      border-color: #d11f00;
+    }
+  }
+
+  // Label
+  &__label-container {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  &__label {
+    @include pretendard-15-semibold;
+    color: $gray-10;
+  }
+
+  &__required {
+    color: #d11f00;
+    margin-left: 2px;
+  }
+
+  // Trigger
+  &__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    padding: 0 16px;
+    background-color: $gray-80;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background-color: $gray-70;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $navy-30;
+    }
+
+    &--open {
+      border-color: $navy-30;
+    }
+  }
+
+  // Value
+  &__value {
+    @include pretendard-15-regular;
+    color: $gray-10;
+
+    &--placeholder {
+      color: $gray-50;
+    }
+  }
+
+  // Arrow
+  &__arrow {
+    flex-shrink: 0;
+    color: $gray-50;
+    transition: transform $transition-fast;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Dropdown
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background-color: $gray-80;
+    border: 1px solid $gray-70;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  // Option
+  &__option {
+    padding: 12px 16px;
+    @include pretendard-15-regular;
+    color: $gray-10;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: $gray-70;
+    }
+
+    &--selected {
+      background-color: $gray-70;
+      color: $white;
+    }
+  }
+
+  // Error message
+  &__error-message {
+    @include pretendard-13-regular;
+    color: #d11f00;
+    margin-top: 4px;
+  }
+}

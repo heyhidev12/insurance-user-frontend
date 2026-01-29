@@ -1,0 +1,525 @@
+@import 'variables';
+
+// Common Auth Page Styles
+.auth-page-container {
+  min-height: 100vh;
+  background-color: #151515;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 56px;
+  }
+}
+
+.auth-content-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120px 24px 80px;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 100px 20px 60px;
+  }
+}
+
+.auth-page-title {
+  font-family: $font-montserrat;
+  font-weight: $font-weight-light;
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1.5;
+  letter-spacing: -3px;
+  color: $white;
+  margin-bottom: clamp(20px, 2.5vw, 48px);
+
+  @media (max-width: $breakpoint-tablet) {
+    letter-spacing: -1px;
+  }
+}
+
+.auth-page-subtitle {
+  @include pretendard-15-regular;
+  color: $gray-30;
+  text-align: center;
+  margin-bottom: clamp(20px, 2.5vw, 40px);
+}
+
+// Tab Components
+.auth-tab-container {
+  display: flex;
+  gap: 8px;
+  width: 360px;
+  margin-bottom: 48px;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    max-width: 360px;
+  }
+}
+
+.auth-tab-button {
+  flex: 1;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.08px;
+  padding: 8px 12px;
+  border-radius: $radius-tiny;
+  cursor: pointer;
+  transition: all $transition-normal;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  &.is-active {
+    background: $white;
+    color: $gray-90;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: $error;
+    }
+  }
+
+  &:not(.is-active) {
+    background: $gray-80;
+    color: $gray-50;
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+// Form Container
+.auth-form-container {
+  width: 100%;
+  max-width: 800px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0;
+  padding: 88px 120px 120px;
+  margin-bottom: 0; // 버튼과의 간격은 버튼 wrapper에서 관리
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 48px 24px 60px;
+  }
+}
+
+// Form
+.auth-form {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+// Input Group
+.auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-input-label {
+  @include pretendard-15-regular;
+  color: $white;
+}
+
+.auth-required-mark {
+  color: $error;
+  margin-left: 2px;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+  &:focus-within {
+    border-bottom-color: $white;
+  }
+}
+
+.auth-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 12px 40px 12px 0;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: $white;
+  outline: none;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &:disabled {
+    color: $gray-50;
+    opacity: 0.5;
+  }
+}
+
+.auth-input-with-button {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.auth-input-flex {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Clear Button
+.auth-clear-button {
+  position: absolute;
+  right: 0;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.auth-clear-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 1.5px;
+    background-color: #151515;
+  }
+
+  &::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  &::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+}
+
+// Verification Button
+.auth-verification-button {
+  flex-shrink: 0;
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid $white;
+  border-radius: $radius-pill;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $white;
+  cursor: pointer;
+  transition: all $transition-normal;
+  white-space: nowrap;
+
+  &.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled):not(.is-disabled) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Input Actions
+.auth-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: absolute;
+  right: 0;
+
+  .auth-clear-button {
+    position: static;
+  }
+}
+
+// Verification Code
+.auth-verification-code-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+  &:focus-within {
+    border-bottom-color: $white;
+  }
+
+  &.is-active {
+    border-bottom-color: #94B9E3;
+
+    &:focus-within {
+      border-bottom-color: #94B9E3;
+    }
+  }
+}
+
+.auth-verification-code-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 12px 100px 12px 0;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: $white;
+  outline: none;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.auth-timer {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #BFD8F3;
+}
+
+.auth-verification-label {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #BFD8F3;
+}
+
+// Messages
+.auth-error-message {
+  @include pretendard-13-regular;
+  color: $error; // #F35064
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: -0.065px;
+  margin-top: 6px; // Figma 디자인: input과 메시지 사이 간격
+  
+  // Icon 컴포넌트가 포함되어 있으므로 ::before 제거
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.auth-success-message {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular; // 400
+  font-size: 13px;
+  line-height: 150%; // 19.5px
+  letter-spacing: -0.065px;
+  color: #929299; // Grayscale-400
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+// Submit Button
+.auth-submit-button {
+  width: 200px;
+  height: 56px;
+  padding: 0 20px;
+  background-color: $white;
+  border: none;
+  border-radius: $radius-pill;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  color: #151515;
+  cursor: pointer;
+  transition: all $transition-normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &.is-disabled {
+    background-color: $gray-70;
+    color: $gray-50;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled):not(.is-disabled) {
+    opacity: 0.9;
+  }
+}
+
+.auth-arrow-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-top: 2px solid currentColor;
+    transform: translate(-70%, -50%) rotate(45deg);
+  }
+}
+
+// Bottom Links
+.auth-bottom-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.auth-bottom-link {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color $transition-normal;
+
+  &:hover {
+    color: $white;
+  }
+}
+
+.auth-bottom-link-divider {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+}
+
+// Button Group
+.auth-button-group {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.auth-secondary-button {
+  flex: 1;
+  padding: 16px;
+  background: transparent;
+  border: 1px solid $white;
+  border-radius: $radius-pill;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 16px;
+  line-height: 1.5;
+  color: $white;
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.auth-primary-button {
+  flex: 1;
+  padding: 16px;
+  background-color: $white;
+  border: none;
+  border-radius: $radius-pill;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #151515;
+  cursor: pointer;
+  transition: opacity $transition-normal;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+// Checkbox
+.auth-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+
+  &.is-all-agree {
+    font-weight: $font-weight-semibold;
+    color: $white;
+    font-size: 17px;
+  }
+}
+
+.auth-checkbox-input {
+  display: none;
+}
+
+.auth-checkbox-icon {
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all $transition-normal;
+
+  &.is-checked {
+    background-color: $white;
+    border-color: $white;
+
+    &::after {
+      content: '';
+      width: 12px;
+      height: 8px;
+      border-left: 2px solid #151515;
+      border-bottom: 2px solid #151515;
+      transform: rotate(-45deg) translateY(-2px);
+    }
+  }
+}

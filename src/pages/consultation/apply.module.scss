@@ -1,0 +1,568 @@
+@import '../../styles/variables';
+
+.consultationPage {
+  min-height: 100vh;
+  background-color: #151515;
+  color: #fff;
+
+  @media (max-width: 767px) {
+    padding-top: 56px;
+  }
+}
+
+.pageContent {
+  width: 100%;
+}
+
+.pageHeaderSection {
+  padding: 136px 240px 48px;
+}
+
+.formSection {
+  padding: 48px 240px 0;
+}
+
+.formContainer {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid #2d2d2d;
+  border-radius: 12px;
+  padding: 100px 160px;
+  margin-bottom: 240px;
+}
+
+.formHeader {
+  margin-bottom: 64px;
+}
+
+.formTitleBackground {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  mix-blend-mode: difference;
+  opacity: 0.3;
+  margin-bottom: 48px;
+}
+
+.formTitleText {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 120px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+  color: #fff;
+  text-align: left;
+  white-space: nowrap;
+
+  @media (max-width: 1024px) {
+    font-size: 80px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 40px;
+    line-height: 110%;
+    letter-spacing: -2px;
+    text-align: left;
+    white-space: nowrap;
+  }
+}
+
+.formTitleItalic {
+  font-style: italic;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.formRow {
+  display: flex;
+  gap: 40px;
+}
+
+.formField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.fieldLabel {
+  display: flex;
+  align-items: flex-start;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f0f0f0;
+}
+
+.required {
+  color: #f35064;
+  margin-left: 2px;
+}
+
+// Select Styles
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 20px 0;
+  border-bottom: 1px solid #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-bottom-color: #717171;
+  }
+}
+
+.selectTriggerOpen {
+  border-bottom-color: #94b9e3;
+}
+
+.selectTriggerDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+
+  &:hover {
+    border-bottom-color: #404040;
+  }
+}
+
+.selectValue {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0;
+}
+
+.selectPlaceholder {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #717171;
+}
+
+.selectArrow {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.selectArrowOpen {
+  transform: rotate(180deg);
+}
+
+.selectDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: #2d2d2d;
+  border: 1px solid #2d2d2d;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.09);
+  z-index: 100;
+  max-height: 215px;
+  overflow-y: auto;
+}
+
+.selectSearch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  border-bottom: 1px solid #555;
+  background-color: #2d2d2d;
+
+  svg {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.selectSearchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #717171;
+
+  &::placeholder {
+    color: #717171;
+  }
+}
+
+.selectOptions {
+  padding: 5px 10px;
+}
+
+.selectOption {
+  padding: 10px 8px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.selectOptionActive {
+  background-color: rgba(148, 185, 227, 0.1);
+  color: #94b9e3;
+}
+
+// Text Input
+.textInput {
+  width: 100%;
+  height: 48px;
+  padding: 20px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #555;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0;
+  outline: none;
+  transition: border-color 0.3s ease;
+
+  &::placeholder {
+    color: #717171;
+  }
+
+  &:focus {
+    border-bottom-color: #94b9e3;
+  }
+}
+
+// Textarea
+.textarea {
+  width: 100%;
+  min-height: 209px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #555;
+  border-radius: 8px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s ease;
+
+  &::placeholder {
+    color: #8e8e8e;
+  }
+
+  &:focus {
+    border-color: #94b9e3;
+  }
+}
+
+// Error states
+.textInputError {
+  border-bottom-color: #ff6b6b;
+
+  &:focus {
+    border-bottom-color: #ff6b6b;
+  }
+}
+
+.textareaError {
+  border-color: #ff6b6b;
+
+  &:focus {
+    border-color: #ff6b6b;
+  }
+}
+
+.fieldError {
+  margin-top: 8px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #ff6b6b;
+}
+
+.agreementItemWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+// Agreements
+.agreements {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.agreementItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  // Override checkbox label color for dark theme
+  :global(.checkbox__label) {
+    color: #d8d8d8;
+  }
+}
+
+.viewLink {
+  background: none;
+  border: none;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #94b9e3;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  text-align: right;
+
+  &:hover {
+    color: #bfd8f3;
+  }
+}
+
+// Submit Button
+.submitButtonWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding-top: 56px;
+}
+
+.errorMessage {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #f35064;
+  text-align: center;
+  margin: 0;
+}
+
+.submitButton {
+  width: 240px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+// Modal Styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: #151515;
+  border: 1px solid #555;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+
+  @media (max-width: 768px) {
+    border-radius: 16px;
+    max-width: 100%;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: flex-end;
+  padding: 40px 40px 0;
+
+  @media (max-width: 768px) {
+    padding: 24px 24px 0;
+  }
+}
+
+.modalCloseButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  padding: 0 40px 56px;
+
+  @media (max-width: 768px) {
+    gap: 32px;
+    padding: 0 24px 40px;
+  }
+}
+
+.successIcon {
+  width: 56px;
+  height: 56px;
+  border: 2px solid #94b9e3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  text-align: center;
+}
+
+.successTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1.5;
+  letter-spacing: -0.125px;
+  color: #fff;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 21px;
+  }
+}
+
+.successDescription {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  margin: 0;
+}
+
+.modalButton {
+  width: 240px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1440px) {
+  .pageHeaderSection {
+    padding: 136px 120px 48px;
+  }
+
+  .formSection {
+    padding: 48px 120px 0;
+  }
+
+  .formContainer {
+    padding: 80px 120px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .pageHeaderSection {
+    padding: 100px 60px 40px;
+  }
+
+  .formSection {
+    padding: 40px 60px 0;
+  }
+
+  .formContainer {
+    padding: 60px 40px;
+  }
+
+  .formRow {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .formTitleText {
+    font-size: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageHeaderSection {
+    padding: 64px 20px 32px;
+  }
+
+  .formSection {
+    padding: 32px 20px 0;
+  }
+
+  .formContainer {
+    padding: 40px 20px;
+    margin-bottom: 120px;
+  }
+
+  .formTitleText {
+    font-size: 40px;
+  }
+
+  .formFields {
+    gap: 48px;
+  }
+}
+

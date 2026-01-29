@@ -1,0 +1,135 @@
+@import '../../../styles/variables';
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 56px; // Figma 디자인: StepIndicator와 약관 동의 섹션 사이 56px 간격
+
+  // Step Item
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px; // Figma 디자인: 아이콘-STEP, STEP-라벨 사이 12px 간격
+    width: 55px; // Figma 디자인: 55px width
+  }
+
+  // Circle
+  &__circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: $gray-80; // #2D2D2D
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $transition-fast;
+  }
+
+  // Check icon
+  &__check {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // 활성화된 스텝의 체크 아이콘은 파란색
+    &--active {
+      // check-white 아이콘의 stroke를 파란색으로 변경
+      svg path {
+        stroke: $navy-30 !important; // #94B9E3
+      }
+    }
+  }
+
+  // Number (STEP 01)
+  &__number {
+    @include pretendard-13-regular;
+    color: $gray-50; // #8E8E8E
+    text-transform: uppercase;
+    letter-spacing: -0.065px;
+  }
+
+  // Label
+  &__label {
+    @include pretendard-15-semibold;
+    color: $gray-50; // #8E8E8E
+    letter-spacing: -0.075px;
+  }
+
+  // Divider
+  &__divider {
+    width: 56px; // Figma 디자인: 56px width
+    height: 2px; // Figma 디자인: 2px height
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 0 0;
+    align-self: flex-start; // 원의 중심 높이에 맞추기 위해
+    margin-top: 15px; // 원의 중심 (32px / 2 = 16px)에서 약간 조정
+  }
+
+  // Active state
+  &__item--active {
+    .step-indicator__circle {
+      background-color: transparent;
+      border-color: $navy-30; // #94B9E3
+    }
+
+    .step-indicator__check {
+      // check-blue 아이콘을 직접 사용하므로 CSS 오버라이드 불필요
+    }
+
+    .step-indicator__number {
+      color: $navy-30; // #94B9E3
+    }
+
+    .step-indicator__label {
+      color: $navy-20; // #BFD8F3
+    }
+  }
+
+  // Completed state
+  &__item--completed {
+    .step-indicator__circle {
+      background-color: $gray-80; // #2D2D2D (어두운 회색 원)
+      border-color: transparent;
+    }
+
+    .step-indicator__check {
+      // check-gray-light 아이콘 사용 (grayscale-60)
+    }
+
+    .step-indicator__number {
+      color: $gray-50; // #8E8E8E (밝은 회색 텍스트)
+    }
+
+    .step-indicator__label {
+      color: $gray-50; // #8E8E8E (밝은 회색 텍스트)
+    }
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .step-indicator {
+    &__item {
+      min-width: 60px;
+    }
+
+    &__divider {
+      width: 30px;
+      margin: 0 8px;
+      margin-top: 15px;
+    }
+
+    &__number {
+      font-size: 10px;
+    }
+
+    &__label {
+      font-size: 12px;
+    }
+  }
+}

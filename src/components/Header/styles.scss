@@ -1,0 +1,149 @@
+@import '../../styles/variables';
+
+.header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $header-height-web;
+  z-index: $z-fixed + 700;
+  padding: $spacing-12 $spacing-120;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color $transition-normal;
+
+  &.variant-white {
+    background-color: $white;
+  }
+
+  &.variant-transparent {
+    background-color: rgba(21, 21, 21, 0.01);
+    backdrop-filter: blur(5px);
+  }
+
+  @media (max-width: $breakpoint-wide) {
+    padding: $spacing-12 $spacing-64;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    height: $header-height-mobile;
+    padding: $spacing-12 $spacing-24;
+  }
+}
+
+.header-inner {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  height: 58px;
+  overflow: hidden;
+
+  @media (max-width: $breakpoint-tablet) {
+    height: 36px;
+  }
+}
+
+.logo-image {
+  height: 58px;
+  width: auto;
+  object-fit: contain;
+
+  @media (max-width: $breakpoint-tablet) {
+    height: 36px;
+  }
+
+  &.variant-transparent {
+    filter: brightness(0) invert(1);
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-48;
+
+  @media (max-width: $breakpoint-desktop) {
+    display: none;
+  }
+}
+
+.nav-item {
+  @include pretendard-19-semibold;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color $transition-normal;
+
+  &.variant-white {
+    color: $gray-80;
+
+    &:hover {
+      color: $primary-50;
+    }
+  }
+
+  &.variant-transparent {
+    color: $white;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
+.menu-button {
+  width: $spacing-48;
+  height: $spacing-48;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: $spacing-40;
+    height: $spacing-40;
+  }
+}
+
+.menu-icon {
+  width: 37px;
+  height: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 28px;
+    height: 20px;
+  }
+
+  span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    transition: background-color $transition-normal;
+
+    @media (max-width: $breakpoint-tablet) {
+      height: 2px;
+    }
+  }
+
+  &.variant-white span {
+    background-color: $gray-80;
+  }
+
+  &.variant-transparent span {
+    background-color: $white;
+  }
+}

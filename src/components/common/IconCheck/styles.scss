@@ -1,0 +1,83 @@
+@import '../../../styles/variables';
+
+// Design tokens from Figma
+$icon-check-border-color: #c6c6c6;
+$icon-check-border-color-lg: #d8d8d8;
+$icon-check-bg-checked: #94b9e3;
+$icon-check-icon-color: #fff;
+
+.icon-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: $transition-fast;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: 2px solid $icon-check-bg-checked;
+    outline-offset: 2px;
+  }
+
+  &__icon {
+    color: $icon-check-icon-color;
+  }
+
+  // Variants
+  &--square {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    border: 1px solid $icon-check-border-color;
+
+    &.icon-check--checked {
+      background-color: $icon-check-bg-checked;
+      border-color: $icon-check-bg-checked;
+    }
+
+    .icon-check__icon {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &--round-sm {
+    width: 16px;
+    height: 16px;
+    border-radius: 100px;
+    border: 1px solid $icon-check-border-color;
+
+    &.icon-check--checked {
+      background-color: $icon-check-bg-checked;
+      border-color: $icon-check-bg-checked;
+    }
+
+    .icon-check__icon {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &--round-lg {
+    width: 32px;
+    height: 32px;
+    border-radius: 100px;
+    border: 1px solid $icon-check-border-color-lg;
+
+    &.icon-check--checked {
+      background-color: $icon-check-bg-checked;
+      border-color: $icon-check-bg-checked;
+    }
+
+    .icon-check__icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  // States
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

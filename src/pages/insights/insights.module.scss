@@ -1,0 +1,1689 @@
+@import '../../styles/variables';
+
+.insightsPage {
+  min-height: 100vh;
+  background-color: #151515;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 56px;
+  }
+}
+
+.content {
+  flex: 1;
+  padding-bottom: 240px;
+
+  @media (max-width: 1440px) {
+    padding-bottom: 240px;
+  }
+
+  @media (max-width: 768px) {
+    padding-bottom: 240px;
+  }
+}
+
+.container {
+  flex: 1;
+  padding: 0 240px;
+  max-width: 1920px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 1440px) {
+    padding: 0 120px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 24px;
+  }
+}
+
+.pageHeaderWrapper {
+  padding-top: 136px;
+  padding-bottom: 64px;
+
+  :global(.page-header--web) {
+    gap: 32px;
+  }
+
+  @media (max-width: 1440px) {
+    padding-top: 80px;
+    padding-bottom: 16px;
+
+    :global(.page-header--web) {
+      gap: 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding-top: 64px;
+    padding-bottom: 12px;
+
+    :global(.page-header--web) {
+      gap: 20px;
+    }
+  }
+}
+
+.mainContent {
+  padding: 0;
+
+  @media (max-width: 1440px) {
+    padding: 0 120px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0;
+  }
+}
+
+.columnTitleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  margin-bottom: 80px;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  @media (max-width: 1440px) {
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 8px;
+    margin-bottom: 0;
+    align-items: center;
+  }
+}
+
+.columnTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 120px;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -3px;
+  color: white;
+  margin: 0;
+  text-align: left;
+
+  @media (max-width: 1440px) {
+    font-size: 80px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 44px;
+    line-height: 110%;
+    letter-spacing: -2px;
+    text-align: center;
+  }
+}
+
+.columnSubtitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #bfd8f3;
+  margin: 0;
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    text-align: center;
+    margin-bottom: 72px;
+  }
+}
+
+// 모바일 탭 섹션 (칼럼/자료실 전환)
+.mobileTabSection {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    margin-bottom: 96px;
+  }
+}
+
+// 모바일 검색 섹션
+.mobileSearchSection {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    margin-bottom: 48px;
+    padding-left: 47.5px;
+    padding-right: 47.5px;
+
+    :global(.searchfield) {
+      border-bottom: 1px solid #555;
+      padding: 12px 0;
+    }
+
+    :global(.searchfield__input) {
+      color: #f0f0f0;
+      font-size: 15px;
+    }
+
+    :global(.searchfield__display-text--placeholder) {
+      color: #717171;
+    }
+  }
+}
+
+// 모바일 카테고리 탭
+.mobileCategoryTabs {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid #555;
+  }
+}
+
+// 모바일 게시물 수
+.mobileCount {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #8e8e8e;
+    margin-bottom: 24px;
+  }
+}
+
+.mobileCountNumber {
+  font-weight: 600;
+  color: #94b9e3;
+}
+
+.mobileCategoryTab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 0 16px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #8e8e8e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #d8d8d8;
+  }
+}
+
+.mobileCategoryTabActive {
+  color: white;
+  font-weight: 600;
+  border-bottom-color: white;
+}
+
+.mobileCategoryDot {
+  width: 4px;
+  height: 4px;
+  background-color: #d11f00;
+  border-radius: 50%;
+}
+
+.columnContent {
+  display: flex;
+  gap: 88px;
+  position: relative;
+  align-items: flex-start;
+
+  @media (max-width: 1440px) {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 32px;
+  }
+}
+
+// Sidebar (카테고리 필터)
+.sidebar {
+  width: 278px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  padding-top: 0;
+
+  @media (max-width: 1440px) {
+    width: 100%;
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.sidebarTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.5;
+  letter-spacing: -0.16px;
+  color: #bfd8f3;
+  margin: 0;
+}
+
+.categoryNav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: #8e8e8e;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #d8d8d8;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.categoryItemActive {
+  border-bottom-color: white;
+  color: white;
+}
+
+.activeDot {
+  width: 6px;
+  height: 6px;
+  background-color: #d11f00;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+// Main Section
+.mainSection {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+
+  @media (max-width: 768px) {
+    gap: 24px;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.count {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
+}
+
+.countNumber {
+  font-weight: 600;
+  color: #94b9e3;
+}
+
+.searchWrapper {
+  width: 280px;
+  flex-shrink: 0;
+
+  :global(.searchfield) {
+    border-bottom: 1px solid #555;
+    padding: 12px 0;
+  }
+
+  :global(.searchfield__input) {
+    color: #f0f0f0;
+    font-size: 15px;
+  }
+
+  :global(.searchfield__display-text--placeholder) {
+    color: #717171;
+  }
+}
+
+.divider {
+  height: 1px;
+  background-color: #555;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+// Insights Grid
+.insightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 100px;
+
+  @media (max-width: 1440px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 60px;
+  }
+}
+
+.featuredCard {
+  // 메인 노출 카드 스타일 (현재는 일반 카드와 동일)
+}
+
+// 모바일 카드 컨테이너 (세로형 리스트 - 데스크톱과 동일한 카드)
+.mobileCardList {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+}
+
+// 가로형 카드 리스트 (snippet 타입 B)
+.horizontalCardList {
+  display: flex;
+  flex-direction: column;
+
+  :global(.card--horizontal) {
+    margin-bottom: 80px;
+
+    &:last-child {
+      margin-bottom: 100px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    :global(.card--horizontal) {
+      margin-bottom: 60px;
+
+      &:last-child {
+        margin-bottom: 60px;
+      }
+    }
+  }
+}
+
+.mobileCard {
+  display: flex;
+  gap: 16px;
+  cursor: pointer;
+  align-items: flex-start;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.mobileCardImage {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #cdcdcd;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.mobileCardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mobileCardCategory {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #94b9e3;
+  margin: 0;
+}
+
+.mobileCardTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: white;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileCardDescription {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #8e8e8e;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.mobileCardAuthor {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #d8d8d8;
+}
+
+.mobileCardDate {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d8d8d8;
+}
+
+.mobileCardDot {
+  width: 2px;
+  height: 2px;
+  background-color: #d8d8d8;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mobileCardDownload {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// 데스크톱에서 그리드 표시, 모바일에서 숨김
+.desktopGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 100px;
+
+  @media (max-width: 1440px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.insightCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.16);
+  }
+
+  @media (max-width: 768px) {
+    width: 213px;
+    min-width: 213px;
+    flex-shrink: 0;
+  }
+}
+
+.insightCardFeatured {
+  // 메인 노출 카드 스타일 (현재는 일반 카드와 동일)
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 458.667 / 280;
+  position: relative;
+  overflow: hidden;
+  background-color: #f0f0f0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+}
+
+.cardContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  flex: 1;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.cardCategory {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #94b9e3;
+}
+
+.cardTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: white;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 56px;
+}
+
+.cardDescription {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 47px;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.cardAuthor {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #d8d8d8;
+}
+
+.cardDivider {
+  width: 2px;
+  height: 2px;
+  background-color: #d8d8d8;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cardDate {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d8d8d8;
+}
+
+// Empty & Error States
+.loading,
+.error,
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 24px;
+  padding: 120px 0;
+}
+
+.errorIcon {
+  font-size: 64px;
+  opacity: 0.5;
+}
+
+.emptyIcon {
+  width: 64px;
+  height: 64px;
+  opacity: 1;
+}
+
+.error p,
+.empty p {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #717171;
+  margin: 0;
+}
+
+// Pagination
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+
+  @media (max-width: 768px) {
+    margin-top: 40px;
+  }
+}
+
+// Library Content
+.libraryContent {
+  padding-top: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+
+  @media (max-width: 1440px) {
+    padding-top: 120px;
+    gap: 60px;
+  }
+
+  @media (max-width: 768px) {
+    padding-top: 0;
+    gap: 0;
+  }
+}
+
+// 모바일 자료실 타이틀 섹션
+.mobileLibraryTitleSection {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 72px;
+  }
+}
+
+.mobileLibraryTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 44px;
+  font-weight: 300;
+  line-height: 110%;
+  letter-spacing: -2px;
+  color: white;
+  margin: 0;
+}
+
+.mobileLibrarySubtitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #bfd8f3;
+  margin: 0;
+}
+
+// 임시: 노출 방식 전환 버튼
+.libraryDisplayTypeSelector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+  }
+}
+
+.displayTypeButton {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #8e8e8e;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #d8d8d8;
+  }
+}
+
+.displayTypeButtonActive {
+  background: rgba(148, 185, 227, 0.2);
+  border-color: #94b9e3;
+  color: #94b9e3;
+
+  &:hover {
+    background: rgba(148, 185, 227, 0.3);
+    color: #94b9e3;
+  }
+}
+
+.libraryTitleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  @media (max-width: 1440px) {
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.libraryTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 120px;
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: -3px;
+  color: white;
+  margin: 0;
+  text-align: left;
+
+  @media (max-width: 1440px) {
+    font-size: 80px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 60px;
+  }
+}
+
+.libraryMainContent {
+  display: flex;
+  gap: 88px;
+  position: relative;
+  align-items: flex-start;
+
+  @media (max-width: 1440px) {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 32px;
+  }
+}
+
+.librarySidebar {
+  width: 278px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  padding-top: 0;
+
+  @media (max-width: 1440px) {
+    width: 100%;
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.librarySidebarTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.5;
+  letter-spacing: -0.16px;
+  color: #bfd8f3;
+  margin: 0;
+}
+
+.libraryCategoryNav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.libraryCategoryItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: #8e8e8e;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #d8d8d8;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.libraryCategoryItemActive {
+  border-bottom-color: white;
+  color: white;
+}
+
+.libraryMainSection {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.libraryToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+// Gallery Layout
+.libraryGallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 100px;
+
+  @media (max-width: 1440px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+}
+
+.libraryCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.16);
+  }
+}
+
+.libraryCardFeatured {
+  // 메인 노출 카드 스타일 (현재는 일반 카드와 동일)
+}
+
+// Archives B: 투명 배경 카드 (카드 배경과 내용 영역 모두 투명)
+.libraryCardTransparent {
+  background: transparent;
+  box-shadow: none;
+
+  &:hover {
+    box-shadow: none;
+  }
+
+  .libraryCardContent {
+    background: transparent;
+  }
+}
+
+.libraryCardImage {
+  width: 100%;
+  aspect-ratio: 458.667 / 280;
+  position: relative;
+  overflow: hidden;
+  background-color: #f0f0f0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+.libraryCardContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  flex: 1;
+}
+
+.libraryCardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.libraryCardCategory {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #94b9e3;
+}
+
+.libraryCardTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: white;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 56px;
+}
+
+// Archives B: 제목 1줄만 표시
+.libraryCardTitleSingle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: white;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Archives B: 본문 2줄 표시
+.libraryCardDescription {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #8e8e8e;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.libraryCardFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.libraryCardAuthor {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #d8d8d8;
+}
+
+.libraryCardDate {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d8d8d8;
+}
+
+// Snippet Layout
+.librarySnippet {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  margin-bottom: 100px;
+
+  @media (max-width: 768px) {
+    gap: 32px;
+    margin-bottom: 60px;
+  }
+}
+
+.librarySnippetItem {
+  display: flex;
+  gap: 40px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.librarySnippetImage {
+  width: 361px;
+  height: 231px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #cdcdcd;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 361 / 231;
+  }
+}
+
+.librarySnippetContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 0;
+  min-width: 0;
+}
+
+.librarySnippetHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.librarySnippetCategory {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #94b9e3;
+}
+
+.librarySnippetTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: #f0f0f0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.librarySnippetDescription {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 47px;
+}
+
+.librarySnippetFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.librarySnippetAuthor {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #d8d8d8;
+}
+
+.librarySnippetDate {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #d8d8d8;
+}
+
+// List Layout
+.libraryList {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border-radius: 0;
+  overflow: hidden;
+  margin-bottom: 100px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 60px;
+  }
+}
+
+.libraryListHeader {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--grayscale-80, #2D2D2D);
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.libraryListHeaderRow {
+  display: grid;
+  grid-template-columns: 80px 120px 1fr 80px 120px 100px;
+  gap: 20px;
+  padding: 24px 12px;
+  align-items: center;
+
+  @media (max-width: 1440px) {
+    grid-template-columns: 60px 100px 1fr 70px 100px 80px;
+    gap: 12px;
+    padding: 20px 12px;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px 12px;
+  }
+}
+
+.libraryListHeaderCell {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #8e8e8e;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    text-align: left;
+    font-size: 13px;
+  }
+}
+
+.sortable {
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #d8d8d8;
+  }
+}
+
+.sortIcon {
+  flex-shrink: 0;
+}
+
+.libraryListBody {
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.libraryListRow {
+  display: grid;
+  grid-template-columns: 80px 120px 1fr 80px 120px 100px;
+  gap: 20px;
+  padding: 24px 12px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  background: transparent;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media (max-width: 1440px) {
+    grid-template-columns: 60px 100px 1fr 70px 100px 80px;
+    gap: 12px;
+    padding: 20px 12px;
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.libraryListCell {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0; // 기본 흰색 (No., 제목, 작성자)
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  // 카테고리 컬럼 (2번째) - 회색, 가운데 정렬
+  &.categoryCell {
+    color: #d8d8d8;
+    justify-content: center;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+      color: #94b9e3;
+      font-weight: 600;
+    }
+  }
+
+  // 제목 컬럼 (3번째) - 왼쪽 정렬
+  &.titleCell {
+    justify-content: flex-start;
+
+    @media (max-width: 768px) {
+      white-space: normal;
+      text-align: left;
+    }
+  }
+
+  // 작성일 컬럼 (5번째) - 회색
+  &:nth-child(5) {
+    color: #d8d8d8;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+  }
+
+  // 조회수 컬럼 (6번째) - 회색
+  &:nth-child(6) {
+    color: #d8d8d8;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  // No. 컬럼 (1번째) - 모바일에서 숨김
+  &:first-child {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  // 작성자 컬럼 (4번째) - 모바일에서 숨김
+  &:nth-child(4) {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    text-align: left;
+    font-size: 13px;
+    white-space: normal;
+  }
+}
+
+.libraryListTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f0f0f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.libraryListDocumentIcon {
+  margin-left: 8px;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+// 모바일 리스트 헤더
+.mobileListHeader {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    gap: 24px;
+    padding: 16px;
+    background: var(--grayscale-80, #2D2D2D);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.mobileListHeaderCell {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #d8d8d8;
+  }
+}
+
+// 모바일 리스트 바디
+.mobileListBody {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.mobileListRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+}
+
+.mobileListRowTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobileListCategory {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #94b9e3;
+}
+
+.mobileListDate {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8e8e8e;
+}
+
+.mobileListTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobileListDocumentIcon {
+  flex-shrink: 0;
+  color: #8e8e8e;
+}
+
+.mobileListAuthor {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8e8e8e;
+}
+
+.mobileListBottom {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.mobileListNo {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8e8e8e;
+}
+
+.mobileListViews {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobileListEyeIcon {
+  width: 16px;
+  height: 16px;
+}
+
+// Floating Buttons
+.floatingButtons {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    bottom: 20px;
+    right: 16px;
+    gap: 16px;
+  }
+}
+
+

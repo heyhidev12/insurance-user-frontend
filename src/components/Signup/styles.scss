@@ -1,0 +1,767 @@
+@import '../../styles/variables';
+@import '../../styles/auth-common';
+
+// Step Indicator
+.signup-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 48px;
+}
+
+.signup-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.3;
+
+  &.is-active,
+  &.is-completed {
+    opacity: 1;
+  }
+}
+
+.signup-step-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: all $transition-normal;
+
+  .is-active &,
+  .is-completed & {
+    background-color: $white;
+  }
+}
+
+.signup-step-number {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+
+  .is-active &,
+  .is-completed & {
+    color: $white;
+  }
+}
+
+.signup-step-label {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+
+  .is-active &,
+  .is-completed & {
+    color: $white;
+  }
+}
+
+.signup-step-divider {
+  width: 80px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 0 16px;
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
+// Terms
+.signup-terms-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.signup-all-agree-wrapper {
+  background-color: rgba(255, 255, 255, 0.05); // 기본 배경 (체크 안 됨)
+  border-radius: 8px;
+  padding: 16px;
+  height: 48px; // Figma 디자인: 48px height
+  display: flex;
+  align-items: center;
+  transition: background-color $transition-normal;
+
+  // 체크된 상태
+  &.is-checked {
+    background-color: rgba(255, 255, 255, 0.15); // 체크 시 배경
+  }
+}
+
+.signup-all-agree-checkbox {
+  width: 100%;
+  
+  .checkbox__label {
+    @include pretendard-15-semibold;
+    color: $gray-10; // #F0F0F0
+    letter-spacing: -0.075px;
+  }
+}
+
+.signup-terms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px;
+}
+
+.signup-term-item-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  .checkbox {
+    flex: 1;
+  }
+  
+  .checkbox__label {
+    @include pretendard-15-regular;
+    color: $gray-30; // #D8D8D8
+  }
+  
+  .button {
+    flex-shrink: 0;
+    width: 30px;
+    padding: 0;
+    height: auto;
+  }
+}
+
+.signup-view-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  @include pretendard-15-regular;
+  color: $navy-30; // #94B9E3 (파란색)
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-underline-position: from-font;
+  cursor: pointer;
+  letter-spacing: -0.075px;
+  flex-shrink: 0;
+  width: 30px;
+  transition: color $transition-normal;
+
+  &:hover {
+    color: $navy-20; // #BFD8F3
+  }
+}
+
+// Step 1 Button Wrapper
+.signup-step1-button-wrapper {
+  width: 100%;
+  max-width: 200px;
+  margin-top: 48px; // Figma 디자인: 48px gap
+  display: flex;
+  justify-content: center;
+
+  .button {
+    width: 200px;
+    height: 56px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    
+    // 비활성화 상태
+    &:disabled {
+      border-radius: 100px; // Figma 디자인: 100px border-radius
+      background: $gray-70; // #555 (grayscale-70)
+      color: $gray-50; // #8E8E8E (grayscale-50)
+    }
+  }
+}
+
+// Member Type
+.signup-member-type-group {
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.signup-member-type-button {
+  flex: 1;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: $gray-10; // #F0F0F0
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &.is-selected {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    padding: 16px 20px;
+  }
+}
+
+.signup-member-type-radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid $gray-40; // #C6C6C6
+  background-color: transparent;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.is-selected {
+    border-color: $navy-30; // #94B9E3 (파란색 테두리)
+    background-color: transparent; // 배경은 투명
+
+    svg {
+      display: block;
+    }
+  }
+
+  svg {
+    display: none;
+  }
+}
+
+// Email
+.signup-email-input-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.signup-email-input-wrapper {
+  width: 148px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    flex: 1;
+    width: auto;
+  }
+}
+
+.signup-at-sign {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  color: $gray-30; // #D8D8D8
+  height: 48px;
+  display: flex;
+  align-items: flex-end; // TextField의 입력 영역과 같은 기준선에 맞춤
+  padding-bottom: 20px; // TextField의 padding-bottom과 동일하게 설정
+  flex-shrink: 0;
+  width: 15px;
+}
+
+.signup-email-domain-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.signup-email-domain-text {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: $gray-10; // #F0F0F0
+  height: 48px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $gray-70; // #555555
+  padding-bottom: 20px;
+}
+
+.signup-domain-select-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.signup-domain-select {
+  height: 48px;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex: none;
+    margin-top: 12px;
+  }
+
+  .select__trigger {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid $gray-70; // #555555
+    border-radius: 0;
+    padding: 0;
+    height: 48px;
+    padding-bottom: 20px;
+    
+    &:hover {
+      background: transparent;
+      border-bottom-color: $gray-60; // #717171
+    }
+    
+    &:focus,
+    &.select__trigger--open {
+      border-bottom-color: $gray-10; // #F0F0F0
+    }
+  }
+  
+  .select__value {
+    @include pretendard-15-regular;
+    color: $gray-10; // #F0F0F0
+    
+    &--placeholder {
+      color: $gray-10; // #F0F0F0
+    }
+  }
+  
+  .select__dropdown {
+    background-color: $gray-80; // #2D2D2D
+    border: none; // 외부 테두리 제거
+    border-radius: 0 0 8px 8px; // Figma 디자인: 하단 라운드 처리
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.09);
+    margin-top: 8px; // Figma 디자인: 드롭다운과 트리거 사이 8px 간격
+    margin-left: 0; // 좌측 간격 제거
+    margin-right: 0; // 우측 간격 제거
+    max-height: 200px; // 최대 높이 설정
+    overflow-y: auto; // 세로 스크롤 활성화
+    overflow-x: hidden; // 가로 스크롤 방지
+    z-index: 1000; // 다른 요소 위에 표시되도록 높은 z-index
+    padding: 10px 0; // 위아래 10px 패딩
+  }
+  
+  .select__option {
+    padding: 10px 12px; // 기본 패딩
+    border-radius: 0; // 기본값
+    margin: 0 10px; // 좌우 외부 간격 10px
+    
+    // 첫 번째 옵션에 상단 여백
+    &:first-child {
+      margin-top: 5px; // 상단 5px 여백
+    }
+    
+    // 호버 시 배경 없음
+    &:hover {
+      background-color: transparent; // 호버 시 배경 없음
+    }
+    
+    // 선택된 옵션에 라운드 처리 및 배경색, 패딩 조정
+    &--selected {
+      background-color: rgba(255, 255, 255, 0.1); // 선택 시 배경색
+      border-radius: 8px; // Figma 디자인: 선택된 옵션 전체 라운드
+      padding: 6px 8px 6px 12px; // 상하 패딩을 10px에서 6px로 줄임
+      margin: 0 6px; // 좌우 외부 간격 6px (border)
+      border: 6px solid transparent; // border-box를 위한 보더
+      box-sizing: border-box;
+    }
+    
+    // 마지막 옵션에 하단 라운드 처리 (선택되지 않은 경우)
+    &:last-child:not(&--selected) {
+      border-radius: 0 0 8px 8px;
+    }
+  }
+}
+
+.signup-select-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid $white;
+  transition: transform $transition-normal;
+
+  &.is-open {
+    transform: rotate(180deg);
+  }
+}
+
+.signup-domain-dropdown,
+.signup-carrier-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2d2d2d;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 4px;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.signup-domain-option {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  font-family: $font-pretendard;
+  font-size: 14px;
+  color: $white;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color $transition-normal;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.signup-newsletter-wrapper {
+  margin-top: 16px;
+}
+
+// Phone
+// ID Input Group
+.signup-id-input-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.signup-id-input {
+  flex: 1;
+}
+
+.signup-check-duplicate-button {
+  width: 101px; // Figma 디자인: 101px width
+  height: 48px; // Figma 디자인: 48px height
+  flex-shrink: 0;
+}
+
+.signup-phone-input-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.signup-carrier-select-wrapper {
+  position: relative;
+  width: 148px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.signup-carrier-select {
+  width: 222px; // 148px * 1.5 = 222px
+  flex-shrink: 0;
+  height: 48px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .select__trigger {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid $gray-70; // #555555
+    border-radius: 0;
+    padding: 0;
+    height: 48px;
+    padding-bottom: 20px;
+    
+    &:hover {
+      background: transparent;
+      border-bottom-color: $gray-60; // #717171
+    }
+    
+    &:focus,
+    &.select__trigger--open {
+      border-bottom-color: $gray-10; // #F0F0F0
+    }
+  }
+  
+  .select__value {
+    @include pretendard-15-regular;
+    color: $gray-10; // #F0F0F0
+    
+    &--placeholder {
+      color: $gray-10; // #F0F0F0
+    }
+  }
+  
+  .select__dropdown {
+    background-color: $gray-80; // #2D2D2D
+    border: none; // 외부 테두리 제거
+    border-radius: 0 0 8px 8px; // Figma 디자인: 하단 라운드 처리
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.09);
+    margin-top: 8px; // Figma 디자인: 드롭다운과 트리거 사이 8px 간격
+    margin-left: 0; // 좌측 간격 제거
+    margin-right: 0; // 우측 간격 제거
+    max-height: 200px; // 최대 높이 설정
+    overflow-y: auto; // 세로 스크롤 활성화
+    overflow-x: hidden; // 가로 스크롤 방지
+    z-index: 1000; // 다른 요소 위에 표시되도록 높은 z-index
+    padding: 10px 0; // 위아래 10px 패딩
+  }
+  
+  .select__option {
+    padding: 10px 12px; // 기본 패딩
+    border-radius: 0; // 기본값
+    margin: 0 10px; // 좌우 외부 간격 10px
+    
+    // 첫 번째 옵션에 상단 여백
+    &:first-child {
+      margin-top: 5px; // 상단 5px 여백
+    }
+    
+    // 호버 시 배경 없음
+    &:hover {
+      background-color: transparent; // 호버 시 배경 없음
+    }
+    
+    // 선택된 옵션에 라운드 처리 및 배경색, 패딩 조정
+    &--selected {
+      background-color: rgba(255, 255, 255, 0.1); // 선택 시 배경색
+      border-radius: 8px; // Figma 디자인: 선택된 옵션 전체 라운드
+      padding: 6px 8px 6px 12px; // 상하 패딩을 6px로 줄임
+      margin: 0 6px; // 좌우 외부 간격 6px (border)
+      border: 6px solid transparent; // border-box를 위한 보더
+      box-sizing: border-box;
+    }
+    
+    // 마지막 옵션에 하단 라운드 처리 (선택되지 않은 경우)
+    &:last-child:not(&--selected) {
+      border-radius: 0 0 8px 8px;
+    }
+  }
+}
+
+.signup-phone-input {
+  flex: 1;
+}
+
+.signup-request-verification-button {
+  width: 101px; // Figma 디자인: 101px width
+  height: 48px; // Figma 디자인: 48px height
+  flex-shrink: 0;
+}
+
+// Verification Code Input Group
+.signup-verification-code-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.signup-verification-code-input {
+  flex: 1;
+}
+
+.signup-verify-code-button {
+  width: 101px; // Figma 디자인: 101px width
+  height: 48px; // Figma 디자인: 48px height
+  flex-shrink: 0;
+}
+
+// Step 2 Buttons
+.signup-step2-button-group {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 56px; // Figma 디자인: 폼 컨테이너와 버튼 그룹 사이 56px 간격
+
+  .button {
+    // 이전 버튼
+    &:first-child {
+      width: 100px; // Figma 디자인: 100px width
+      height: 56px; // Figma 디자인: 56px height
+      padding: 0 20px;
+    }
+    // 다음 버튼
+    &:last-child {
+      width: 200px; // Figma 디자인: 200px width
+      height: 56px; // Figma 디자인: 56px height
+      padding: 0 20px;
+      
+      // 비활성화 상태
+      &.button--secondary {
+        background-color: $gray-70; // #555555
+        color: $gray-50; // #8E8E8E
+      }
+      
+      &:disabled {
+        background-color: $gray-70; // #555555
+        color: $gray-50; // #8E8E8E
+      }
+    }
+  }
+}
+
+.signup-prev-button {
+  width: 160px;
+  height: 56px;
+  padding: 0 20px;
+  background: transparent;
+  border: 1px solid $white;
+  border-radius: $radius-pill;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  color: $white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.signup-prev-arrow-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translate(-30%, -50%) rotate(45deg);
+  }
+}
+
+.signup-next-button {
+  width: 200px;
+  height: 56px;
+  padding: 0 20px;
+  background-color: $white;
+  border: none;
+  border-radius: $radius-pill;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  color: #151515;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all $transition-normal;
+
+  &.is-disabled {
+    background-color: $gray-70;
+    color: $gray-50;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(.is-disabled) {
+    opacity: 0.9;
+  }
+}
+
+// Completion
+.signup-completion-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+}
+
+.signup-completion-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border: 2px solid $navy-30; // #94B9E3
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  .signup-completion-icon {
+    width: 35px !important;
+    height: 35px !important;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.signup-completion-title {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold; // 700
+  font-size: 25px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  color: $white;
+  margin: 0;
+  margin-top: 32px; // 체크 아이콘과 제목 사이 간격
+  text-align: center;
+}
+
+.signup-completion-message {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular; // 400
+  font-size: 15px;
+  line-height: 1.5;
+  color: $gray-50; // #8E8E8E
+  text-align: center;
+  margin: 0;
+  margin-top: 32px; // "회원가입이 완료되었습니다"와 "회원이 되신 것을 진심으로 환영합니다" 사이 간격
+}
+
+.signup-completion-button-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 56px; // 상자(폼 컨테이너)와 로그인 버튼 사이 간격
+  
+  .button {
+    width: 200px;
+    height: 56px;
+  }
+}

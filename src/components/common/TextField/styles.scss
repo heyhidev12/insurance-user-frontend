@@ -1,0 +1,529 @@
+@import '../../../styles/variables';
+
+// ==================== TextField ====================
+.textfield {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--with-button {
+    .textfield__row {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .textfield__input-wrapper {
+      flex: 1;
+    }
+  }
+
+  // Label
+  &__label-container {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  &__label {
+    @include pretendard-15-semibold;
+    color: $gray-10;
+  }
+
+  &__required {
+    color: #d11f00;
+    margin-left: 2px;
+  }
+
+  // Row (input + button)
+  &__row {
+    display: flex;
+    width: 100%;
+  }
+
+  // Input wrapper
+  &__input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  // Container
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 20px 0;
+    border-bottom: 1px solid $gray-70; // #555555
+    transition: border-color $transition-fast;
+  }
+
+  // Actions (password toggle, clear, timer)
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  // Eye icon for password toggle
+  &__eye-icon {
+    flex-shrink: 0;
+    transition: opacity $transition-fast;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      opacity: 0.8;
+    }
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  // Timer
+  &__timer {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-regular;
+    font-size: 12px;
+    line-height: 1.5;
+    color: $navy-20; // #BFD8F3
+    white-space: nowrap;
+    letter-spacing: -0.24px;
+  }
+
+  // Right button (인증 요청 등)
+  &__right-button {
+    flex-shrink: 0;
+    height: 48px;
+    padding: 0 20px;
+    background-color: $gray-80;
+    color: $white;
+    border: none;
+    border-radius: 4px;
+    @include pretendard-15-semibold;
+    cursor: pointer;
+    transition: all $transition-fast;
+    white-space: nowrap;
+
+    &:hover:not(:disabled) {
+      background-color: $gray-70;
+    }
+
+    &--disabled,
+    &:disabled {
+      background-color: $gray-80;
+      color: $gray-50;
+      cursor: not-allowed;
+    }
+  }
+
+  // Error message
+  &__error-message {
+    @include pretendard-13-regular;
+    color: #d11f00;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__error-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  // Success message
+  &__success-message {
+    @include pretendard-13-regular;
+    color: #00a86b;
+    margin-top: 4px;
+  }
+
+  // Input area
+  &__input-area {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+
+  // Input
+  &__input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    @include pretendard-15-regular;
+    color: $gray-10; // #F0F0F0
+
+    &::placeholder {
+      color: $gray-60; // #717171
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+
+    &--hidden {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: auto;
+    }
+  }
+
+  // Text with cursor (for focus/filling states)
+  &__text-with-cursor {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__display-text {
+    @include pretendard-15-regular;
+    color: $gray-10;
+    white-space: pre;
+
+    &--placeholder {
+      color: $gray-60;
+    }
+  }
+
+  // Cursor animation
+  &__cursor {
+    flex-shrink: 0;
+    animation: blink 1s step-end infinite;
+  }
+
+  // Circle close button
+  &__circle-close {
+    flex-shrink: 0;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  // ==================== Line Variant ====================
+  &--line {
+    // Default state
+    &.textfield--default {
+      .textfield__container {
+        border-color: $gray-70; // #555555
+      }
+      .textfield__input::placeholder {
+        color: $gray-60; // #717171
+      }
+      .textfield__display-text--placeholder {
+        color: $gray-60; // #717171
+      }
+    }
+
+    // Focus state
+    &.textfield--focus {
+      .textfield__container {
+        border-color: $navy-30; // #94B9E3
+      }
+      .textfield__input::placeholder {
+        color: $gray-60; // #717171
+      }
+      .textfield__display-text--placeholder {
+        color: $gray-60; // #717171
+      }
+    }
+
+    // Filling state
+    &.textfield--filling {
+      .textfield__container {
+        border-color: $navy-30; // #94B9E3
+        justify-content: space-between;
+      }
+      .textfield__input {
+        color: $gray-10; // #F0F0F0
+      }
+      .textfield__display-text {
+        color: $gray-10; // #F0F0F0
+      }
+    }
+
+    // Filled state
+    &.textfield--filled {
+      .textfield__container {
+        border-color: $gray-70; // #555555
+      }
+      .textfield__input {
+        color: $gray-10; // #F0F0F0
+      }
+      .textfield__display-text {
+        color: $gray-10; // #F0F0F0
+      }
+    }
+
+    // Error state
+    &.textfield--error {
+      .textfield__container {
+        border-color: $error; // #F35064
+      }
+      .textfield__input {
+        color: $gray-30; // #D8D8D8
+      }
+      .textfield__display-text {
+        color: $gray-30; // #D8D8D8
+      }
+    }
+
+    // Readonly state
+    &.textfield--readonly {
+      .textfield__container {
+        border-color: $gray-70; // #555555
+        opacity: 0.5;
+      }
+      .textfield__input {
+        color: $gray-50; // #8E8E8E
+        cursor: default;
+      }
+      .textfield__display-text {
+        color: $gray-50; // #8E8E8E
+      }
+    }
+  }
+
+  // ==================== Fill Variant ====================
+  &--fill {
+    .textfield__container {
+      background-color: $gray-80 !important; // #2D2D2D
+      border-radius: $radius-half !important; // 8px
+      border: 1px solid transparent !important;
+      padding: 14px 16px !important;
+      border-bottom: none !important; // Fill variant는 border-bottom 없음
+    }
+
+    // Default state
+    &.textfield--default {
+      .textfield__input::placeholder {
+        color: $gray-50; // #8E8E8E
+      }
+      .textfield__display-text--placeholder {
+        color: $gray-50; // #8E8E8E
+      }
+    }
+
+    // Focus state
+    &.textfield--focus {
+      .textfield__container {
+        border: 1px solid $navy-30 !important; // #94B9E3
+      }
+      .textfield__input::placeholder {
+        color: $gray-50; // #8E8E8E
+      }
+      .textfield__display-text--placeholder {
+        color: $gray-50; // #8E8E8E
+      }
+    }
+
+    // Filling state
+    &.textfield--filling {
+      .textfield__container {
+        border: 1px solid $navy-30 !important; // #94B9E3
+        justify-content: space-between;
+      }
+      .textfield__input {
+        color: $gray-10; // #F0F0F0
+      }
+      .textfield__display-text {
+        color: $gray-10; // #F0F0F0
+      }
+    }
+
+    // Filled state
+    &.textfield--filled {
+      .textfield__input {
+        color: $gray-10; // #F0F0F0
+      }
+      .textfield__display-text {
+        color: $gray-10; // #F0F0F0
+      }
+    }
+
+    // Error state
+    &.textfield--error {
+      .textfield__container {
+        border: 1px solid $error !important; // #F35064
+      }
+      .textfield__input {
+        color: $gray-30; // #D8D8D8
+      }
+      .textfield__display-text {
+        color: $gray-30; // #D8D8D8
+      }
+    }
+
+    // Readonly state
+    &.textfield--readonly {
+      .textfield__container {
+        opacity: 0.5;
+      }
+      .textfield__input {
+        color: $gray-50; // #8E8E8E
+        cursor: default;
+      }
+      .textfield__display-text {
+        color: $gray-50; // #8E8E8E
+      }
+    }
+  }
+}
+
+// ==================== SearchField ====================
+.searchfield {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0;
+  background-color: transparent;
+  border-bottom: 1px solid $gray-70; // #555555
+  transition: border-color $transition-fast;
+
+  &--full-width {
+    width: 100%;
+  }
+
+  // Icon
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: $white;
+    flex-shrink: 0;
+  }
+
+  // Input area
+  &__input-area {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+
+  // Input
+  &__input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    @include pretendard-15-regular;
+    color: $gray-10; // #F0F0F0
+
+    &::placeholder {
+      color: $gray-60; // #717171
+    }
+
+    &--hidden {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: auto;
+    }
+  }
+
+  // Text with cursor
+  &__text-with-cursor {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__display-text {
+    @include pretendard-15-regular;
+    color: $gray-10; // #F0F0F0
+    white-space: pre;
+
+    &--placeholder {
+      color: $gray-60; // #717171
+    }
+  }
+
+  // Default state
+  &--default {
+    border-color: $gray-70; // #555555
+    .searchfield__input::placeholder {
+      color: $gray-60; // #717171
+    }
+    .searchfield__display-text--placeholder {
+      color: $gray-60; // #717171
+    }
+  }
+
+  // Focus state
+  &--focus {
+    border-color: $navy-30; // #94B9E3
+
+    .searchfield__input::placeholder {
+      color: $gray-60; // #717171
+    }
+    .searchfield__display-text--placeholder {
+      color: $gray-60; // #717171
+    }
+  }
+
+  // Filling state
+  &--filling {
+    border-color: $navy-30; // #94B9E3
+
+    .searchfield__input {
+      color: $gray-10; // #F0F0F0
+    }
+    .searchfield__display-text {
+      color: $gray-10; // #F0F0F0
+    }
+  }
+
+  // Filled state
+  &--filled {
+    border-color: $gray-70; // #555555
+    .searchfield__input {
+      color: $gray-10; // #F0F0F0
+    }
+    .searchfield__display-text {
+      color: $gray-10; // #F0F0F0
+    }
+  }
+
+  // Circle close icon (reuse from textfield)
+  .textfield__circle-close {
+    flex-shrink: 0;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+// ==================== Animations ====================
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

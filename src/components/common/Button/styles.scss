@@ -1,0 +1,193 @@
+@import '../../../styles/variables';
+
+// Navy colors from Figma
+$navy-5: #F1F5F9;
+$navy-10: #E2E9F1;
+$navy-20: #BFD8F3;
+$navy-60: #002B5E;
+$navy-70: #002046;
+$navy-80: #00162F;
+$navy-100: #000000;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px; // Figma 디자인: 텍스트와 아이콘 사이 간격
+  border: none;
+  border-radius: $radius-pill;
+  cursor: pointer;
+  transition: all $transition-fast;
+  font-family: $font-pretendard;
+  white-space: nowrap;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  // Sizes
+  &--xlarge {
+    height: $button-height-xlarge;
+    padding: 0 32px;
+    font-size: 19px;
+    line-height: 1.5;
+    letter-spacing: -0.095px;
+  }
+
+  &--large {
+    height: $button-height-large;
+    padding: 0 20px; // Figma 디자인: 좌우 패딩 20px
+    font-size: 19px;
+    line-height: 1.5;
+    letter-spacing: -0.095px;
+  }
+
+  &--medium {
+    height: $button-height-medium;
+    padding: 0 24px;
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: -0.085px;
+  }
+
+  &--small {
+    height: $button-height-small;
+    padding: 0 20px;
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  &--xsmall {
+    height: $button-height-xsmall;
+    padding: 0 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  // Types
+  &--primary {
+    background-color: $white; // #FFFFFF (navy-0)
+    color: $gray-90; // #151515
+    font-weight: $font-weight-medium;
+
+    &:hover:not(:disabled) {
+      opacity: 0.9;
+    }
+
+    &:active:not(:disabled) {
+      opacity: 0.85;
+    }
+
+    &:disabled {
+      background-color: $gray-70; // #555555 (grayscale-70)
+      color: $gray-50; // #8E8E8E (grayscale-50)
+    }
+  }
+
+  &--secondary {
+    background-color: $white; // navy-0: #FFF
+    color: $navy-70; // #002046
+    font-weight: $font-weight-regular;
+
+    &:hover:not(:disabled) {
+      background-color: $navy-20; // #BFD8F3
+    }
+
+    &:active:not(:disabled) {
+      background-color: $navy-10; // #E2E9F1
+    }
+
+    &:disabled {
+      background-color: $gray-10;
+      color: $gray-50;
+    }
+  }
+
+  &--line-white {
+    background-color: transparent;
+    color: $white;
+    border: 1px solid $white;
+    font-weight: $font-weight-medium;
+
+    &.button--xlarge {
+      font-weight: $font-weight-semibold;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: rgba($white, 0.1);
+    }
+
+    &:active:not(:disabled) {
+      background-color: rgba($white, 0.2);
+    }
+
+    &:disabled {
+      border-color: $gray-50;
+      color: $gray-50;
+    }
+  }
+
+  &--text-link {
+    background-color: transparent;
+    color: $white;
+    padding: 0;
+    height: auto;
+    font-weight: $font-weight-regular;
+    border-radius: 0;
+
+    &:hover:not(:disabled) {
+      text-decoration: underline;
+    }
+
+    &:disabled {
+      color: $gray-50;
+    }
+  }
+
+  &--text-link-gray {
+    background-color: transparent;
+    color: $gray-50;
+    padding: 0;
+    height: auto;
+    font-weight: $font-weight-regular;
+    border-radius: 0;
+
+    &:hover:not(:disabled) {
+      color: $gray-30;
+      text-decoration: underline;
+    }
+
+    &:disabled {
+      color: $gray-70;
+    }
+  }
+
+  // Icons
+  &__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // gap으로 간격 관리하므로 margin 제거
+    // 아이콘이 버튼 내에서 수직 중앙 정렬되도록
+    align-self: center;
+    
+    // SVG 아이콘이 정확히 중앙에 오도록 조정
+    svg {
+      display: block;
+      vertical-align: middle;
+    }
+  }
+
+  &__text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

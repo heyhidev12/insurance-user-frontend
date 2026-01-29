@@ -1,0 +1,1982 @@
+@import '../../styles/variables';
+
+.page {
+  min-height: 100vh;
+  background-color: #151515;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 56px; // 모바일 고정 헤더 높이
+  }
+}
+
+.pageHeaderWrapper {
+  padding-top: 136px;
+  padding-bottom: 64px;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding-top: 80px;
+    padding-bottom: 16px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding-top: 64px;
+    padding-bottom: 12px;
+  }
+}
+
+.container {
+  flex: 1;
+  padding: 0 240px;
+  max-width: 1920px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  gap: 64px;
+  z-index: 2;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0 120px;
+    gap: 48px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 20px;
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.sidebarNav {
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 260px;
+  flex-shrink: 0;
+  padding-top: 20px;
+  height: fit-content;
+  max-height: calc(100vh - 140px);
+  overflow-y: visible;
+
+  @media (max-width: $breakpoint-desktop) {
+    width: 220px;
+    gap: 24px;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    position: relative;
+    top: 0;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 20px 0;
+    margin-bottom: 40px;
+    width: auto;
+    gap: 16px;
+    max-height: none;
+    -webkit-overflow-scrolling: touch;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
+  }
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: $gray-0;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  transition: color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: #94b9e3;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    white-space: nowrap;
+    font-size: 15px;
+    gap: 8px;
+  }
+}
+
+.navLine {
+  width: 16px;
+  height: 2px;
+  background-color: transparent;
+  flex-shrink: 0;
+  transition: background-color 0.3s ease;
+  display: block;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 14px;
+  }
+}
+
+.navItem.active .navLine {
+  background-color: #D11F00;
+}
+
+.navItem.active .navText {
+  font-weight: $font-weight-semibold;
+  color: #ffffff;
+}
+
+.navText {
+  flex: 1;
+  transition: font-weight 0.3s ease, color 0.3s ease;
+}
+
+// 모바일 스티키 탭 네비게이션
+.mobileStickyNav {
+  display: none;
+  position: fixed;
+  top: 56px; // 모바일 헤더(56px) 아래
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: #151515;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 15px;
+  gap: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: flex;
+  }
+}
+
+.mobileStickyNavVisible {
+  @media (max-width: $breakpoint-tablet) {
+    display: flex;
+  }
+}
+
+.mobileTabItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 0;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: $gray-50;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: #ffffff;
+  }
+}
+
+.mobileTabItemActive {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+.mobileTabDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #D11F00;
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 24px;
+  font-size: 18px;
+  color: white;
+}
+
+// Hero Section - Full Width
+.heroSection {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  height: 549px;
+  margin-top: 64px;
+  margin-bottom: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: $breakpoint-desktop) {
+    height: 400px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    height: 335px;
+    margin-top: 40px;
+  }
+}
+
+.heroImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+.imagePlaceholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  
+  span {
+    font-family: $font-montserrat;
+    font-weight: $font-weight-light;
+    font-size: 32px;
+    color: #d8d8d8;
+    text-align: center;
+    padding: 0 24px;
+    
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 24px;
+    }
+  }
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 0 240px;
+  width: 100%;
+  max-width: 1440px;
+  padding-top: 440px; // PRACTICE AREAS 하단(140px + 180px)에서 120px 간격
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0 120px;
+    padding-top: 360px; // PRACTICE AREAS 하단(120px + 120px)에서 120px 간격
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 20px;
+    padding-top: 338px; // heroTitle(72px + 106px) + 48px gap + heroTitleRow offset(160px) - heroSubtitle margin(48px)
+  }
+}
+
+.heroLabel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+  position: absolute;
+  top: 80px; // 40px 올림 (120px - 40px)
+
+  @media (max-width: $breakpoint-desktop) {
+    top: 60px; // 40px 올림 (100px - 40px)
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 15px;
+    top: 40px; // 40px 올림 (80px - 40px)
+  }
+
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.heroTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  margin-top: -180px; // 100px 더 위로 (기존 -80px에서 -180px)
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 24px;
+    margin-bottom: 32px;
+    margin-top: -160px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 16px;
+    margin-bottom: 24px;
+    margin-top: -160px;
+    flex-direction: column;
+  }
+}
+
+.heroTitle {
+  font-family: $font-montserrat;
+  font-style: normal;
+  font-weight: $font-weight-light;
+  font-size: 120px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+  mix-blend-mode: difference;
+  white-space: nowrap;
+  position: absolute;
+  top: 100px; // 40px 올림 (140px - 40px), 업무 분야로부터 20px (80px + 20px)
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  pointer-events: none;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 80px;
+    top: 80px; // 40px 올림 (120px - 40px), 업무 분야로부터 20px (60px + 20px)
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 48px;
+    top: 72px;
+    white-space: normal;
+    word-spacing: 100vw; // PRACTICE AREAS → 두 줄
+    line-height: 1.1;
+  }
+}
+
+.heroSubtitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 40px;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  white-space: nowrap;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 32px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 21px;
+    margin-top: 48px;
+  }
+}
+
+.heroDescription {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+  margin-top: 0; // 20px 올림 (20px - 20px)
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+    font-weight: $font-weight-regular;
+    margin-top: -8px;
+  }
+}
+
+// Fixed Overview Banner - Shows when Overview section is scrolled past
+.overviewFixedBanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-height: 100px;
+  max-height: 100px;
+  background-color: #002046;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 240px;
+  box-sizing: border-box;
+  overflow: hidden;
+  cursor: pointer;
+  transition: max-height 0.3s ease;
+
+  // 배경 이미지 오버레이
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/business-areas/overview/overview-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  &.expanded {
+    max-height: none;
+    min-height: 100px;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0 120px;
+    min-height: 100px;
+    max-height: 100px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 20px;
+    min-height: auto;
+    max-height: none;
+    height: auto;
+    top: 111px; // 헤더(56px) + 스티키탭(55px)
+  }
+}
+
+.overviewFixedBannerContent {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 64px;
+  padding: 20px 0;
+  min-height: 100px;
+
+  .overviewFixedBanner.expanded & {
+    padding: 20px 0;
+    align-items: flex-start;
+  }
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 48px;
+    padding: 15px 0;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 8px;
+    padding: 15px 0;
+    flex-direction: column;
+    min-height: auto;
+  }
+}
+
+.overviewFixedBannerHeader {
+  display: none;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+.overviewFixedBannerTitle {
+  color: #fff;
+  font-family: $font-montserrat;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 110%;
+  letter-spacing: -3px;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.overviewFixedBannerTitleDesktop {
+  color: #fff;
+  font-family: $font-montserrat;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 110%;
+  letter-spacing: -3px;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 28px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.overviewFixedBannerDivider {
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  align-self: stretch;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.overviewFixedBannerBody {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+
+  &.collapsed {
+    max-height: 72px; // 약 3줄 정도의 높이
+    mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+
+    @media (max-width: $breakpoint-tablet) {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: none;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+}
+
+.overviewFixedBannerToggle {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.overviewFixedBannerToggleDesktop {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+// Overview Section - Below Hero Image
+.overviewSectionWrapper {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  background-color: #151515;
+  padding: 160px 0 120px 0;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 80px 0 60px 0;
+  }
+}
+
+
+.overviewContainer {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.overviewSection {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.overviewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 56px;
+  opacity: 0.2;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 24px;
+  }
+}
+
+.overviewHeaderToggle {
+  display: none;
+  width: 24px;
+  height: 24px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: block;
+  }
+}
+
+.overviewTitle {
+  color: #ffffff;
+  font-family: $font-montserrat;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 120px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+  margin: 0;
+  text-align: left;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 48px;
+  }
+}
+
+.overviewContent {
+  position: relative;
+  background-color: #002046;
+  border-radius: 12px;
+  padding: 80px;
+  overflow: hidden;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 40px 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  // 배경 이미지
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/business-areas/overview/overview-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  // 파란색 오버레이 제거 (Figma 디자인에 맞춤)
+}
+
+.overviewContentLayout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 64px;
+  align-items: flex-start;
+  width: 100%;
+  padding-left: 0;
+  margin-left: 0;
+  flex-wrap: nowrap;
+
+  @media (max-width: $breakpoint-desktop) {
+    gap: 48px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+}
+
+// overviewFieldTitle이 flex 아이템으로 고정 너비 유지
+.overviewContentLayout > .overviewFieldTitle {
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: 179px;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-basis: auto;
+  }
+}
+
+.overviewFieldTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 32px;
+  line-height: 1.5;
+  letter-spacing: -0.16px;
+  color: #ffffff;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  width: 179px;
+  margin: 0;
+  padding: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  white-space: normal;
+  display: block;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 32px;
+    width: 179px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 24px;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    flex-basis: auto;
+  }
+}
+
+.overviewDivider {
+  flex-shrink: 0;
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  align-self: stretch;
+  min-height: 100px;
+
+  // Fixed banner 내부에서 사용될 때
+  .overviewFixedBannerContent & {
+    width: 100%;
+    height: 1px;
+    min-height: 1px;
+    margin: 20px 0 0 0;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.overviewContentInner {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  flex-basis: 0;
+  flex-grow: 1;
+
+  // Toast UI Viewer 스타일 오버라이드
+  :global(.toastui-editor-contents) {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-regular;
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: #ffffff !important;
+
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    p {
+      margin: 0 0 0 0;
+      color: #ffffff !important;
+
+      &:not(:last-child) {
+        margin-bottom: 0;
+      }
+    }
+
+    strong {
+      font-weight: $font-weight-semibold;
+      color: #ffffff !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      color: #ffffff !important;
+      font-family: $font-pretendard;
+      font-weight: $font-weight-semibold;
+    }
+
+    a {
+      color: #94b9e3;
+    }
+
+    code {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff !important;
+    }
+
+    pre {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff !important;
+    }
+
+    blockquote {
+      border-left: 4px solid #94b9e3;
+      color: #ffffff !important;
+    }
+
+    table {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff !important;
+      
+      th, td {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #ffffff !important;
+      }
+    }
+
+    * {
+      color: #ffffff !important;
+    }
+
+    span, div, li, ul, ol {
+      color: #ffffff !important;
+    }
+  }
+}
+
+// Section Styles
+.section {
+  margin: 80px 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    margin: 40px 0;
+  }
+
+  // 첫 번째 섹션 (CHECK POINT)을 목차보다 위에서 시작
+  &:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
+.sectionHeader {
+  margin-bottom: 0; // 영어 제목과 한글 제목 사이 간격 없음
+
+  @media (max-width: $breakpoint-desktop) {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    margin-bottom: 0;
+  }
+}
+
+.sectionHeaderContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+  }
+}
+
+.sectionTitle {
+  font-family: $font-montserrat;
+  font-style: normal;
+  font-weight: $font-weight-light;
+  font-size: 80px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+  color: #ffffff;
+  opacity: 0.2;
+  margin: 0;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 64px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 48px;
+    letter-spacing: -2px;
+    word-spacing: 100vw;
+    line-height: 1.1;
+  }
+}
+
+.sectionSubtitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 32px;
+  line-height: 1.5;
+  letter-spacing: -0.16px;
+  color: #ffffff;
+  margin: 0;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 24px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 18px;
+    margin-top: 16px;
+  }
+}
+
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 24px;
+    margin-top: 8px;
+  }
+}
+
+.subSectionTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 32px;
+  line-height: 1.5;
+  letter-spacing: -0.16px;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 24px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+}
+
+.contentText {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 17px;
+  line-height: 1.8;
+  letter-spacing: -0.085px;
+  color: #d8d8d8;
+
+  // Toast UI Viewer 스타일 오버라이드
+  :global(.toastui-editor-contents) {
+    font-family: $font-pretendard;
+    font-size: 17px;
+    line-height: 1.8;
+    letter-spacing: -0.085px;
+    color: #d8d8d8;
+
+    p {
+      margin: 0 0 16px 0;
+      color: #d8d8d8;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul,
+    ol {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 8px 0;
+      color: #d8d8d8;
+    }
+
+    strong {
+      font-weight: $font-weight-semibold;
+      color: #ffffff;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      color: #ffffff;
+      font-family: $font-pretendard;
+      font-weight: $font-weight-semibold;
+      margin: 24px 0 16px 0;
+    }
+
+    a {
+      color: #94b9e3;
+    }
+
+    code {
+      background: rgba(255, 255, 255, 0.1);
+      color: #d8d8d8;
+    }
+
+    pre {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    blockquote {
+      border-left: 4px solid #94b9e3;
+      color: #d8d8d8;
+    }
+
+    table {
+      border-color: rgba(255, 255, 255, 0.2);
+      
+      th, td {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #d8d8d8;
+      }
+    }
+
+    // 이미지를 텍스트 폭과 같은 정도로
+    img {
+      width: 100%;
+      max-width: 100%;
+      display: block;
+    }
+  }
+}
+
+// Overview Section
+.overviewSection {
+  .sectionHeader {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .sectionContent {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s;
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// Check Point Section
+.checkPointContent {
+  padding: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0;
+  }
+}
+
+// Execution Strategy Section
+.executionContent {
+  padding: 0;
+  margin: 0;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// Cases Section
+.casesContent {
+  padding: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0;
+  }
+}
+
+// Contact Section
+.contactSectionWrapper {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  background-color: #151515;
+  padding: 120px 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 0;
+  }
+}
+
+.contactSection {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.contactBanner {
+  position: relative;
+  width: 100%;
+  min-height: 364px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+  border-radius: 12px;
+  padding: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 40px 20px;
+    min-height: 250px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: calc(100% - 40px);
+  }
+
+  // 배경 이미지
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/business-areas/contact/contact-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    pointer-events: none;
+  }
+}
+
+.contactContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 1440px;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+    text-align: left;
+  }
+}
+
+.contactText {
+  flex: 1;
+}
+
+.contactMainTitle {
+  font-family: $font-montserrat;
+  font-style: normal;
+  font-weight: 300; /* Light */
+  font-size: 120px;
+  line-height: 150%; /* 180px */
+  letter-spacing: -3px;
+  color: #ffffff;
+  margin: 0 0 24px 0;
+
+  @media (max-width: $breakpoint-desktop) {
+    font-size: 80px;
+    letter-spacing: -2px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 48px;
+    line-height: 150%;
+    letter-spacing: -1.2px;
+    margin-bottom: 16px;
+  }
+}
+
+.contactTitle {
+  font-family: $font-montserrat;
+  font-style: normal;
+  font-weight: $font-weight-light;
+  font-size: 56px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+  color: #d8d8d8;
+  margin: 0 0 24px 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+}
+
+.contactDescription {
+  font-family: $font-pretendard;
+  font-style: normal;
+  font-weight: 700; /* Bold */
+  font-size: 25px;
+  line-height: 145%; /* 36.25px */
+  letter-spacing: -0.2px;
+  color: #ffffff;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 20px;
+    line-height: 145%;
+  }
+}
+
+.consultButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.095px;
+  color: #ffffff;
+  background-color: transparent;
+  border: 1px solid #ffffff;
+  border-radius: 100px;
+  padding: 0 24px;
+  height: 64px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #ffffff;
+    color: #151515;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 15px;
+    padding: 10px 20px;
+    height: auto;
+  }
+}
+
+// Navigation Buttons
+.navigationButtons {
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.navButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background-color: #ffffff;
+    
+    :global(.icon) {
+      :global(path) {
+        stroke: #151515;
+      }
+    }
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  :global(.icon) {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Experts Section
+.expertsContent {
+  overflow: hidden;
+  width: 100%;
+  margin-top: 64px;
+
+  @media (max-width: $breakpoint-tablet) {
+    overflow: visible;
+    margin-top: 24px;
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+  }
+}
+
+.expertsGrid {
+  display: flex;
+  transition: transform 0.5s ease;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    transform: none !important;
+    gap: 16px; // 모든 카드 사이에 일정한 간격
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.expertsPage {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  min-width: 100%;
+  flex-shrink: 0;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    display: contents; // 페이지 컨테이너를 없애고 카드들만 표시
+  }
+}
+
+.expertCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 213px;
+    min-width: 213px;
+    flex-shrink: 0;
+    gap: 16px;
+  }
+}
+
+.expertImage {
+  width: 100%;
+  aspect-ratio: 342 / 433;
+  border-radius: 0;
+  overflow: hidden;
+  background-color: #2a2a2a;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.expertInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 16px;
+  }
+}
+
+.expertNameRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.expertName {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 25px;
+  line-height: 1.5;
+  letter-spacing: -0.125px;
+  color: #ffffff;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 17px;
+  }
+}
+
+.expertPositionLabel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.095px;
+  color: #d8d8d8;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+  }
+}
+
+.expertContact {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 8px;
+  }
+}
+
+.expertContactItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 11px;
+    gap: 8px;
+  }
+}
+
+.expertContactLabel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  color: #94b9e3;
+  width: 44px;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: auto;
+  }
+}
+
+.expertContactValue {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  color: #d8d8d8;
+}
+
+.expertTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 4px;
+  }
+}
+
+.expertTag {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f8f8fc;
+  background-color: #2d2d2d;
+  padding: 8px;
+  border-radius: 4px;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+}
+
+.expertTel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+// YouTube Section
+.youtubeContent {
+  overflow: hidden;
+  width: 100%;
+  margin-top: 64px;
+
+  @media (max-width: $breakpoint-tablet) {
+    overflow: visible;
+    margin-top: 24px;
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+  }
+}
+
+.youtubeGrid {
+  display: flex;
+  transition: transform 0.5s ease;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    transform: none !important;
+    gap: 16px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.youtubePage {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  min-width: 100%;
+  flex-shrink: 0;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    display: contents;
+  }
+}
+
+.youtubeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 213px;
+    min-width: 213px;
+    flex-shrink: 0;
+    gap: 16px;
+  }
+}
+
+.youtubeThumbnail {
+  width: 100%;
+  aspect-ratio: 458.667 / 280;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #2a2a2a;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.youtubeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.youtubeChannel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+.youtubeTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.095px;
+  color: #ffffff;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 56px;
+}
+
+.youtubeItem {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; // 16:9 aspect ratio
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// News Section
+.newsContent {
+  overflow: hidden;
+  width: 100%;
+  margin-top: 64px;
+
+  @media (max-width: $breakpoint-tablet) {
+    overflow: visible;
+    margin-top: 24px;
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+  }
+}
+
+.newsGrid {
+  display: flex;
+  transition: transform 0.5s ease;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    transform: none !important;
+    gap: 16px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.newsPage {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  min-width: 100%;
+  flex-shrink: 0;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    display: contents;
+  }
+}
+
+.newsCard {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 24px;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 213px;
+    min-width: 213px;
+    flex-shrink: 0;
+    gap: 16px;
+  }
+}
+
+.newsThumbnail {
+  width: 100%;
+  aspect-ratio: 458.667 / 280;
+  overflow: hidden;
+  background-color: #2a2a2a;
+  border-radius: 12px 12px 0 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.newsInfo {
+  padding: 0 24px 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 20px 40px 20px;
+  }
+}
+
+.newsHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.newsCategory {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #94b9e3;
+  margin: 0;
+}
+
+.newsTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: #ffffff;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 56px;
+}
+
+.newsMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.newsAuthor {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #d8d8d8;
+}
+
+.newsSeparator {
+  width: 2px;
+  height: 2px;
+  background-color: #d8d8d8;
+  border-radius: 50%;
+}
+
+.newsExcerpt {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d8d8d8;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.newsDate {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #888888;
+  margin: 0;
+}
+
+// Full Width Sections (for sections after Contact)
+.fullWidthSection {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 120px 0 0 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 0 0 0;
+  }
+
+  // YouTube section has different padding
+  &:nth-of-type(2) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  // News section has bottom padding
+  &:last-of-type {
+    padding-bottom: 200px;
+
+    @media (max-width: $breakpoint-desktop) {
+      padding-bottom: 120px;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      padding-bottom: 80px;
+    }
+  }
+}
+
+.fullWidthContainer {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 20px;
+  }
+}
+
+// Floating Buttons
+.floatingButtons {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 1000;
+
+  @media (max-width: $breakpoint-tablet) {
+    bottom: 20px;
+    right: 16px;
+    gap: 16px;
+  }
+}
+

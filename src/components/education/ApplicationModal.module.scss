@@ -1,0 +1,710 @@
+@import '../../styles/variables';
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9998;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1194px;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: #151515;
+  border: 1px solid #555;
+  border-radius: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  @media (max-width: $breakpoint-tablet) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100vh;
+    border: none;
+    border-radius: 0;
+  }
+}
+
+.header {
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 40px;
+
+  @media (max-width: $breakpoint-tablet) {
+    height: 56px;
+    padding: 12px 20px;
+  }
+}
+
+.mobileTitle {
+  display: none;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: block;
+    padding: 0 20px 24px;
+    font-family: $font-pretendard;
+    font-size: 32px;
+    font-weight: $font-weight-bold;
+    line-height: 145%;
+    letter-spacing: -0.256px;
+    color: #fff;
+    margin: 0;
+  }
+}
+
+.headerSpacer {
+  width: 109.778px;
+  height: 38px;
+}
+
+.closeButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 40px 40px;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 20px 120px;
+  }
+}
+
+.mainContent {
+  display: flex;
+  align-items: stretch;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+  }
+}
+
+.formSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  padding: 8px 40px 48px 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 32px;
+    padding: 0;
+    order: 2;
+  }
+}
+
+.title {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 40px;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  color: white;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 56px;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldLabel {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: white;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 15px;
+  }
+}
+
+.required {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  color: #f35064;
+}
+
+.dateInputRow {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.dateInput {
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  p {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-regular;
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: -0.085px;
+    color: #f0f0f0;
+    margin: 0;
+
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 15px;
+      letter-spacing: -0.075px;
+    }
+  }
+}
+
+.dateSelectButton {
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 12px 16px;
+  background: transparent;
+  color: white;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  height: 48px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.timeOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeOptionsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+.timeOptionEmpty {
+  display: none;
+}
+
+.timeOption {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+
+  span {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-semibold;
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: -0.075px;
+    color: #f0f0f0;
+
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 15px;
+    }
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.timeOptionSelected {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.timeRadio {
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  border: 1px solid #c6c6c6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.timeRadioSelected {
+  border-color: #94b9e3;
+}
+
+.timeRadioDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94b9e3;
+}
+
+.participantInput {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    font-family: $font-pretendard;
+    font-weight: $font-weight-regular;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #f0f0f0;
+    text-align: right;
+    outline: none;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  .participantUnit {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-regular;
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: -0.075px;
+    color: #f0f0f0;
+  }
+}
+
+.requestTextarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  height: 148px;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0;
+  resize: none;
+  outline: none;
+
+  &::placeholder {
+    color: #8e8e8e;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.agreementSection {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.agreementTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f0f0f0;
+}
+
+.agreementContent {
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 20px;
+  height: 231px;
+  overflow-y: auto;
+  font-family: 'SUITE', sans-serif;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #d8d8d8;
+
+  p {
+    margin: 0 0 8px 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  strong {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-bold;
+    color: #f0f0f0;
+  }
+}
+
+.agreementCheckbox {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  span {
+    font-family: $font-pretendard;
+    font-weight: $font-weight-regular;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #d8d8d8;
+  }
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #c6c6c6;
+  border-radius: 2px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #94b9e3;
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.checkboxChecked {
+  background: #94b9e3;
+  border-color: #94b9e3;
+}
+
+.applyButton {
+  width: 100%;
+  height: 56px;
+  background: white;
+  border: none;
+  border-radius: 100px;
+  color: black;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.applyButtonDisabled {
+  background: #555;
+  color: #8e8e8e;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  width: 100%;
+  height: auto;
+  background: transparent;
+  border: none;
+  color: #f35064;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  cursor: pointer;
+  padding: 16px 0;
+  margin-top: 8px;
+  text-align: center;
+  transition: opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.verticalDivider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  margin: 0 24px;
+  align-self: stretch;
+  min-height: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.summarySection {
+  width: 400px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 8px;
+  padding-left: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+    padding-bottom: 56px;
+    background: transparent;
+    border-radius: 0;
+    order: 1;
+    margin-bottom: 56px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.summaryHeader {
+  display: contents;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    align-items: flex-start;
+  }
+}
+
+.summaryImage {
+  width: 100%;
+  aspect-ratio: 400 / 300;
+  border-radius: 12px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 110px;
+    min-width: 110px;
+    height: 83px;
+    aspect-ratio: 110 / 83;
+    border-radius: 8px;
+  }
+}
+
+.summaryContent {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 40px 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: contents;
+  }
+}
+
+.summaryTitleWrapper {
+  @media (max-width: $breakpoint-tablet) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
+.summaryTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+  color: white;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+    letter-spacing: -0.065px;
+  }
+}
+
+.summaryDetails {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: $breakpoint-tablet) {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 16px;
+    gap: 12px;
+  }
+}
+
+.summaryDetailItem {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+.summaryIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.summaryLabel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: white;
+  white-space: nowrap;
+  min-width: 80px;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+    min-width: 60px;
+  }
+}
+
+.summaryValue {
+  flex: 1;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d8d8d8;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+  }
+}
+
+// 모바일 하단 고정 버튼
+.footer {
+  display: none;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    background: #151515;
+    z-index: 100;
+  }
+}
+
+// 데스크톱 버튼 래퍼
+.buttonWrapper {
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+

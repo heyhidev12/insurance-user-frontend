@@ -1,0 +1,47 @@
+@import '../../../styles/variables';
+
+.image-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+
+  &--clickable {
+    cursor: pointer;
+  }
+
+  &--disabled {
+    .image-card__title {
+      opacity: 0.5;
+    }
+  }
+
+  &__title {
+    @include pretendard-17-semibold;
+    color: $white;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__image-container {
+    position: relative;
+    width: 267px;
+    height: 200px;
+    border-radius: $radius-half;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}

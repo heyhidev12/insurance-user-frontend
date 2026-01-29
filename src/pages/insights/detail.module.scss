@@ -1,0 +1,1126 @@
+@import '../../styles/variables';
+
+.page {
+  min-height: 100vh;
+  background-color: #151515;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 56px;
+  }
+}
+
+.container {
+  flex: 1;
+  padding: 0 400px;
+  max-width: 1920px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0 240px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 24px;
+  }
+}
+
+.content {
+  padding: 80px 0 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 60px 0 120px;
+    gap: 80px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 100px 0 0;
+    gap: 64px;
+  }
+}
+
+.floatingButtons {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000;
+
+  @media (max-width: $breakpoint-tablet) {
+    bottom: 20px;
+    right: 16px;
+    gap: 16px;
+  }
+}
+
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 24px;
+  font-size: 18px;
+  color: white;
+}
+
+// Header Section
+.headerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  text-align: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 32px;
+  }
+}
+
+// Category + Title wrapper for mobile
+.titleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  width: 100%;
+}
+
+.category {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.095px;
+  color: #94b9e3;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 15px;
+    letter-spacing: -0.075px;
+  }
+}
+
+.title {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 40px;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  color: #f0f0f0;
+  margin: 0;
+  text-align: center;
+  max-width: 1120px;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 25px;
+    letter-spacing: -0.125px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 64px;
+  }
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 24px 24px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: row;
+    gap: 12px;
+    padding: 12px 0;
+  }
+}
+
+.metaLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  
+  // 구분선이 하나만 보이도록 명확히 설정
+  .divider {
+    width: 1px;
+    height: 12px;
+    background-color: #8e8e8e;
+    flex-shrink: 0;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border: none;
+    line-height: 1;
+  }
+}
+
+.author {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #d8d8d8;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-weight: $font-weight-regular;
+    font-size: 13px;
+    letter-spacing: -0.065px;
+    line-height: 1.4;
+  }
+}
+
+.metaRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px;
+}
+
+.iconDivider {
+  width: 1px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.icon {
+  cursor: pointer;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+  
+  &:first-of-type {
+    width: 20px;
+    height: 20px;
+  }
+  
+  &:last-of-type {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.viewCount {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d8d8d8;
+}
+
+.divider {
+  width: 1px;
+  height: 12px;
+  background-color: #8e8e8e;
+  flex-shrink: 0;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.dividerLine {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 0;
+}
+
+.date {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #8e8e8e;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-weight: $font-weight-regular;
+    font-size: 13px;
+    letter-spacing: -0.065px;
+  }
+}
+
+// Body Section
+.bodySection {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 56px;
+  }
+}
+
+.imageSection {
+  width: 100%;
+  aspect-ratio: 257 / 180;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.bodyContent {
+  color: var(--grayscale-0, #FFF);
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "IBM Plex Mono";
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 25.5px */
+  letter-spacing: -0.085px;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-family: $font-pretendard;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.075px;
+  }
+
+  // Toast UI Viewer 스타일 오버라이드
+  :global(.toastui-editor-contents) {
+    color: var(--grayscale-0, #FFF) !important;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "IBM Plex Mono";
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 25.5px */
+    letter-spacing: -0.085px;
+
+    @media (max-width: $breakpoint-tablet) {
+      font-family: $font-pretendard !important;
+      font-size: 15px !important;
+      font-weight: 400 !important;
+      line-height: 1.5 !important;
+      letter-spacing: -0.075px !important;
+    }
+
+    p, span, div, li, td, th {
+      color: var(--grayscale-0, #FFF) !important;
+      font-family: "IBM Plex Mono";
+      font-size: 17px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      letter-spacing: -0.085px;
+
+      @media (max-width: $breakpoint-tablet) {
+        font-family: $font-pretendard !important;
+        font-size: 15px !important;
+        font-weight: 400 !important;
+        line-height: 1.5 !important;
+        letter-spacing: -0.075px !important;
+      }
+    }
+
+    p {
+      margin: 0 0 16px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      @media (max-width: $breakpoint-tablet) {
+        margin: 0 0 12px 0;
+      }
+    }
+
+    strong {
+      font-weight: $font-weight-semibold;
+      color: var(--grayscale-0, #FFF) !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--grayscale-0, #FFF) !important;
+      font-family: $font-pretendard;
+      font-weight: $font-weight-semibold;
+    }
+
+    a {
+      color: #94b9e3;
+    }
+
+    code {
+      background: rgba(255, 255, 255, 0.1);
+      color: #d8d8d8;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    pre {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    blockquote {
+      border-left: 4px solid #94b9e3;
+      color: var(--grayscale-0, #FFF) !important;
+      padding-left: 16px;
+      margin: 16px 0;
+    }
+
+    table {
+      border-color: rgba(255, 255, 255, 0.2);
+
+      th, td {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: var(--grayscale-0, #FFF) !important;
+      }
+    }
+  }
+}
+
+// Attachments Section
+.attachmentsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 20px;
+  }
+}
+
+.attachmentsTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 25px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  color: white;
+  margin: 0;
+  text-align: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 20px;
+  }
+}
+
+.attachmentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.attachmentItem {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 10px 12px;
+  }
+}
+
+.attachmentLeft {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.attachmentLabel {
+  background: #bfd8f3;
+  color: #002046;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  padding: 7px;
+  border-radius: 4px;
+  width: 27px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.attachmentInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.attachmentIcon {
+  flex-shrink: 0;
+}
+
+.attachmentName {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f0f0f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.downloadButton {
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 0 12px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+  }
+}
+
+.downloadButtonText {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: white;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.downloadIcon {
+  flex-shrink: 0;
+}
+
+// Comments Section
+.commentsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 40px;
+  }
+}
+
+.commentsDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.commentsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+.commentsHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.commentsTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 25px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  color: white;
+  margin: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 20px;
+  }
+}
+
+.commentsDescription {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #8e8e8e;
+  margin: 0;
+}
+
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.commentFormHeader {
+  width: 100%;
+  text-align: left;
+}
+
+.commentAuthor {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: white;
+}
+
+.commentInputWrapper {
+  width: 100%;
+}
+
+.commentInput {
+  width: 100%;
+  min-height: 148px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0;
+  resize: vertical;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: #8e8e8e;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #94b9e3;
+  }
+}
+
+.commentSubmitButton {
+  background: white;
+  border: none;
+  border-radius: 100px;
+  padding: 0 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+  color: black;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  min-width: 110px;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    height: 44px;
+    font-size: 15px;
+    min-width: 100px;
+  }
+}
+
+.commentsListHeader {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.commentsTotalTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 25px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  color: white;
+  margin: 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 20px;
+  }
+}
+
+.commentsTotalCount {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 25px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  color: white;
+}
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+}
+
+.commentItem {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+
+  &.commentHidden {
+    opacity: 0.5;
+  }
+}
+
+.commentHeader {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+.commentAuthorName {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #f4f2ed;
+  flex: 1;
+}
+
+.commentAction {
+  background: none;
+  border: none;
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #d8d8d8;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.commentContent {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f4f2ed;
+  margin: 0;
+  word-break: break-word;
+}
+
+.commentDate {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+  color: #d8d8d8;
+  margin: 0;
+}
+
+.commentDivider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.noComments {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  text-align: center;
+  padding: 40px 0;
+  margin: 0;
+}
+
+// Navigation Section
+.navigationSection {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    gap: 48px;
+    padding-bottom: 80px;
+  }
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 24px;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+  }
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:first-child {
+    flex: 0 0 auto;
+  }
+
+  &:last-child {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 24px;
+
+    &:last-child {
+      margin-left: 0;
+    }
+  }
+}
+
+// 다음 글 - 데스크톱에서는 title이 먼저, 모바일에서는 label이 먼저
+.navItemNext {
+  .navLabel {
+    order: 2;
+  }
+
+  .navTitle {
+    order: 1;
+    text-align: right;
+  }
+
+  .navIcon {
+    order: 3;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    .navLabel {
+      order: 1;
+    }
+
+    .navTitle {
+      order: 2;
+      text-align: left;
+    }
+
+    .navIcon {
+      order: 3;
+    }
+  }
+}
+
+.navIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: none;
+  }
+}
+
+.navContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.navLabel {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+  color: #94b9e3;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.navTitle {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d8d8d8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex: 1;
+  }
+}
+
+.navEmpty {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #8e8e8e;
+  text-align: center;
+  width: 100%;
+}
+
+.backButton {
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  :global(.button__icon--left) {
+    margin-top: 6px;
+  }
+}
+
+// Print Styles - 인사이트 본문만 출력
+@media print {
+  // 전체 페이지 배경 흰색으로 변경
+  .page {
+    background-color: white !important;
+    color: black !important;
+    min-height: auto !important;
+    padding-top: 0 !important;
+  }
+
+  // 컨테이너 패딩 조정
+  .container {
+    padding: 0 40px !important;
+    max-width: 100% !important;
+  }
+
+  .content {
+    padding: 20px 0 !important;
+    gap: 40px !important;
+  }
+
+  // 플로팅 버튼 숨김
+  .floatingButtons {
+    display: none !important;
+  }
+
+  // 헤더 섹션 (제목, 카테고리, 메타 정보)
+  .headerSection {
+    display: flex !important;
+  }
+
+  .category {
+    color: #003675 !important;
+  }
+
+  .title {
+    color: black !important;
+  }
+
+  .meta {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+
+    &::before,
+    &::after {
+      background-color: rgba(0, 0, 0, 0.2) !important;
+    }
+  }
+
+  .metaLeft {
+    .author,
+    .date {
+      color: #333 !important;
+    }
+
+    .divider {
+      background-color: #666 !important;
+    }
+  }
+
+  // 메타 우측 (프린트, 공유 아이콘) 숨김
+  .metaRight {
+    display: none !important;
+  }
+
+  // 본문 섹션
+  .bodySection {
+    display: flex !important;
+  }
+
+  .imageSection {
+    page-break-inside: avoid;
+  }
+
+  .bodyContent {
+    color: black !important;
+
+    :global(.toastui-editor-contents) {
+      color: black !important;
+
+      p, span, div, li, td, th {
+        color: black !important;
+      }
+
+      strong {
+        color: black !important;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+      }
+
+      a {
+        color: #003675 !important;
+      }
+
+      code {
+        background: #f5f5f5 !important;
+        color: #333 !important;
+      }
+
+      pre {
+        background: #f5f5f5 !important;
+      }
+
+      blockquote {
+        border-left-color: #003675 !important;
+        color: black !important;
+      }
+
+      table {
+        border-color: rgba(0, 0, 0, 0.2) !important;
+
+        th, td {
+          border-color: rgba(0, 0, 0, 0.2) !important;
+          color: black !important;
+        }
+      }
+    }
+  }
+
+  // 첨부파일 섹션 숨김
+  .attachmentsSection {
+    display: none !important;
+  }
+
+  // 댓글 섹션 숨김
+  .commentsSection {
+    display: none !important;
+  }
+
+  // 네비게이션 섹션 숨김
+  .navigationSection {
+    display: none !important;
+  }
+}
+

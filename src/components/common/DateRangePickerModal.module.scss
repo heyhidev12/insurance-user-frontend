@@ -1,0 +1,177 @@
+@import '@/styles/variables';
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal {
+  position: fixed;
+  background-color: #252525;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  padding: 24px 8px 24px;
+  width: 323px;
+
+  @media (max-width: 767px) {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  margin-bottom: 8px;
+}
+
+.monthNav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.monthYear {
+  @include pretendard-19-semibold;
+  color: #e4e4e4;
+  margin: 0;
+  text-align: center;
+}
+
+.weekDays {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.weekDay {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 11.52px;
+  line-height: 1.5;
+  letter-spacing: -0.0288px;
+  color: #929299;
+  text-align: center;
+  width: 37.403px;
+  padding: 4.675px;
+}
+
+.calendarGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.calendarRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+  align-items: center;
+}
+
+.calendarCellEmpty {
+  width: 37.403px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.calendarCell {
+  width: 37.403px;
+  height: 40px;
+  border-radius: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+
+  @include pretendard-14-medium;
+  color: #f8f8f8;
+
+  // 기본적으로 활성화된 상태
+  &:hover {
+    opacity: 0.8;
+  }
+
+  // 선택된 날짜 (시작 또는 종료)
+  &.selected {
+    &::before {
+      content: '';
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      z-index: -1;
+    }
+    color: #00162f;
+  }
+
+  &.startDate {
+    &::before {
+      content: '';
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      z-index: -1;
+    }
+    color: #00162f;
+  }
+
+  &.endDate {
+    &::before {
+      content: '';
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      z-index: -1;
+    }
+    color: #00162f;
+  }
+}
+

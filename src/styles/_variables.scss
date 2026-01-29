@@ -1,0 +1,447 @@
+/**
+ * Style Guide - SCSS Variables
+ * Converted from styleGuide.ts
+ */
+
+// ==================== COLORS ====================
+
+// Grayscale
+$gray-0: #FFFFFF;
+$gray-5: #F8F8F8;
+$gray-10: #F0F0F0;
+$gray-20: #E4E4E4;
+$gray-30: #D8D8D8;
+$gray-40: #C6C6C6;
+$gray-50: #8E8E8E;
+$gray-60: #717171;
+$gray-70: #555555;
+$gray-80: #2D2D2D;
+$gray-90: #1D1D1D;
+$gray-100: #000000;
+
+// Primary
+$primary-0: #FFFFFF;
+$primary-5: #EDF1F5;
+$primary-10: #CDD7E4;
+$primary-20: #B4C4D6;
+$primary-30: #99B0CB;
+$primary-40: #2A5C96;
+$primary-50: #003675; // Main Primary Color
+$primary-60: #002B5E;
+$primary-70: #002046;
+$primary-80: #00162F;
+$primary-90: #000B17;
+$primary-100: #000000;
+
+// Navy (from Figma)
+$navy-0: #FFFFFF;
+$navy-10: #E2E9F1;
+$navy-20: #BFD8F3;
+$navy-30: #94B9E3;
+
+// Semantic Colors
+$white: #FFFFFF;
+$black: #000000;
+$error: #F35064;
+$success: #00C853;
+$warning: #FFB300;
+$info: #2196F3;
+
+// ==================== TYPOGRAPHY ====================
+
+// Font Families
+$font-montserrat: 'Montserrat', sans-serif;
+$font-pretendard: 'Pretendard', sans-serif;
+
+// Font Weights
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// ==================== SPACING ====================
+
+$spacing-0: 0px;
+$spacing-4: 4px;
+$spacing-8: 8px;
+$spacing-12: 12px;
+$spacing-16: 16px;
+$spacing-20: 20px;
+$spacing-24: 24px;
+$spacing-32: 32px;
+$spacing-40: 40px;
+$spacing-48: 48px;
+$spacing-56: 56px;
+$spacing-64: 64px;
+$spacing-80: 80px;
+$spacing-100: 100px;
+$spacing-120: 120px;
+
+// ==================== BORDER RADIUS ====================
+
+$radius-none: 0px;
+$radius-tiny: 4px;
+$radius-half: 8px;
+$radius-full: 12px;
+$radius-tag: 2px;
+$radius-pill: 100px;
+$radius-circle: 50%;
+
+// ==================== BREAKPOINTS ====================
+
+$breakpoint-mobile: 375px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1440px;
+$breakpoint-ultra-wide: 1920px;
+
+// ==================== HEADER ====================
+
+$header-height-web: 92px;
+$header-height-mobile: 56px;
+
+// ==================== Z-INDEX ====================
+
+$z-base: 0;
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-fixed: 300;
+$z-modal-backdrop: 400;
+$z-modal: 500;
+$z-popover: 600;
+$z-tooltip: 700;
+$z-toast: 800;
+
+// ==================== TRANSITIONS ====================
+
+$transition-fast: 150ms ease;
+$transition-normal: 300ms ease;
+$transition-slow: 500ms ease;
+
+// ==================== SHADOWS ====================
+
+$shadow-none: none;
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+// ==================== BUTTON SIZES ====================
+
+$button-height-xsmall: 32px;
+$button-height-small: 40px;
+$button-height-medium: 48px;
+$button-height-large: 56px;
+$button-height-xlarge: 64px;
+
+// ==================== CHECKBOX ====================
+
+$checkbox-size-16: 16px;
+$checkbox-size-32: 32px;
+$checkbox-size-40: 40px;
+$checkbox-size-48: 48px;
+
+// ==================== RESPONSIVE MIXINS ====================
+
+// Mobile first approach mixins
+@mixin mobile {
+  @media (max-width: $breakpoint-tablet - 1px) {
+    @content;
+  }
+}
+
+@mixin mobile-small {
+  @media (max-width: 480px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $breakpoint-tablet) and (max-width: $breakpoint-desktop - 1px) {
+    @content;
+  }
+}
+
+@mixin tablet-and-up {
+  @media (min-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $breakpoint-desktop) {
+    @content;
+  }
+}
+
+@mixin desktop-large {
+  @media (min-width: $breakpoint-wide) {
+    @content;
+  }
+}
+
+// Max-width breakpoint mixins (desktop first)
+@mixin max-mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+@mixin max-tablet {
+  @media (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+@mixin max-desktop {
+  @media (max-width: $breakpoint-desktop) {
+    @content;
+  }
+}
+
+@mixin max-wide {
+  @media (max-width: $breakpoint-wide) {
+    @content;
+  }
+}
+
+// ==================== MIXINS ====================
+
+// Typography Mixins - Montserrat
+@mixin montserrat-120-light {
+  font-family: $font-montserrat;
+  font-weight: $font-weight-light;
+  font-size: 120px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+}
+
+@mixin montserrat-80-light {
+  font-family: $font-montserrat;
+  font-weight: $font-weight-light;
+  font-size: 80px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+}
+
+@mixin montserrat-72-light {
+  font-family: $font-montserrat;
+  font-weight: $font-weight-light;
+  font-size: 72px;
+  line-height: 1.5;
+  letter-spacing: -3px;
+}
+
+@mixin montserrat-44-light {
+  font-family: $font-montserrat;
+  font-weight: $font-weight-light;
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -3px;
+}
+
+// Typography Mixins - Pretendard Bold
+@mixin pretendard-72-bold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 72px;
+  line-height: 1.5;
+  letter-spacing: 1px;
+}
+
+@mixin pretendard-50-bold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 50px;
+  line-height: 1.45;
+  letter-spacing: 1px;
+}
+
+@mixin pretendard-32-bold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 32px;
+  line-height: 1.45;
+  letter-spacing: -0.256px;
+}
+
+@mixin pretendard-25-bold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-bold;
+  font-size: 25px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+}
+
+// Typography Mixins - Pretendard SemiBold
+@mixin pretendard-50-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 50px;
+  line-height: 1.5;
+  letter-spacing: -0.25px;
+}
+
+@mixin pretendard-40-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 40px;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+}
+
+@mixin pretendard-32-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 32px;
+  line-height: 1.5;
+  letter-spacing: -0.16px;
+}
+
+@mixin pretendard-25-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 25px;
+  line-height: 1.5;
+  letter-spacing: -0.125px;
+}
+
+@mixin pretendard-21-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 21px;
+  line-height: 1.5;
+  letter-spacing: -0.105px;
+}
+
+@mixin pretendard-19-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.095px;
+}
+
+@mixin pretendard-17-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+}
+
+@mixin pretendard-15-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+}
+
+@mixin pretendard-14-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.07px;
+}
+
+@mixin pretendard-13-semibold {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-semibold;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+}
+
+// Typography Mixins - Pretendard Medium
+@mixin pretendard-19-medium {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.095px;
+}
+
+@mixin pretendard-17-medium {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+}
+
+@mixin pretendard-15-medium {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.075px;
+}
+
+@mixin pretendard-14-medium {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.07px;
+}
+
+@mixin pretendard-12-medium {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-medium;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.06px;
+}
+
+// Typography Mixins - Pretendard Regular
+@mixin pretendard-19-regular {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.095px;
+}
+
+@mixin pretendard-17-regular {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.085px;
+}
+
+@mixin pretendard-15-regular {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0px;
+}
+
+@mixin pretendard-13-regular {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.065px;
+}
+
+@mixin pretendard-12-regular {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-regular;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.06px;
+}
+
+// Typography Mixins - Pretendard Light
+@mixin pretendard-25-light {
+  font-family: $font-pretendard;
+  font-weight: $font-weight-light;
+  font-size: 25px;
+  line-height: 1.5;
+  letter-spacing: -0.125px;
+}
