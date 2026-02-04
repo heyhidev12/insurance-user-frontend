@@ -14,14 +14,14 @@
 
 .content {
   flex: 1;
-  padding-bottom: 240px;
+  padding-bottom: 220px;
 
   @media (max-width: 1440px) {
-    padding-bottom: 240px;
+    padding-bottom: 120px;
   }
 
   @media (max-width: 768px) {
-    padding-bottom: 240px;
+    padding-bottom: 80px;
   }
 }
 
@@ -85,9 +85,10 @@
   display: flex;
   flex-direction: column;
   gap: 64px;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
   align-items: flex-start;
   justify-content: flex-start;
+  margin-top: 48px;
 
   @media (max-width: 1440px) {
     gap: 40px;
@@ -183,8 +184,8 @@
   @media (max-width: 768px) {
     display: flex;
     gap: 24px;
-    margin-bottom: 32px;
-    border-bottom: 1px solid #555;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #55555570;
   }
 }
 
@@ -294,7 +295,7 @@
 .categoryNav {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  // gap: 12px;
 }
 
 .categoryItem {
@@ -313,6 +314,7 @@
   letter-spacing: -0.105px;
   color: #8e8e8e;
   transition: color 0.2s;
+  border-bottom: 1px solid rgba(97, 97, 97, 0.251);
 
   &:hover {
     color: #d8d8d8;
@@ -344,7 +346,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 56px;
+  gap: 28px;
 
   @media (max-width: 768px) {
     gap: 24px;
@@ -387,7 +389,7 @@
   flex-shrink: 0;
 
   :global(.searchfield) {
-    border-bottom: 1px solid #555;
+    border-bottom: 1px solid #333333;
     padding: 12px 0;
   }
 
@@ -403,7 +405,7 @@
 
 .divider {
   height: 1px;
-  background-color: #555;
+  background-color: #7a7a7a;
   width: 100%;
 
   @media (max-width: 768px) {
@@ -430,10 +432,6 @@
   }
 }
 
-.featuredCard {
-  // 메인 노출 카드 스타일 (현재는 일반 카드와 동일)
-}
-
 // 모바일 카드 컨테이너 (세로형 리스트 - 데스크톱과 동일한 카드)
 .mobileCardList {
   display: none;
@@ -442,7 +440,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    margin-bottom: 60px;
+    margin-bottom: 0px;
   }
 }
 
@@ -524,6 +522,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -539,6 +538,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -596,7 +596,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  margin-bottom: 100px;
+  margin-bottom: 10px;
+  margin-top: 40px;
 
   @media (max-width: 1440px) {
     grid-template-columns: repeat(2, 1fr);
@@ -627,10 +628,6 @@
     min-width: 213px;
     flex-shrink: 0;
   }
-}
-
-.insightCardFeatured {
-  // 메인 노출 카드 스타일 (현재는 일반 카드와 동일)
 }
 
 .cardImage {
@@ -688,6 +685,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -703,6 +701,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -779,7 +778,7 @@
 .paginationWrapper {
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 80px;
 
   @media (max-width: 768px) {
     margin-top: 40px;
@@ -1060,9 +1059,6 @@
   }
 }
 
-.libraryCardFeatured {
-  // 메인 노출 카드 스타일 (현재는 일반 카드와 동일)
-}
 
 // Archives B: 투명 배경 카드 (카드 배경과 내용 영역 모두 투명)
 .libraryCardTransparent {
@@ -1127,6 +1123,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1144,6 +1141,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1160,6 +1158,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1287,6 +1286,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

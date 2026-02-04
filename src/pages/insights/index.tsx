@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/common/Header';
 import Menu from '@/components/Menu';
@@ -10,6 +10,7 @@ import FloatingButton from '@/components/common/FloatingButton';
 import Card from '@/components/common/Card';
 import Icon from '@/components/common/Icon';
 import Tab from '@/components/common/Tab';
+import SEO from '@/components/SEO';
 import { get } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
 import styles from './insights.module.scss';
@@ -57,6 +58,7 @@ interface InsightItem {
   isMainExposed: boolean;
   createdAt?: string;
   updatedAt?: string;
+  authorName  ?: string;
 }
 
 interface InsightResponse {
@@ -106,53 +108,81 @@ const InsightsPage: React.FC = () => {
   // 자료실 정보 (이름 등)
   const [dataRoomName, setDataRoomName] = useState<string>('');
 
-  // 현재 사용자 타입 (회원 타입별 카테고리 접근 제어용)
-  const [currentUserType, setCurrentUserType] = useState<string | null>(null);
+  // Track user state for refetching hierarchical data when auth changes
+  const [userAuthKey, setUserAuthKey] = useState<string>('');
 
-  // 사용자 타입 가져오기
+  // Update user auth key when user state changes (for triggering refetch)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const userStr = localStorage.getItem('user');
       if (userStr) {
         try {
-          const user = JSON.parse(userStr);
-          setCurrentUserType(user.memberType || null);
+          const user = JSON.parse(userStr) as { memberType?: string; isApproved?: boolean };
+          const key = `${user.memberType || 'null'}_${user.isApproved || 'null'}`;
+          setUserAuthKey(key);
         } catch {
-          setCurrentUserType(null);
+          setUserAuthKey('null_null');
         }
+      } else {
+        setUserAuthKey('null_null');
       }
     }
   }, []);
-
-  // 카테고리 접근 가능 여부 판단
-  const canAccessCategory = (targetMemberType: string): boolean => {
-    // ALL은 모든 사용자 접근 가능 (비회원 포함)
-    if (targetMemberType === 'ALL') return true;
-
-    // 비로그인 사용자는 ALL만 접근 가능
-    if (!currentUserType) return false;
-
-    // 로그인 사용자는 자신의 타입과 일치하는 카테고리만 접근 가능
-    return currentUserType === targetMemberType;
-  };
 
   // Insights hierarchical 데이터 가져오기
   useEffect(() => {
     const fetchHierarchical = async () => {
       try {
+        // Build query params based on user auth state
+        const params = new URLSearchParams();
+        params.append('limit', '20');
+        params.append('page', '1');
+
+        // Get user from localStorage
+        let memberType: string | null = null;
+        let isApproved: boolean | null = null;
+
+        if (typeof window !== 'undefined') {
+          const userStr = localStorage.getItem('user');
+          if (userStr) {
+            try {
+              const user = JSON.parse(userStr) as { memberType?: string; isApproved?: boolean };
+              memberType = user.memberType || null;
+
+              // Only send isApproved when memberType is INSURANCE
+              if (memberType === 'INSURANCE') {
+                isApproved = user.isApproved ?? false;
+              }
+            } catch {
+              // Invalid user data, treat as not logged in
+            }
+          }
+        }
+
+        // Add memberType to params
+        if (memberType) {
+          params.append('memberType', memberType);
+        } else {
+          // Case 3: Not logged in - send memberType=null
+          params.append('memberType', 'null');
+        }
+
+        // Add isApproved ONLY when memberType is INSURANCE
+        if (memberType === 'INSURANCE' && isApproved !== null) {
+          params.append('isApproved', String(isApproved));
+        }
+
         const response = await get<InsightsHierarchical[]>(
-          `${API_ENDPOINTS.INSIGHTS_HIERARCHICAL}?limit=20&page=1`
+          `${API_ENDPOINTS.INSIGHTS_HIERARCHICAL}?${params.toString()}`
         );
+
         if (response.data && Array.isArray(response.data)) {
-          // isActive + targetMemberType 필터링
-          const accessibleCategories = response.data.filter(d =>
-            d.category.isActive && canAccessCategory(d.category.targetMemberType)
-          );
-          setInsightsHierarchical(accessibleCategories);
+          // Use backend response directly - no frontend filtering
+          setInsightsHierarchical(response.data);
 
           // 첫 번째 카테고리를 기본 탭으로 설정 (아직 설정되지 않은 경우)
-          if (accessibleCategories.length > 0 && !activeTab) {
-            setActiveTab(String(accessibleCategories[0].category.id));
+          if (response.data.length > 0 && !activeTab) {
+            setActiveTab(String(response.data[0].category.id));
           }
         }
       } catch (err) {
@@ -160,8 +190,7 @@ const InsightsPage: React.FC = () => {
       }
     };
     fetchHierarchical();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUserType]);
+  }, [userAuthKey]);
 
   // 현재 선택된 카테고리 데이터
   const currentCategory = insightsHierarchical.find(
@@ -181,83 +210,6 @@ const InsightsPage: React.FC = () => {
       setLibraryDisplayType(displayType);
     }
   }, [currentCategory]);
-
-  // API에서 데이터 가져오기
-  const fetchInsights = async () => {
-    if (!activeTab) return; // 탭이 설정되지 않으면 스킵
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const params = new URLSearchParams();
-      params.append('page', currentPage.toString());
-      params.append('limit', '20');
-      if (searchQuery) {
-        params.append('search', searchQuery);
-      }
-      if (categoryFilter !== 'all') {
-        params.append('category', categoryFilter);
-      }
-      // 현재 선택된 탭의 카테고리 ID 사용
-      params.append('categoryId', activeTab);
-
-      const response = await get<InsightResponse>(
-        `${API_ENDPOINTS.INSIGHTS}?${params.toString()}`
-      );
-
-      if (response.data) {
-        const data = response.data;
-        let filteredItems = data.items || [];
-        
-        // 클라이언트 사이드 카테고리 필터링 (API 필터링이 제대로 작동하지 않는 경우를 대비)
-        // subcategory.name을 기준으로 필터링 (실제 데이터 구조에 맞춤)
-        if (categoryFilter !== 'all') {
-          filteredItems = filteredItems.filter((item) => {
-            // subcategory가 있으면 subcategory.name을 우선 사용, 없으면 category.name 사용
-            const subcategoryName = item.subcategory?.name?.toLowerCase() || '';
-            const categoryName = item.category?.name?.toLowerCase() || '';
-            const categoryType = item.category?.type?.toLowerCase();
-            
-            // 필터링할 이름 결정 (subcategory 우선)
-            const filterName = subcategoryName || categoryName;
-            
-            if (categoryFilter === 'industry') {
-              // 업종별: subcategory.name 또는 category.name에 업종이 포함되고, 컨설팅이 아닌 경우
-              return filterName.includes('업종') && !filterName.includes('컨설팅');
-            } else if (categoryFilter === 'consulting') {
-              // 컨설팅: subcategory.name 또는 category.name에 컨설팅이 포함되고, 업종별이 아닌 경우
-              return filterName.includes('컨설팅') && !filterName.includes('업종');
-            }
-            return true;
-          });
-        }
-        
-        // 클라이언트 사이드 검색 필터링 (API가 검색을 지원하지 않는 경우를 대비)
-        if (searchQuery && searchQuery.trim()) {
-          const query = searchQuery.trim().toLowerCase();
-          filteredItems = filteredItems.filter((item) =>
-            item.title.toLowerCase().includes(query)
-          );
-        }
-        
-        setInsights(filteredItems);
-        setTotal(filteredItems.length);
-        // totalPages 계산
-        const limit = data.limit || 20;
-        const calculatedTotalPages = Math.ceil(filteredItems.length / limit);
-        setTotalPages(calculatedTotalPages);
-      }
-    } catch (err) {
-      console.error('Failed to fetch insights:', err);
-      setError('데이터를 불러오는데 실패했습니다.');
-      setInsights([]);
-      setTotal(0);
-      setTotalPages(1);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // URL 쿼리 파라미터 처리
   useEffect(() => {
@@ -284,19 +236,242 @@ const InsightsPage: React.FC = () => {
   }, [router.isReady, activeTab, categoryFilter, currentPage, searchQuery, currentDataRoom]);
 
   // 검색 핸들러 (Enter 키 또는 검색 버튼 클릭 시)
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1); // 검색 시 첫 페이지로
-  };
-
-  // 검색어 변경 핸들러 (실시간 입력)
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    // 검색어가 비어있으면 즉시 검색 (필터 초기화)
-    if (value === '') {
-      setCurrentPage(1);
+  const handleItemClick = useCallback((id: number) => {
+    const query: Record<string, string> = {};
+    
+    if (activeTab) {
+      query.category = activeTab;
     }
-  };
+    
+    // subcategory filter all emas bo'lsa
+    if (categoryFilter !== 'all') {
+      // subcategory nomini id ga aylantirish kerak
+      const currentCategory = insightsHierarchical.find(d => String(d.category.id) === activeTab);
+      if (currentCategory) {
+        const subcategory = currentCategory.subcategories.find(s => s.name === categoryFilter);
+        if (subcategory) {
+          query.sub = String(subcategory.id);
+        }
+      }
+    }
+    
+    if (searchQuery.trim()) {
+      query.search = searchQuery.trim();
+    }
+    
+    router.push({
+      pathname: `/insights/${id}`,
+      query: query
+    });
+  }, [activeTab, categoryFilter, insightsHierarchical, searchQuery, router]);
+  
+  // search uchun debounce qo'shamiz (1000ms):
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
+  
+  const handleSearchChangeWithDebounce = useCallback((value: string) => {
+    setSearchQuery(value);
+  
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+  
+    const newTimeout = setTimeout(() => {
+      setCurrentPage(1);
+    }, 1000);
+  
+    setSearchTimeout(newTimeout);
+  }, [searchTimeout]);
+  
+  // fetchInsights funksiyasini o'zgartirish (search query bilan):
+  const fetchInsights = useCallback(async () => {
+    if (!activeTab) return;
+  
+    try {
+      setLoading(true);
+      setError(null);
+  
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', '9');
+      
+      // Faqat search query ishlatish
+      if (searchQuery.trim()) {
+        params.append('search', searchQuery.trim());
+      }
+      
+      if (categoryFilter !== 'all') {
+        // subcategory nomini id ga aylantirish
+        const currentCategory = insightsHierarchical.find(d => String(d.category.id) === activeTab);
+        if (currentCategory) {
+          const subcategory = currentCategory.subcategories.find(s => s.name === categoryFilter);
+          if (subcategory) {
+            // sub=0 bo'lsa ham APIga qo'shilmasin, faqat 0 dan farqli bo'lsa
+            params.append('subcategoryId', String(subcategory.id));
+          }
+        }
+      }
+      
+      // 현재 선택된 탭의 카테고리 ID 사용
+      params.append('categoryId', activeTab);
+  
+      // Member type va approval filter qo'shamiz
+      let memberType = null;
+      let isApproved = null;
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('accessToken');
+        const userStr = localStorage.getItem('user');
+        if (token && userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            memberType = user.memberType || null;
+            if (memberType === 'INSURANCE') {
+              isApproved = user.isApproved || null;
+            }
+          } catch (e) {}
+        }
+      }
+  
+      if (memberType) {
+        params.append('memberType', memberType);
+      } else {
+        params.append('memberType', 'null');
+      }
+  
+      if (isApproved !== null) {
+        params.append('isApproved', String(isApproved));
+      }
+  
+      const response = await get<InsightResponse>(
+        `${API_ENDPOINTS.INSIGHTS}?${params.toString()}`
+      );
+  
+      if (response.data) {
+        const data = response.data;
+        setInsights(data.items || []);
+        setTotal(data.total || 0);
+        
+        // totalPages 계산
+        const limit = data.limit || 20;
+        const calculatedTotalPages = Math.ceil((data.total || 0) / limit);
+        setTotalPages(calculatedTotalPages);
+      }
+    } catch (err) {
+      setError('데이터를 불러오는데 실패했습니다.');
+      setInsights([]);
+      setTotal(0);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, currentPage, searchQuery, categoryFilter, insightsHierarchical]);
+  
+  // useEffectni yangilash:
+  useEffect(() => {
+    if (router.isReady && activeTab) {
+      // URL query params bilan fetch
+      const { category, sub, search } = router.query;
+      
+      // category filter
+      if (sub && typeof sub === 'string') {
+        // sub id ni nomiga aylantirish
+        const currentCategory = insightsHierarchical.find(d => String(d.category.id) === activeTab);
+        if (currentCategory) {
+          const subcategory = currentCategory.subcategories.find(s => String(s.id) === sub);
+          if (subcategory) {
+            setCategoryFilter(subcategory.name as CategoryFilter);
+          }
+        }
+      }
+      
+      // search query
+      if (search && typeof search === 'string') {
+        setSearchQuery(search);
+      }
+      
+      fetchInsights();
+    }
+  }, [router.isReady, activeTab, insightsHierarchical, router.query]);
+  
+  // handleSearch va handleSearchChange funksiyalarini yangilash:
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+    
+    // URL ni yangilash
+    const queryParams: Record<string, string> = {};
+    if (activeTab) {
+      queryParams.category = activeTab;
+    }
+    
+    if (categoryFilter !== 'all') {
+      const currentCategory = insightsHierarchical.find(d => String(d.category.id) === activeTab);
+      if (currentCategory) {
+        const subcategory = currentCategory.subcategories.find(s => s.name === categoryFilter);
+        if (subcategory) {
+          queryParams.sub = String(subcategory.id);
+        }
+      }
+    }
+    
+    if (query.trim()) {
+      queryParams.search = query.trim();
+    }
+    
+    router.replace(
+      {
+        pathname: '/insights',
+        query: queryParams,
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [activeTab, categoryFilter, insightsHierarchical, router]);
+  
+  // handleCategoryChange funksiyasini yangilash:
+  const handleCategoryChange = useCallback((category: CategoryFilter) => {
+    setCategoryFilter(category);
+    setCurrentPage(1);
+    
+    // URL ni yangilash
+    const queryParams: Record<string, string> = {};
+    if (activeTab) {
+      queryParams.category = activeTab;
+    }
+    
+    if (category !== 'all') {
+      const currentCategory = insightsHierarchical.find(d => String(d.category.id) === activeTab);
+      if (currentCategory) {
+        const subcategory = currentCategory.subcategories.find(s => s.name === category);
+        if (subcategory) {
+          queryParams.sub = String(subcategory.id);
+        }
+      }
+    }
+    
+    if (searchQuery.trim()) {
+      queryParams.search = searchQuery.trim();
+    }
+    
+    router.replace(
+      {
+        pathname: '/insights',
+        query: queryParams,
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [activeTab, insightsHierarchical, searchQuery, router]);
+  
+  // handleTabChange funksiyasini yangilash:
+  const handleTabChange = useCallback((tabId: string) => {
+    setActiveTab(tabId);
+    setCurrentPage(1);
+    setCategoryFilter('all');
+    setSearchQuery('');
+  
+    // URL 업데이트 - faqat category bilan
+    router.push(`/insights?category=${tabId}`, undefined, { shallow: true });
+  }, [router]);
 
   // 정렬 핸들러
   const handleSort = (field: SortField) => {
@@ -341,21 +516,21 @@ const InsightsPage: React.FC = () => {
   };
 
   // 탭 변경 핸들러
-  const handleTabChange = (tabId: string) => {
-    setActiveTab(tabId);
-    setCurrentPage(1);
-    setCategoryFilter('all');
-    setSearchQuery('');
+  // const handleTabChange = (tabId: string) => {
+  //   setActiveTab(tabId);
+  //   setCurrentPage(1);
+  //   setCategoryFilter('all');
+  //   setSearchQuery('');
 
-    // URL 업데이트 - category 파라미터 사용
-    router.push(`/insights?category=${tabId}`, undefined, { shallow: true });
-  };
+  //   // URL 업데이트 - category 파라미터 사용
+  //   router.push(`/insights?category=${tabId}`, undefined, { shallow: true });
+  // };
 
-  // 카테고리 필터 변경 핸들러
-  const handleCategoryChange = (category: CategoryFilter) => {
-    setCategoryFilter(category);
-    setCurrentPage(1);
-  };
+  // // 카테고리 필터 변경 핸들러
+  // const handleCategoryChange = (category: CategoryFilter) => {
+  //   setCategoryFilter(category);
+  //   setCurrentPage(1);
+  // };
 
   // 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
@@ -363,10 +538,7 @@ const InsightsPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 게시물 클릭 핸들러
-  const handleItemClick = (id: number) => {
-    router.push(`/insights/${id}`);
-  };
+  
 
   // 날짜 포맷팅
   const formatDate = (dateString: string) => {
@@ -385,7 +557,9 @@ const InsightsPage: React.FC = () => {
   // tabItems는 상단에서 동적으로 생성됨 (insightsHierarchical에서)
 
   return (
-    <div className={styles.insightsPage}>
+    <>
+      <SEO menuName="인사이트" />
+      <div className={styles.insightsPage}>
       <Header
         variant="transparent"
         onMenuClick={() => setIsMenuOpen(true)}
@@ -430,7 +604,7 @@ const InsightsPage: React.FC = () => {
                 <SearchField
                   placeholder="제목을 입력해주세요"
                   value={searchQuery}
-                  onChange={handleSearchChange}
+                  onChange={handleSearchChangeWithDebounce}
                   onSearch={handleSearch}
                   fullWidth
                 />
@@ -504,7 +678,7 @@ const InsightsPage: React.FC = () => {
                     <SearchField
                       placeholder="제목을 입력해주세요"
                       value={searchQuery}
-                      onChange={handleSearchChange}
+                      onChange={handleSearchChangeWithDebounce}
                       onSearch={handleSearch}
                       fullWidth
                     />
@@ -556,7 +730,7 @@ const InsightsPage: React.FC = () => {
                                 description={plainContent.length > 150
                                   ? `${plainContent.substring(0, 150)}...`
                                   : plainContent}
-                                author="작성자명"
+                                author={item.authorName ? item.authorName : "작성자명"}
                                 date={item.createdAt ? formatDate(item.createdAt) : ''}
                                 onClick={() => handleItemClick(item.id)}
                                 className={item.isMainExposed ? styles.featuredCard : ''}
@@ -776,7 +950,7 @@ const InsightsPage: React.FC = () => {
                 <SearchField
                   placeholder="제목을 입력해주세요"
                   value={searchQuery}
-                  onChange={handleSearchChange}
+                  onChange={handleSearchChangeWithDebounce}
                   onSearch={handleSearch}
                   fullWidth
                 />
@@ -857,7 +1031,7 @@ const InsightsPage: React.FC = () => {
                       <SearchField
                         placeholder="제목을 입력해주세요"
                         value={searchQuery}
-                        onChange={handleSearchChange}
+                        onChange={handleSearchChangeWithDebounce}
                         onSearch={handleSearch}
                         fullWidth
                       />
@@ -1097,6 +1271,7 @@ const InsightsPage: React.FC = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

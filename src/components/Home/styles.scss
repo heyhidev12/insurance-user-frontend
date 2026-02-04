@@ -1834,27 +1834,32 @@
   will-change: opacity, transform;
   transform-origin: center center;
 
-  @media (max-width: $breakpoint-wide) {
-    font-size: clamp(60px, 12vw, 180px);
-  }
+  // @media (max-width: $breakpoint-wide) {
+  //   font-size: clamp(60px, 12vw, 180px);
+  // }
 
   @media (max-width: $breakpoint-tablet) {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    color: #FFF;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    font-size: 15.203px !important;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%;
-    letter-spacing: -0.304px;
-    text-transform: uppercase;
-    width: 100%;
-    padding: 260px $spacing-24 $spacing-16;
-    opacity: 1 !important;
+    // position: relative !important;
+    // top: auto !important;
+    // left: auto !important;
+    // transform: none !important;
+    // top: 50% !important;
+    // left: 50% !important;
+    // transform: translate(-50%, -50%) !important;
+    // color: #FFF;
+    // text-align: center;
+    // font-family: 'Inter', sans-serif;
+    // font-size: 15.203px !important;
+    // font-style: normal;
+    // font-weight: 600;
+    // line-height: 150%;
+    // letter-spacing: -0.304px;
+    // text-transform: uppercase;
+    // width: 100%;
+    padding: 2960px $spacing-24 $spacing-16;
+    // opacity: 1 !important;
+    
+    // transform: translateY(-100px) !important;
   }
 }
 
@@ -1869,14 +1874,14 @@
   max-width: 1200px;
   padding: 0 $spacing-24;
 
-  @media (max-width: $breakpoint-tablet) {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    padding: 0 $spacing-24 $spacing-40;
-    opacity: 1 !important;
-  }
+  // @media (max-width: $breakpoint-tablet) {
+  //   position: relative !important;
+  //   top: auto !important;
+  //   left: auto !important;
+  //   transform: none !important;
+  //   padding: 0 $spacing-24 $spacing-40;
+  //   opacity: 1 !important;
+  // }
 }
 
 .system-headline {
@@ -2981,6 +2986,9 @@
 }
 
 .final-cta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 48px;
   padding: 20px 64px;
   font-family: $font-pretendard;

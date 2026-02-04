@@ -170,10 +170,8 @@
 .historyHeroTitle {
   color: var(--grayscale-0, #FFF);
   text-align: center;
-  leading-trim: both;
-  text-edge: cap;
   font-family: 'Montserrat', sans-serif;
-  font-size: 120px;
+  font-size: 100px;
   font-style: normal;
   font-weight: 300;
   line-height: 150%; /* 180px */
@@ -307,8 +305,7 @@
 
 .titleMain {
   color: var(--grayscale-30, #D8D8D8);
-  leading-trim: both;
-  text-edge: cap;
+  
   font-family: 'Montserrat', sans-serif;
   font-size: 72px;
   font-style: normal;
@@ -331,8 +328,7 @@
 
 .titleSub {
   color: var(--grayscale-30, #D8D8D8);
-  leading-trim: both;
-  text-edge: cap;
+  
   font-family: 'Montserrat', sans-serif;
   font-size: 72px;
   font-style: normal;
@@ -648,8 +644,7 @@
   flex-direction: column;
   gap: 0;
   color: white;
-  leading-trim: both;
-  text-edge: cap;
+  
   font-family: 'Montserrat', sans-serif;
   font-size: 72px;
   font-style: normal;
@@ -680,8 +675,7 @@
     font-weight: inherit;
     line-height: inherit;
     letter-spacing: inherit;
-    leading-trim: inherit;
-    text-edge: inherit;
+    
   }
 }
 
@@ -983,8 +977,7 @@
   flex-direction: column;
   gap: 0;
   color: white;
-  leading-trim: both;
-  text-edge: cap;
+  
   font-family: 'Montserrat', sans-serif;
   font-size: 72px;
   font-style: normal;
@@ -1007,7 +1000,7 @@
   @media (max-width: $breakpoint-tablet) {
     font-size: 44px;
     line-height: 1.1;
-    gap: 20px;
+    gap: 0px;
     margin-bottom: 40px;
     opacity: 0.2;
   }
@@ -1022,8 +1015,7 @@
     font-weight: inherit;
     line-height: inherit;
     letter-spacing: inherit;
-    leading-trim: inherit;
-    text-edge: inherit;
+    
   }
 }
 
@@ -1154,7 +1146,7 @@
   margin: 56px 0;
 
   @media (max-width: $breakpoint-tablet) {
-    margin: 40px 0;
+    margin: 10px 0;
   }
 }
 
@@ -1165,11 +1157,11 @@
   flex: 1;
 
   @media (max-width: $breakpoint-desktop) {
-    gap: 40px;
+    gap: 20px;
   }
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 40px;
+    gap: 20px;
   }
 }
 
@@ -1213,14 +1205,14 @@
     display: flex;
     flex-direction: column;
     gap: 48px;
-    padding: 40px 20px 48px;
+    padding: 40px 20px 64px;
   }
 }
 
 
 // Awards Section
 .awardsSection {
-  padding: 160px 0;
+  padding: 120px 0;
   max-width: 1920px;
   margin: 0 auto;
   width: 100%;
@@ -1231,7 +1223,7 @@
   }
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 56px 0 40px;
+    padding: 40px 0 120px;
   }
 }
 
@@ -1243,8 +1235,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 32px;
-    padding-bottom: 20px;
+    gap: 12px;
+    padding-bottom: 40px;
   }
 }
 
@@ -1285,7 +1277,7 @@
 .awardsMainTitle {
   color: var(--grayscale-0, #FFF);
   font-family: 'Montserrat', sans-serif;
-  font-size: 120px;
+  font-size: 100px;
   font-style: normal;
   font-weight: 300;
   line-height: 150%;
@@ -1367,10 +1359,10 @@
 .awardsYearGroup {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 0px;
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 48px;
+    gap: 16px;
   }
 }
 
@@ -1387,7 +1379,7 @@
 }
 
 .awardsYearTitle {
-  padding-top: 80px;
+  padding-top: 70px;
 
   @media (max-width: $breakpoint-desktop) {
     padding-top: 60px;
@@ -1398,10 +1390,10 @@
   }
 
   &.awardsYearTitleFirst {
-    padding-top: 80px;
+    padding-top: 40px;
 
     @media (max-width: $breakpoint-desktop) {
-      padding-top: 60px;
+      padding-top: 30px;
     }
 
     @media (max-width: $breakpoint-tablet) {
@@ -1412,12 +1404,12 @@
   h3 {
     color: var(--grayscale-30, #D8D8D8);
     font-family: 'Montserrat', sans-serif;
-    font-size: 72px;
+    font-size: 62px;
     font-style: normal;
     font-weight: 300;
     line-height: 150%;
     letter-spacing: -3px;
-    margin: 0;
+    margin: 0 0 10px 0;
 
     @media (max-width: $breakpoint-desktop) {
       font-size: 48px;
@@ -1428,6 +1420,7 @@
       font-weight: 300;
       line-height: 1.1;
       color: white;
+      margin-top: 40px;
     }
   }
 }
@@ -1438,11 +1431,11 @@
   gap: 24px;
 
   @media (max-width: $breakpoint-desktop) {
-    gap: 20px;
+    gap: 16px;
   }
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 16px;
+    gap: 12px;
   }
 }
 
@@ -1451,14 +1444,17 @@
   flex-direction: column;
   gap: 24px;
   width: calc(33.333% - 16px);
+  margin-bottom: 32px;
 
   @media (max-width: $breakpoint-desktop) {
     width: calc(50% - 12px);
+    margin-bottom: 4px;
   }
 
   @media (max-width: $breakpoint-tablet) {
     width: calc(50% - 8px); // 2-column on mobile
-    gap: 20px;
+    gap: 12px;
+    margin-bottom: 4px;
   }
 }
 
@@ -1497,12 +1493,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 0px;
 
   @media (max-width: $breakpoint-tablet) {
     width: 90px;
     height: 127px;
-    padding: 8px;
+    padding: 0px;
   }
 }
 
@@ -1516,10 +1512,10 @@
 .awardCardInfo {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 16px;
+    gap: 6px;
   }
 }
 
@@ -1569,13 +1565,14 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  height: 450px;
 
   @media (max-width: $breakpoint-desktop) {
     height: 400px;
   }
 
   @media (max-width: $breakpoint-tablet) {
-    height: 300px;
+    height: 220px;
   }
 }
 
@@ -1622,15 +1619,17 @@
   pointer-events: none;
 
   @media (max-width: $breakpoint-tablet) {
-    font-size: 17px;
-    top: calc(50% - 75px);
+
+    letter-spacing: -.075px;
+    font-size: 15px;
+    top: calc(50% - 40px);
   }
 }
 
 .customersHeroTitle {
   font-family: $font-montserrat;
   font-weight: $font-weight-light;
-  font-size: 120px;
+  font-size: 100px;
   line-height: 1.5;
   letter-spacing: -3px;
   color: $white;
@@ -1649,19 +1648,19 @@
   }
 
   @media (max-width: $breakpoint-tablet) {
-    font-size: 60px;
+    font-size: 44px;
     letter-spacing: -1px;
   }
 }
 
 .customersSection {
   width: 100%;
-  padding: 160px 0 180px;
+  padding: 160px 0 240px;
   max-width: 1440px;
   margin: 0 auto;
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 80px 0 100px;
+    padding: 80px 0 120px;
   }
 }
 
@@ -1722,12 +1721,14 @@
   width: 100vw;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
-  height: 549px;
+  
+  height: 450px;
   margin-top: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  
 
   @media (max-width: $breakpoint-desktop) {
     height: 400px;
@@ -1735,7 +1736,7 @@
 
   @media (max-width: $breakpoint-tablet) {
     height: auto;
-    min-height: 200px;
+    height: 220px;
     padding: 80px 20px;
   }
 }
@@ -1755,6 +1756,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  
 }
 
 .ciHeroOverlay {
@@ -1815,7 +1817,7 @@
   gap: 31px;
   color: white;
   font-family: 'Montserrat', sans-serif;
-  font-size: 120px;
+  font-size: 100px;
   font-weight: 300;
   line-height: 1.5;
   letter-spacing: -3px;
@@ -1865,12 +1867,12 @@
 }
 
 .ciContentSection {
-  padding: 100px 0 160px;
+  padding: 100px 0 200px;
   width: 100%;
   box-sizing: border-box;
 
   @media (max-width: $breakpoint-desktop) {
-    padding: 80px 0 120px;
+    padding: 80px 0 10px;
   }
 
   @media (max-width: $breakpoint-tablet) {
@@ -1942,8 +1944,8 @@
 
   @media (max-width: $breakpoint-tablet) {
     display: block;
-    margin-top: 60px;
-    margin-bottom: 80px;
+    margin-top: 56px;
+    margin-bottom: 48px;
   }
 }
 
@@ -1974,12 +1976,13 @@
 .ciCardsWrapper {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
   padding: 0;
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 40px;
-    padding: 20px 20px 80px;
+    // gap: 40px;
+    gap: 12px;
+    padding: 0px 0px 80px;
   }
 }
 
@@ -1987,7 +1990,7 @@
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  padding: 0 80px;
+  padding: 0 20px;
 
   @media (max-width: $breakpoint-desktop) {
     flex-direction: column;
@@ -2035,10 +2038,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 16px;
+    gap: 4px;
   }
 }
 
@@ -2078,12 +2081,13 @@
 .ciColorGuideItemDescription {
   font-family: $font-pretendard;
   font-weight: $font-weight-regular;
-  font-size: 17px;
+  font-size: 15px;
   line-height: 1.5;
   letter-spacing: -0.085px;
   color: white;
   text-align: center;
   margin: 0;
+  font-size: 16px;
 
   @media (max-width: $breakpoint-tablet) {
     font-size: 13px;
@@ -2094,7 +2098,7 @@
 .ciColorGuideDividerVertical {
   width: 1px;
   height: 240px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
   flex-shrink: 0;
 
   @media (max-width: $breakpoint-desktop) {
@@ -2107,7 +2111,7 @@
   background-color: rgba(255, 255, 255, 0.04);
   border-radius: 16px;
   padding: 100px;
-  margin-top: 64px;
+  margin-top: 8px;
 
   @media (max-width: $breakpoint-desktop) {
     padding: 80px 60px;
@@ -2348,7 +2352,7 @@
   width: 100vw;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
-  min-height: 600px;
+  min-height: 0px;
   padding: 140px 240px;
   overflow: hidden;
   display: flex;
@@ -2362,8 +2366,8 @@
   }
 
   @media (max-width: $breakpoint-tablet) {
-    min-height: 375px;
-    height: 375px;
+    min-height: 220px;
+    height: 220px;
     padding: 32px 0;
     width: 100vw;
     margin-left: -20px;
@@ -2436,10 +2440,11 @@
   @media (max-width: $breakpoint-tablet) {
     position: static;
     transform: none;
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: -0.065px;
+    font-size: 15px;
+    font-weight: 500;
     order: 1;
+    letter-spacing: -.075px;
+    top: calc(50% - 40px);
   }
 }
 
@@ -2450,7 +2455,7 @@
   gap: 31px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 120px;
+  font-size: 100px;
   line-height: 1.5;
   letter-spacing: -3px;
   color: white;
@@ -2520,11 +2525,11 @@
   margin-bottom: 88px;
 
   @media (max-width: $breakpoint-desktop) {
-    margin-bottom: 64px;
+    margin-bottom: 72px;
   }
 
   @media (max-width: $breakpoint-tablet) {
-    margin-bottom: 24px;
+    margin-bottom: 72px;
   }
 }
 
@@ -2550,11 +2555,12 @@
 .branchItem {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   padding: 0;
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 12px;
+    gap: 0px;
+    align-items: center;
   }
 }
 
@@ -2566,8 +2572,9 @@
 
   @media (max-width: $breakpoint-tablet) {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+    // align-items: flex-start;
+    align-items: center;
+    gap: 0px;
   }
 }
 
@@ -2581,7 +2588,7 @@
   margin: 0;
 
   @media (max-width: $breakpoint-tablet) {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: $font-weight-semibold;
     letter-spacing: -0.085px;
   }
@@ -2592,7 +2599,7 @@
   align-items: center;
   gap: 0;
   height: 32px;
-  padding: 0 8px;
+  padding: 0 4px;
 }
 
 .branchSocialLink {
@@ -2612,12 +2619,20 @@
     height: 100%;
     object-fit: contain;
   }
+
+  @media (max-width: $breakpoint-tablet) {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+  }
+
+
 }
 
 .branchSocialDivider {
   width: 1px;
   height: 20px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.098);
   margin: 0 8px;
   flex-shrink: 0;
 }
@@ -2625,16 +2640,18 @@
 .branchAddress {
   font-family: $font-pretendard;
   font-weight: $font-weight-medium;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.5;
   letter-spacing: -0.085px;
-  color: #d8d8d8;
+  color: #d8d8d89b;
   margin: 0;
+  margin-top: 16px;
+  margin-bottom: 16px;
 
   @media (max-width: $breakpoint-tablet) {
     font-size: 13px;
     letter-spacing: -0.065px;
-    color: #8e8e8e;
+    color: #b6b6b6;
   }
 }
 
@@ -2649,9 +2666,10 @@
 
   @media (max-width: $breakpoint-tablet) {
     background-color: transparent;
-    padding: 0;
+    padding: 12;
     gap: 8px;
-    border-radius: 0;
+    border-radius: 8;
+    background-color: rgb(127 127 127 / 16%);
   }
 }
 
@@ -2699,11 +2717,11 @@
 .branchDivider {
   width: 100%;
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
-  margin: 32px 0;
+  background-color: rgba(255, 255, 255, 0.042);
+  margin: 40px 0;
 
   @media (max-width: $breakpoint-tablet) {
-    margin: 20px 0;
+    margin: 32px 0;
   }
 }
 
@@ -2742,6 +2760,11 @@
     background-size: cover;
     background-position: center;
     z-index: 0;
+      @media (max-width: $breakpoint-tablet) {
+    min-height: 400px;
+    padding: 60px 24px;
+  }
+    
   }
 }
 
@@ -2793,7 +2816,7 @@
   gap: 31px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 120px;
+  font-size: 100px;
   line-height: 1.5;
   letter-spacing: -3px;
   color: white;
@@ -2982,15 +3005,17 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  
 
   h3 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: 120px;
+    font-size: 100px;
     line-height: 1.5;
     letter-spacing: -3px;
     color: white;
     margin: 0;
+    
 
     @media (max-width: $breakpoint-desktop) {
       font-size: 80px;

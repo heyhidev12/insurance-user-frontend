@@ -23,14 +23,13 @@ import '@/components/common/PageHeader/styles.scss';
 import '@/components/common/Card/styles.scss';
 // FloatingButton은 CSS Modules로 변경되어 _app.tsx에서 import 불필요
 import type { AppProps } from 'next/app';
-import Head from 'next/head';
+import SEO from '@/components/SEO';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-      </Head>
+      {/* Default SEO for all pages - can be overridden by individual pages */}
+      <SEO />
       <Component {...pageProps} />
     </>
   );

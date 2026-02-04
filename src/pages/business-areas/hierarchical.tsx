@@ -157,7 +157,7 @@ const HierarchicalPage: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.loading}>Loading...</div>
       </div>
@@ -167,7 +167,7 @@ const HierarchicalPage: React.FC = () => {
   if (error || allData.length === 0) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.error}>{error || '데이터를 불러올 수 없습니다.'}</div>
       </div>
@@ -176,7 +176,7 @@ const HierarchicalPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <div className={styles.container}>

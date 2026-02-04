@@ -84,6 +84,9 @@
     width: 100%;
   }
 }
+:global(.page-header__content) {
+  gap: 20px !important;
+}
 
 .categoryColumn {
   display: flex;
@@ -105,7 +108,7 @@
   }
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 24px 20px;
+    padding: 20px 16px;
   }
 }
 
@@ -191,10 +194,6 @@
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
-}
-
-.categoryItemFirst {
-  // Default 상태에서 배경색 없음 (hover 시에만 배경색 표시)
 }
 
 .itemName {

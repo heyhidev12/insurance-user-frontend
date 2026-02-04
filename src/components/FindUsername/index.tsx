@@ -375,7 +375,7 @@ const FindUsername: React.FC = () => {
 
   return (
     <div className="auth-page-container">
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       <section className="auth-content-section">
         <h1 className="auth-page-title">FIND USERNAME</h1>

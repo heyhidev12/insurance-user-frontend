@@ -248,6 +248,52 @@ const BusinessAreaDetailPage: React.FC = () => {
     }
   };
 
+  const getUserAuthState = () => {
+    if (typeof window === 'undefined') {
+      return { isLoggedIn: false, memberType: null, isApproved: null };
+    }
+    
+    const token = localStorage.getItem('accessToken');
+    const userStr = localStorage.getItem('user');
+    
+    if (!token || !userStr) {
+      return { isLoggedIn: false, memberType: null, isApproved: null };
+    }
+    
+    try {
+      const user = JSON.parse(userStr);
+      return {
+        isLoggedIn: true,
+        memberType: user.memberType || null,
+        isApproved: user.memberType === 'INSURANCE' ? user.isApproved : null,
+      };
+    } catch {
+      return { isLoggedIn: false, memberType: null, isApproved: null };
+    }
+  };
+
+  const buildUserFilterParams = () => {
+    const { isLoggedIn, memberType, isApproved } = getUserAuthState();
+    
+    const params = new URLSearchParams();
+    
+    if (!isLoggedIn) {
+      // Not logged in: explicitly send memberType=null for guest filtering
+      params.append('memberType', 'null');
+      return `&${params.toString()}`;
+    }
+    
+    // Logged in: send actual user data
+    if (memberType) {
+      params.append('memberType', memberType);
+    }
+    if (isApproved !== null) {
+      params.append('isApproved', String(isApproved));
+    }
+    
+    return params.toString() ? `&${params.toString()}` : '';
+  };
+
   const fetchRelatedData = async () => {
     try {
       // 관련 업무 세무사 가져오기 (workArea 파라미터 사용)
@@ -286,8 +332,10 @@ const BusinessAreaDetailPage: React.FC = () => {
 
       // 관련 소식 가져오기
       try {
+        const userParams = buildUserFilterParams();
         const newsResponse = await get<InsightResponse>(
-          `${API_ENDPOINTS.INSIGHTS}?page=1&limit=4`
+          `${API_ENDPOINTS.INSIGHTS}?page=1&limit=10${userParams}&subMinorCategoryId=${data?.minorCategory.id}`,
+
         );
         if (newsResponse.data?.items) {
           setRelatedNews(newsResponse.data.items);
@@ -402,7 +450,7 @@ const BusinessAreaDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.loading}>로딩 중...</div>
@@ -415,7 +463,7 @@ const BusinessAreaDetailPage: React.FC = () => {
   if (error || !data) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.error}>
@@ -437,7 +485,7 @@ const BusinessAreaDetailPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <div className={styles.container}>

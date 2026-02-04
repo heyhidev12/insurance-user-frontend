@@ -9,6 +9,7 @@ import FloatingButton from '@/components/common/FloatingButton';
 import PageHeader from '@/components/common/PageHeader';
 import ContentBox from '@/components/common/ContentBox';
 import Icon from '@/components/common/Icon';
+import SEO from '@/components/SEO';
 import { get } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
 import styles from './detail.module.scss';
@@ -52,6 +53,11 @@ interface MemberDetail {
   displayOrder: number;
 }
 
+interface InsightSubminorCategory {
+  id: number;
+  name: string;
+}
+
 interface InsightItem {
   id: number;
   title: string;
@@ -61,7 +67,8 @@ interface InsightItem {
   };
   createdAt?: string;
   category?: string | { id: number; name: string; type: string };
-  author?: string;
+  authorName?: string;
+  subMinorCategory?: InsightSubminorCategory;
 }
 
 interface InsightResponse {
@@ -94,9 +101,15 @@ const ExpertDetailPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       fetchExpertDetail();
-      fetchRelatedNews();
     }
   }, [id]);
+
+  // Fetch related news after expert data is loaded
+  useEffect(() => {
+    if (id && data?.name) {
+      fetchRelatedNews();
+    }
+  }, [id, data?.name]);
 
   const fetchExpertDetail = async () => {
     setLoading(true);
@@ -119,14 +132,72 @@ const ExpertDetailPage: React.FC = () => {
     }
   };
 
-  const fetchRelatedNews = async () => {
+  const getUserAuthState = () => {
+    if (typeof window === 'undefined') {
+      return { isLoggedIn: false, memberType: null, isApproved: null };
+    }
+    
+    const token = localStorage.getItem('accessToken');
+    const userStr = localStorage.getItem('user');
+    
+    if (!token || !userStr) {
+      return { isLoggedIn: false, memberType: null, isApproved: null };
+    }
+    
     try {
+      const user = JSON.parse(userStr);
+      return {
+        isLoggedIn: true,
+        memberType: user.memberType || null,
+        isApproved: user.memberType === 'INSURANCE' ? user.isApproved : null,
+      };
+    } catch {
+      return { isLoggedIn: false, memberType: null, isApproved: null };
+    }
+  };
+
+  // Build query params for API calls with user filtering
+  const buildUserFilterParams = () => {
+    const { isLoggedIn, memberType, isApproved } = getUserAuthState();
+    
+    const params = new URLSearchParams();
+    
+    if (!isLoggedIn) {
+      // Not logged in: explicitly send memberType=null for guest filtering
+      params.append('memberType', 'null');
+      return `&${params.toString()}`;
+    }
+    
+    // Logged in: send actual user data
+    if (memberType) {
+      params.append('memberType', memberType);
+    }
+    if (isApproved !== null) {
+      params.append('isApproved', String(isApproved));
+    }
+    
+    return params.toString() ? `&${params.toString()}` : '';
+  };
+
+  const fetchRelatedNews = async () => {
+    // Only fetch if expert data is available
+    if (!data?.name) {
+      return;
+    }
+
+    try {
+      const userParams = buildUserFilterParams();
       const response = await get<InsightResponse>(
-        `${API_ENDPOINTS.INSIGHTS}?page=1&limit=4`
+        `${API_ENDPOINTS.INSIGHTS}?page=1&limit=100${userParams}`
       );
 
       if (response.data) {
-        setRelatedNews(response.data.items || []);
+        // Filter news to only show items where authorName matches current expert's name
+        const allNews = response.data.items || [];
+        const filteredNews = allNews.filter(
+          (news) => news.authorName === data.name
+        );
+        setRelatedNews(filteredNews);
       }
     } catch (err) {
       console.error('관련 소식을 불러오는 중 오류:', err);
@@ -164,7 +235,11 @@ const ExpertDetailPage: React.FC = () => {
       window.open(data.vcard.url, '_blank');
     }
   };
-
+  const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
+  };
   const handleDownloadPDF = () => {
     if (data?.pdf?.url) {
       window.open(data.pdf.url, '_blank');
@@ -198,7 +273,7 @@ const ExpertDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.loading}>로딩 중...</div>
@@ -211,7 +286,7 @@ const ExpertDetailPage: React.FC = () => {
   if (error || !data) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.error}>
@@ -230,8 +305,14 @@ const ExpertDetailPage: React.FC = () => {
   ];
 
   return (
-    <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+    <>
+      <SEO
+        pageTitle={data?.name ? `${data.name} 세무사` : undefined}
+        menuName="전문가 소개"
+        description={data?.oneLineIntro || `${data?.name || ''} 세무사 전문가 소개 페이지입니다.`}
+      />
+      <div className={styles.page}>
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       {/* Hero Section - Full Width */}
@@ -250,10 +331,14 @@ const ExpertDetailPage: React.FC = () => {
                 <div className={styles.desktopActionButtons}>
                   <button
                     className={styles.desktopActionButton}
-                    onClick={() => router.push(`/experts/${id}`)}
+                    onClick={handlePrint}
                     aria-label="이력서 보기"
                   >
-                    <Icon type="resume" size={20} />
+                    <img
+                      src="/images/insights/icons/printer.svg"
+                      alt="프린트"
+                      className={styles.icon}
+                    />
                   </button>
                   <span className={styles.desktopActionDivider} />
                   {data.vcard?.url && (
@@ -296,8 +381,8 @@ const ExpertDetailPage: React.FC = () => {
         <div className={styles.heroContainer}>
           <div className={styles.heroImageWrapper}>
             {data.mainPhoto?.url && !imageError ? (
-              <img 
-                src={data.mainPhoto.url} 
+              <img
+                src={data.mainPhoto.url}
                 alt={data.name}
                 className={styles.heroImage}
                 onError={() => setImageError(true)}
@@ -356,10 +441,14 @@ const ExpertDetailPage: React.FC = () => {
               <div className={styles.heroActionButtons}>
                 <button
                   className={styles.heroActionButton}
-                  onClick={() => router.push(`/experts/${id}`)}
+                  onClick={handlePrint}
                   aria-label="이력서 보기"
                 >
-                  <Icon type="resume" size={20} />
+                  <img
+                    src="/images/insights/icons/printer.svg"
+                    alt="프린트"
+                    className={styles.icon}
+                  />
                 </button>
                 {data.vcard?.url && (
                   <button
@@ -598,44 +687,45 @@ const ExpertDetailPage: React.FC = () => {
                 >
                   {Array.from({ length: Math.ceil(relatedNews.length / 4) }).map((_, pageIndex) => (
                     <div key={pageIndex} className={styles.newsPage}>
-                      {relatedNews.slice(pageIndex * 4, (pageIndex + 1) * 4).map((news) => (
-                        <div
-                          key={news.id}
-                          className={styles.newsCard}
-                          onClick={() => router.push(`/insights/${news.id}`)}
-                        >
-                          {news.thumbnail?.url && (
-                            <div className={styles.newsThumbnail}>
-                              <img src={news.thumbnail.url} alt={news.title} />
-                            </div>
-                          )}
-                          <div className={styles.newsInfo}>
-                            <div className={styles.newsHeader}>
-                              {news.category && (
+                      {relatedNews.slice(pageIndex * 4, (pageIndex + 1) * 4).map((news) =>
+                        data.name === news.authorName && (
+                          <div
+                            key={news.id}
+                            className={styles.newsCard}
+                            onClick={() => router.push(`/insights/${news.id}`)}
+                          >
+                            {news.thumbnail?.url && (
+                              <div className={styles.newsThumbnail}>
+                                <img src={news.thumbnail.url} alt={news.title} />
+                              </div>
+                            )}
+                            <div className={styles.newsInfo}>
+                              <div className={styles.newsHeader}>
                                 <p className={styles.newsCategory}>
-                                  {typeof news.category === 'string' 
-                                    ? news.category 
-                                    : (typeof news.category === 'object' && news.category?.name 
-                                      ? news.category.name 
-                                      : '카테고리')}
+                                  {
+                                    news.subMinorCategory
+                                      ? news.subMinorCategory.name
+                                      : '카테고리'
+                                  }
+
                                 </p>
-                              )}
-                              <h3 className={styles.newsTitle}>{news.title}</h3>
-                            </div>
-                            <div className={styles.newsMeta}>
-                              {news.author && (
-                                <>
-                                  <span className={styles.newsAuthor}>{news.author}</span>
-                                  <span className={styles.newsSeparator}>•</span>
-                                </>
-                              )}
-                              {news.createdAt && (
-                                <span className={styles.newsDate}>{formatDate(news.createdAt)}</span>
-                              )}
+                                <h3 className={styles.newsTitle}>{news.title}</h3>
+                              </div>
+                              <div className={styles.newsMeta}>
+                                {news.authorName && (
+                                  <>
+                                    <span className={styles.newsAuthor}>{news.authorName}</span>
+                                    <span className={styles.newsSeparator}>•</span>
+                                  </>
+                                )}
+                                {news.createdAt && (
+                                  <span className={styles.newsDate}>{formatDate(news.createdAt)}</span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   ))}
                 </div>
@@ -660,6 +750,7 @@ const ExpertDetailPage: React.FC = () => {
         />
       </div>
     </div>
+    </>
   );
 };
 

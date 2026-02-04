@@ -15,14 +15,6 @@ import { API_ENDPOINTS } from '@/config/api';
 type StepType = 1 | 2 | 3;
 type MemberType = 'general' | 'taxAccountant' | 'other';
 
-const CARRIER_OPTIONS = [
-  { value: '', label: '통신사 선택' },
-  { value: 'skt', label: 'SKT' },
-  { value: 'kt', label: 'KT' },
-  { value: 'lgu', label: 'LG U+' },
-  { value: 'mvno', label: '알뜰폰' },
-];
-
 const DOMAIN_OPTIONS = [
   { value: 'naver.com', label: 'naver.com' },
   { value: 'google.com', label: 'google.com' },
@@ -63,7 +55,6 @@ const Signup: React.FC = () => {
   const [emailDomain, setEmailDomain] = useState('');
   const [selectedDomainOption, setSelectedDomainOption] = useState('');
   const [newsletter, setNewsletter] = useState(false);
-  const [carrier, setCarrier] = useState('');
   const [phone, setPhone] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
@@ -94,6 +85,26 @@ const Signup: React.FC = () => {
     }
     return () => clearInterval(interval);
   }, [isTimerActive, timeLeft]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+  
+    const error = router.query.error as string;
+    if (!error) return;
+  
+    if (error === 'WITHDRAWN') {
+      alert('회원 탈퇴된 계정입니다. 다시 회원가입해 주세요.');
+    }
+  
+    if (error === 'NOT_REGISTERED') {
+      alert('회원 가입되지 않은 계정입니다. 회원가입을 진행해 주세요.');
+    }
+  
+    setTimeout(() => {
+      router.replace('/signup', undefined, { shallow: true });
+    }, 300);
+  
+  }, [router.isReady, router.query.error]);
 
   // 비밀번호 확인 검증 (입력 중에는 오류를 표시하지 않음)
   useEffect(() => {
@@ -204,7 +215,7 @@ const Signup: React.FC = () => {
   }, [userId]);
 
   const handleRequestVerification = useCallback(async () => {
-    if (!carrier || !phone) {
+    if (!phone) {
       setPhoneError('휴대폰번호를 입력해주세요');
       return;
     }
@@ -234,7 +245,7 @@ const Signup: React.FC = () => {
     } catch (err) {
       setPhoneError('인증번호 발송에 실패했습니다.');
     }
-  }, [phone, carrier]);
+  }, [phone]);
 
   const handleVerifyCode = useCallback(async () => {
     if (!verificationCode) {
@@ -380,7 +391,7 @@ const Signup: React.FC = () => {
     }
     
     // 휴대폰 번호 검증
-    if (!carrier || !phone) {
+    if (!phone) {
       setPhoneError('휴대폰번호를 입력해주세요');
       hasError = true;
     }
@@ -396,7 +407,7 @@ const Signup: React.FC = () => {
     }
     
     return !hasError;
-  }, [name, emailLocal, emailDomain, carrier, phone, password, passwordConfirm, validateEmail, validatePassword, validatePasswordConfirm]);
+  }, [name, emailLocal, emailDomain, phone, password, passwordConfirm, validateEmail, validatePassword, validatePasswordConfirm]);
 
   const handleStep2Submit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -685,18 +696,6 @@ const Signup: React.FC = () => {
           <div className="auth-input-group">
             <label className="auth-input-label">휴대폰 번호<span className="auth-required-mark">*</span></label>
             <div className="signup-phone-input-group">
-              <Select
-                options={CARRIER_OPTIONS}
-                value={carrier}
-                onChange={(val) => {
-                  setCarrier(val);
-                  if (val && phone) {
-                    setPhoneError('');
-                  }
-                }}
-                placeholder="통신사 선택"
-                className="signup-carrier-select"
-              />
               <TextField
                 variant="line"
                 type="tel"
@@ -704,7 +703,7 @@ const Signup: React.FC = () => {
                 value={phone}
                 onChange={(val) => {
                   setPhone(val);
-                  if (val && carrier) {
+                  if (val) {
                     setPhoneError('');
                   }
                 }}
@@ -715,7 +714,7 @@ const Signup: React.FC = () => {
               <Button
                 type="line-white"
                 size="medium"
-                disabled={!carrier || !phone || isPhoneVerified || isLoading}
+                disabled={!phone || isPhoneVerified || isLoading}
                 onClick={handleRequestVerification}
                 className="signup-request-verification-button"
               >
@@ -875,7 +874,7 @@ const Signup: React.FC = () => {
 
   return (
     <div className="auth-page-container">
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       <section className="auth-content-section">
         <h1 className="auth-page-title">SIGN UP</h1>

@@ -9,7 +9,9 @@ import { TextField } from '@/components/common/TextField';
 import Pagination from '@/components/common/Pagination';
 import { get, post, patch, del } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
+import { clearAuth } from '@/lib/auth';
 import styles from './my.module.scss';
+import { MemberType } from '@/types/education';
 
 interface UserProfile {
   id: number;
@@ -18,8 +20,9 @@ interface UserProfile {
   phoneNumber?: string;
   email?: string;
   memberType?: string;
-  oauthProvider?: string;
+  provider?: string;
   newsletterSubscribed?: boolean;
+  isApproved?: boolean;
 }
 
 interface ApplicationSummary {
@@ -51,6 +54,7 @@ interface TrainingSeminarApplication {
   participationTime: string;
   attendeeCount: number;
   appliedAt: string;
+  recruitmentEndDate: string;
 }
 
 interface ConsultationApplication {
@@ -59,8 +63,13 @@ interface ConsultationApplication {
   content: string;
   field: string;
   consultant: string;
-  status: 'completed' | 'received' | 'pending' | 'waiting';
+  status: ConsultationStatus;
   reply?: string;
+}
+
+enum ConsultationStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
 }
 
 // API에서 반환되는 상담 데이터 형식
@@ -106,7 +115,8 @@ const MyPage: React.FC = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
   // Training/Seminar applications
   const [trainingApplications, setTrainingApplications] = useState<TrainingSeminarApplication[]>([]);
   const [trainingLoading, setTrainingLoading] = useState(false);
@@ -118,7 +128,7 @@ const MyPage: React.FC = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [datePickerType, setDatePickerType] = useState<'start' | 'end'>('start');
   const [datePickerPosition, setDatePickerPosition] = useState({ top: 0, left: 0 });
-  
+
   // Consultation applications
   const [consultationApplications, setConsultationApplications] = useState<ConsultationApplication[]>([]);
   const [consultationLoading, setConsultationLoading] = useState(false);
@@ -126,7 +136,7 @@ const MyPage: React.FC = () => {
   const [consultationTotal, setConsultationTotal] = useState(0);
   const [selectedConsultation, setSelectedConsultation] = useState<ConsultationApplication | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  
+
   // 회원정보 수정 관련 상태
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
@@ -137,8 +147,6 @@ const MyPage: React.FC = () => {
 
   // 모바일 드롭다운 상태
   const [isEmailDomainDropdownOpen, setIsEmailDomainDropdownOpen] = useState(false);
-  const [isCarrierDropdownOpen, setIsCarrierDropdownOpen] = useState(false);
-  const [isPhoneCarrierDropdownOpen, setIsPhoneCarrierDropdownOpen] = useState(false);
 
   // 회원정보 수정 폼 상태
   const [editForm, setEditForm] = useState({
@@ -146,12 +154,10 @@ const MyPage: React.FC = () => {
     email: '',
     emailDomain: '',
     phoneNumber: '',
-    phoneCarrier: 'SKT',
   });
   const [emailDomainSelect, setEmailDomainSelect] = useState(false);
-  const [phoneCarrierSelect, setPhoneCarrierSelect] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // 비밀번호 변경 폼 상태
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -168,7 +174,6 @@ const MyPage: React.FC = () => {
   // 휴대폰 번호 변경 관련 상태
   const [showChangePhoneForm, setShowChangePhoneForm] = useState(false);
   const [phoneChangeForm, setPhoneChangeForm] = useState({
-    phoneCarrier: 'SKT',
     phoneNumber: '',
   });
   const [phoneChangeError, setPhoneChangeError] = useState('');
@@ -212,7 +217,6 @@ const MyPage: React.FC = () => {
   // URL 쿼리 파라미터에서 탭 읽기
   const tabFromQuery = router.query.tab as string;
   const validTabs = ['profile', 'applications'];
-  const initialTab = tabFromQuery && validTabs.includes(tabFromQuery) ? tabFromQuery : 'profile';
 
   useEffect(() => {
     if (tabFromQuery && validTabs.includes(tabFromQuery)) {
@@ -225,51 +229,39 @@ const MyPage: React.FC = () => {
       setLoading(true);
       const response = await get<UserProfile>(API_ENDPOINTS.AUTH.ME);
 
-        if (response.error) {
-          // 인증 오류인 경우 기본 사용자 정보 사용
-          if (response.status === 401 || response.status === 403) {
-            setUserProfile({
-              id: 0,
-              loginId: 'guest',
-              name: '홍길동',
-              phoneNumber: '',
-              email: '',
-              memberType: '세무사 (승인 대기 중)',
-              oauthProvider: undefined,
-              newsletterSubscribed: false,
-            });
-            setError(null);
-          } else {
-            setError(response.error);
-          }
-        } else if (response.data) {
-          setUserProfile(response.data);
+      if (response.error) {
+        // 인증 오류인 경우 로그인 상태 해제
+        if (response.status === 401 || response.status === 403) {
+          clearAuth();
+          setUserProfile(null);
+          setIsAuthenticated(false);
+          setError(null);
         } else {
-          // 데이터가 없어도 기본 사용자 정보 사용
-          setUserProfile({
-            id: 0,
-            loginId: 'guest',
-            name: '홍길동',
-            phoneNumber: '',
-            email: '',
-            memberType: '세무사 (승인 대기 중)',
-            oauthProvider: undefined,
-            newsletterSubscribed: false,
-          });
+          setError(response.error);
         }
-      } catch (err) {
-        // 오류 발생 시에도 기본 사용자 정보 사용
-        setUserProfile({
-          id: 0,
-          loginId: 'guest',
-          name: '홍길동',
-          phoneNumber: '',
-          email: '',
-          memberType: '세무사 (승인 대기 중)',
-          oauthProvider: undefined,
-          newsletterSubscribed: false,
-        });
-        setError(null);
+      } else if (response.data) {
+        setUserProfile(response.data);
+        setIsAuthenticated(true);
+        // 서버 프로필을 로컬에도 동기화 (다른 컴포넌트에서 재사용 가능)
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem('user', JSON.stringify(response.data));
+          } catch {
+            // ignore
+          }
+        }
+      } else {
+        // 데이터 없음 → 비인증 상태로 처리
+        clearAuth();
+        setUserProfile(null);
+        setIsAuthenticated(false);
+      }
+    } catch (err) {
+      // 오류 발생 시 비인증 상태로 처리 (세션 만료 등)
+      clearAuth();
+      setUserProfile(null);
+      setIsAuthenticated(false);
+      setError(null);
     } finally {
       setLoading(false);
     }
@@ -279,10 +271,10 @@ const MyPage: React.FC = () => {
   const fetchNewsletterStatus = async () => {
     try {
       setNewsletterLoading(true);
-      const response = await get<{ subscribed: boolean }>(API_ENDPOINTS.NEWSLETTER.ME);
+      const response = await get<{ isSubscribed: boolean }>(API_ENDPOINTS.NEWSLETTER.ME);
 
       if (response.data) {
-        setNewsletterSubscribed(response.data.subscribed);
+        setNewsletterSubscribed(response.data.isSubscribed);
       }
     } catch (err) {
       console.error('뉴스레터 상태 조회 실패:', err);
@@ -311,20 +303,14 @@ const MyPage: React.FC = () => {
       }
     };
 
-    // API status를 UI status로 변환
-    const mapStatus = (status: string): 'completed' | 'received' | 'pending' | 'waiting' => {
-      const statusMap: Record<string, 'completed' | 'received' | 'pending' | 'waiting'> = {
-        'COMPLETED': 'completed',
-        'RECEIVED': 'received',
-        'PENDING': 'pending',
-        'WAITING': 'waiting',
-        // 소문자 버전도 지원
-        'completed': 'completed',
-        'received': 'received',
-        'pending': 'pending',
-        'waiting': 'waiting',
-      };
-      return statusMap[status] || 'pending';
+    // API status를 UI enum으로 변환
+    const mapStatus = (status: string): ConsultationStatus => {
+      const upper = status.toUpperCase();
+      if (upper === ConsultationStatus.COMPLETED) {
+        return ConsultationStatus.COMPLETED;
+      }
+      // 그 외(RECEIVED, PENDING, WAITING 등)은 모두 PENDING으로 처리
+      return ConsultationStatus.PENDING;
     };
 
     return {
@@ -344,8 +330,10 @@ const MyPage: React.FC = () => {
         const response = await get<MyApplicationsResponse>(API_ENDPOINTS.AUTH.MY_APPLICATIONS);
 
         if (response.error) {
-          // 인증 오류인 경우 기본값 사용
           if (response.status === 401 || response.status === 403) {
+            // 인증 오류 → 세션 해제 및 비인증 상태
+            clearAuth();
+            setIsAuthenticated(false);
             setApplicationSummary({
               seminarTotal: 0,
               consultationTotal: 0,
@@ -373,7 +361,7 @@ const MyPage: React.FC = () => {
           });
         }
       } catch (err) {
-        // 오류 발생 시 기본값 사용
+        // 오류 발생 시 기본값 사용 (네트워크 등)
         setApplicationSummary({
           seminarTotal: 0,
           consultationTotal: 0,
@@ -425,6 +413,21 @@ const MyPage: React.FC = () => {
     setStartDate(formatDate(start));
     setEndDate(formatDate(today));
   }, [dateFilter]);
+
+  const getDaysUntilDeadline = (endDate: string) => {
+    if (!endDate) return -1; // 마감일 정보가 없으면 -1 반환
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+
+    const deadline = new Date(endDate);
+    deadline.setHours(23, 59, 59, 999); // 마감일의 마지막 시간으로 설정
+
+    const diffTime = deadline.getTime() - today.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    return diffDays;
+  };
 
   // 날짜 포맷 변환 함수: YYYY. MM. DD 또는 YYYY.MM.DD → YYYY-MM-DD
   const formatDateForApi = (dateStr: string): string => {
@@ -595,29 +598,12 @@ const MyPage: React.FC = () => {
 
       // 현재 사용자 정보로 폼 초기화
       const emailParts = displayProfile.email?.split('@') || ['', ''];
-      let phoneCarrier = 'SKT';
-      let phoneNumber = '';
-
-      if (displayProfile.phoneNumber) {
-        const phoneParts = displayProfile.phoneNumber.split('-');
-        if (phoneParts.length >= 3) {
-          if (['SKT', 'KT', 'LG U+'].includes(phoneParts[0])) {
-            phoneCarrier = phoneParts[0];
-            phoneNumber = phoneParts.slice(1).join('-');
-          } else {
-            phoneNumber = displayProfile.phoneNumber;
-          }
-        } else {
-          phoneNumber = displayProfile.phoneNumber;
-        }
-      }
 
       setEditForm({
         name: displayProfile.name || '',
         email: emailParts[0] || '',
         emailDomain: emailParts[1] || '',
-        phoneNumber: phoneNumber,
-        phoneCarrier: phoneCarrier,
+        phoneNumber: displayProfile.phoneNumber || '',
       });
     };
 
@@ -764,7 +750,7 @@ const MyPage: React.FC = () => {
     const numbers = value.replace(/\D/g, '');
     // 11자리 제한
     const limited = numbers.slice(0, 11);
-    
+
     // 하이픈 자동 추가
     if (limited.length <= 3) {
       return limited;
@@ -778,16 +764,16 @@ const MyPage: React.FC = () => {
   // 휴대폰 번호 변경 핸들러
   const handleRequestPhoneVerification = async () => {
     setPhoneChangeError('');
-    
+
     // 휴대폰 번호 유효성 검사 (하이픈 있거나 없거나 둘 다 허용)
     const phoneRegex = /^010-?\d{4}-?\d{4}$/;
     const phoneNumberOnly = phoneChangeForm.phoneNumber.replace(/\D/g, '');
-    
+
     if (!phoneChangeForm.phoneNumber) {
       setPhoneChangeError('휴대폰 번호를 입력해주세요.');
       return;
     }
-    
+
     // 숫자만으로 11자리인지 확인
     if (phoneNumberOnly.length !== 11 || !phoneNumberOnly.startsWith('010')) {
       setPhoneChangeError('올바른 휴대폰번호 양식을 입력해주세요.');
@@ -872,7 +858,7 @@ const MyPage: React.FC = () => {
       setShowChangePhoneForm(false);
       setIsPasswordVerified(false);
       setShowPasswordVerify(false);
-      setPhoneChangeForm({ phoneCarrier: 'SKT', phoneNumber: '' });
+      setPhoneChangeForm({ phoneNumber: '' });
       setVerificationCode('');
       setIsVerificationRequested(false);
       setIsCodeVerified(false);
@@ -901,57 +887,72 @@ const MyPage: React.FC = () => {
     setIsDetailModalOpen(true);
   };
 
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status: ConsultationStatus) => {
     switch (status) {
-      case 'completed':
+      case ConsultationStatus.COMPLETED:
         return '상담완료';
-      case 'received':
-        return '접수완료';
-      case 'pending':
+      case ConsultationStatus.PENDING:
         return '대기중';
-      case 'waiting':
-        return '세무사 승인 대기중';
       default:
         return status;
     }
   };
 
-  const getStatusClass = (status: string) => {
+  const getStatusClass = (status: ConsultationStatus) => {
     switch (status) {
-      case 'completed':
+      case ConsultationStatus.COMPLETED:
         return styles.statusCompleted;
-      case 'received':
-        return styles.statusReceived;
-      case 'pending':
+      case ConsultationStatus.PENDING:
         return styles.statusPending;
-      case 'waiting':
-        return styles.statusWaiting;
       default:
         return '';
     }
   };
 
-  if (loading) {
+  if (loading || isAuthenticated === null) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.loading}>Loading...</div>
       </div>
     );
   }
 
-  // userProfile이 없으면 기본값 사용
-  const displayProfile = userProfile || {
-    id: 0,
-    loginId: 'guest',
-    name: '홍길동',
-    phoneNumber: '',
-    email: '',
-    memberType: '세무사 (승인 대기 중)',
-    oauthProvider: undefined,
-    newsletterSubscribed: false,
-  };
+  // 비로그인 상태 UI (회원 전용 데이터 숨김)
+  if (!userProfile || isAuthenticated === false) {
+    return (
+      <div className={styles.page}>
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+        <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        <div className={styles.loggedOutContainer}>
+          <div className={styles.loggedOutContent}>
+            <p className={styles.loggedOutTitle}>로그인이 필요한 서비스입니다.</p>
+            <p className={styles.loggedOutDescription}>
+              마이페이지는 로그인 후 이용하실 수 있습니다.
+            </p>
+            <div className={styles.loggedOutActions}>
+              <button
+                className={styles.loggedOutLoginButton}
+                onClick={() => router.push('/login')}
+              >
+                로그인
+              </button>
+              <button
+                className={styles.loggedOutSignupButton}
+                onClick={() => router.push('/signup')}
+              >
+                회원가입
+              </button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  const displayProfile = userProfile;
 
   // Mobile back handler
   const handleMobileBack = () => {
@@ -974,7 +975,7 @@ const MyPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       {/* Mobile Layout */}
@@ -1005,7 +1006,13 @@ const MyPage: React.FC = () => {
                   <p>회원 유형</p>
                 </div>
                 <div className={styles.mobileMemberTypeBadge}>
-                  <p>{displayProfile.memberType || '일반'}</p>
+                  {displayProfile.memberType == MemberType.GENERAL
+                    ? "일반"
+                    : displayProfile.memberType == MemberType.OTHER
+                      ? "기타"
+                      : displayProfile.isApproved
+                        ? "세무사"
+                        : "세무사 (승인 대기 중)"}
                 </div>
               </div>
             </div>
@@ -1044,8 +1051,8 @@ const MyPage: React.FC = () => {
               </button>
               <h1 className={styles.mobileTitle}>
                 {showChangePasswordForm ? '비밀번호 변경' :
-                 showChangePhoneForm ? '휴대폰 번호 변경' :
-                 showPasswordVerify || isPasswordVerified ? '회원 정보 수정' : '회원 정보 관리'}
+                  showChangePhoneForm ? '휴대폰 번호 변경' :
+                    showPasswordVerify || isPasswordVerified ? '회원 정보 수정' : '회원 정보 관리'}
               </h1>
             </div>
 
@@ -1077,10 +1084,10 @@ const MyPage: React.FC = () => {
                   <div className={styles.mobileFormRow}>
                     <p className={styles.mobileFormLabel}>간편 로그인</p>
                     <p className={styles.mobileFormValue}>
-                      {displayProfile.oauthProvider ?
-                        (displayProfile.oauthProvider === 'google' ? '구글(Google)' :
-                         displayProfile.oauthProvider === 'kakao' ? '카카오(Kakao)' :
-                         displayProfile.oauthProvider === 'naver' ? '네이버(Naver)' : displayProfile.oauthProvider)
+                      {displayProfile.provider ?
+                        (displayProfile.provider === 'google' ? '구글(Google)' :
+                          displayProfile.provider === 'kakao' ? '카카오(Kakao)' :
+                            displayProfile.provider === 'naver' ? '네이버(Naver)' : displayProfile.provider)
                         : '-'}
                     </p>
                   </div>
@@ -1273,43 +1280,6 @@ const MyPage: React.FC = () => {
                   {/* 휴대폰 번호 */}
                   <div className={styles.mobileEditFormField}>
                     <p className={styles.mobileFormLabel}>휴대폰 번호 <span style={{ color: '#f35064' }}>*</span></p>
-                    <div className={styles.mobileDropdownWrapper}>
-                      <button
-                        className={styles.mobileCarrierSelect}
-                        onClick={() => setIsCarrierDropdownOpen(!isCarrierDropdownOpen)}
-                      >
-                        <span>{editForm.phoneCarrier || '통신사 선택'}</span>
-                        <img
-                          src="/images/common/arrow-down.svg"
-                          alt=""
-                          style={{
-                            width: 20,
-                            height: 20,
-                            transform: isCarrierDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                            transition: 'transform 0.2s ease'
-                          }}
-                        />
-                      </button>
-                      {isCarrierDropdownOpen && (
-                        <div className={styles.mobileDropdownMenu}>
-                          {['SKT', 'KT', 'LG U+', '알뜰폰'].map((carrier) => (
-                            <button
-                              key={carrier}
-                              className={styles.mobileDropdownItem}
-                              onClick={() => {
-                                setEditForm({ ...editForm, phoneCarrier: carrier });
-                                setIsCarrierDropdownOpen(false);
-                              }}
-                            >
-                              {carrier}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className={styles.mobileEditFormField}>
                     <div className={styles.mobilePhoneRow}>
                       <TextField
                         variant="line"
@@ -1324,7 +1294,6 @@ const MyPage: React.FC = () => {
                         onClick={() => {
                           setShowChangePhoneForm(true);
                           setPhoneChangeForm({
-                            phoneCarrier: editForm.phoneCarrier,
                             phoneNumber: editForm.phoneNumber,
                           });
                         }}
@@ -1395,11 +1364,10 @@ const MyPage: React.FC = () => {
                   </div>
                 </div>
                 <button
-                  className={`${styles.mobilePasswordChangeButton} ${
-                    passwordForm.currentPassword && passwordForm.newPassword && passwordForm.confirmPassword
+                  className={`${styles.mobilePasswordChangeButton} ${passwordForm.currentPassword && passwordForm.newPassword && passwordForm.confirmPassword
                       ? styles.mobilePasswordChangeButtonActive
                       : ''
-                  }`}
+                    }`}
                   onClick={handleChangePassword}
                   disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword || isChangingPassword}
                 >
@@ -1414,40 +1382,6 @@ const MyPage: React.FC = () => {
                 <div className={styles.mobilePhoneChangeBox}>
                   <div className={styles.mobilePhoneChangeField}>
                     <p className={styles.mobilePhoneChangeLabel}>휴대폰 번호 <span style={{ color: '#f35064' }}>*</span></p>
-                    <div className={styles.mobileDropdownWrapper}>
-                      <button
-                        className={styles.mobilePhoneCarrierSelect}
-                        onClick={() => setIsPhoneCarrierDropdownOpen(!isPhoneCarrierDropdownOpen)}
-                      >
-                        <span>{phoneChangeForm.phoneCarrier || '통신사 선택'}</span>
-                        <img
-                          src="/images/common/arrow-down.svg"
-                          alt=""
-                          style={{
-                            width: 20,
-                            height: 20,
-                            transform: isPhoneCarrierDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                            transition: 'transform 0.2s ease'
-                          }}
-                        />
-                      </button>
-                      {isPhoneCarrierDropdownOpen && (
-                        <div className={styles.mobileDropdownMenu}>
-                          {['SKT', 'KT', 'LG U+', '알뜰폰'].map((carrier) => (
-                            <button
-                              key={carrier}
-                              className={styles.mobileDropdownItem}
-                              onClick={() => {
-                                setPhoneChangeForm({ ...phoneChangeForm, phoneCarrier: carrier });
-                                setIsPhoneCarrierDropdownOpen(false);
-                              }}
-                            >
-                              {carrier}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
                   </div>
                   <div className={styles.mobilePhoneChangeField}>
                     <div className={styles.mobilePhoneInputRow}>
@@ -1499,9 +1433,8 @@ const MyPage: React.FC = () => {
                   )}
                 </div>
                 <button
-                  className={`${styles.mobilePhoneChangeButton} ${
-                    isCodeVerified ? styles.mobilePhoneChangeButtonActive : ''
-                  }`}
+                  className={`${styles.mobilePhoneChangeButton} ${isCodeVerified ? styles.mobilePhoneChangeButtonActive : ''
+                    }`}
                   onClick={handleChangePhoneNumber}
                   disabled={!isCodeVerified || isChangingPhone}
                 >
@@ -1628,7 +1561,15 @@ const MyPage: React.FC = () => {
                         </div>
                         <div className={styles.mobileCardContent}>
                           <div className={styles.mobileCardLabels}>
-                            <span className={styles.mobileCardLabelStatus}>{item.statusLabel}</span>
+                            {(() => {
+                              const daysLeft = getDaysUntilDeadline(item.recruitmentEndDate || "");
+                              if (daysLeft <= 0) {
+                                return <span className={styles.labelGray}>신청마감</span>;
+                              }
+                              else {
+                                return <span className={styles.labelRed}>신청마감 D-{daysLeft}</span>;
+                              }
+                            })()}
                             <span className={styles.mobileCardLabelType}>{item.typeLabel}</span>
                           </div>
                           <h3 className={styles.mobileCardTitle}>{item.name}</h3>
@@ -1726,11 +1667,10 @@ const MyPage: React.FC = () => {
                         >
                           <div className={styles.mobileMemberCardHeader}>
                             <span className={styles.mobileMemberCardField}>{item.field}</span>
-                            <span className={`${styles.mobileMemberCardStatus} ${
-                              item.status === 'completed' ? styles.mobileMemberCardStatusCompleted :
-                              item.status === 'waiting' || item.status === 'pending' ? styles.mobileMemberCardStatusWaiting :
-                              styles.mobileMemberCardStatusReceived
-                            }`}>
+                            <span className={`${styles.mobileMemberCardStatus} ${item.status === ConsultationStatus.COMPLETED
+                                ? styles.mobileMemberCardStatusCompleted
+                                : styles.mobileMemberCardStatusWaiting
+                              }`}>
                               {getStatusLabel(item.status)}
                             </span>
                           </div>
@@ -1782,15 +1722,21 @@ const MyPage: React.FC = () => {
             <div className={styles.profileDivider} />
             <div className={styles.memberTypeCard}>
               <div className={styles.memberTypeLabel}>
-                <img 
-                  src="/images/common/user-icon.svg" 
-                  alt="회원 유형" 
+                <img
+                  src="/images/common/user-icon.svg"
+                  alt="회원 유형"
                   className={styles.memberTypeIcon}
                 />
                 <p>회원 유형</p>
               </div>
               <div className={styles.memberTypeBadge}>
-                <p>{displayProfile.memberType || '일반'}</p>
+                {displayProfile.memberType == MemberType.GENERAL
+                  ? "일반"
+                  : displayProfile.memberType == MemberType.OTHER
+                    ? "기타"
+                    : displayProfile.isApproved
+                      ? "세무사"
+                      : "세무사 (승인 대기 중)"}
               </div>
             </div>
           </div>
@@ -1799,7 +1745,7 @@ const MyPage: React.FC = () => {
             <p className={styles.summaryTitle}>신청 내역</p>
             <div className={styles.summaryDivider} />
             <div className={styles.summaryCards}>
-              <div 
+              <div
                 className={styles.summaryCard}
                 onClick={() => handleSummaryCardClick('training')}
                 style={{ cursor: 'pointer' }}
@@ -1811,15 +1757,15 @@ const MyPage: React.FC = () => {
                   </div>
                   <div className={styles.summaryLink}>
                     <p>자세히보기</p>
-                    <img 
-                      src="/images/common/arrow-right-gray.svg" 
-                      alt="자세히보기" 
+                    <img
+                      src="/images/common/arrow-right-gray.svg"
+                      alt="자세히보기"
                       className={styles.arrowIcon}
                     />
                   </div>
                 </div>
               </div>
-              <div 
+              <div
                 className={styles.summaryCard}
                 onClick={() => handleSummaryCardClick('member')}
                 style={{ cursor: 'pointer' }}
@@ -1831,9 +1777,9 @@ const MyPage: React.FC = () => {
                   </div>
                   <div className={styles.summaryLink}>
                     <p>자세히보기</p>
-                    <img 
-                      src="/images/common/arrow-right-gray.svg" 
-                      alt="자세히보기" 
+                    <img
+                      src="/images/common/arrow-right-gray.svg"
+                      alt="자세히보기"
                       className={styles.arrowIcon}
                     />
                   </div>
@@ -1901,10 +1847,10 @@ const MyPage: React.FC = () => {
                         <div className={styles.formRow}>
                           <p className={styles.formLabel}>간편 로그인</p>
                           <p className={styles.formValue}>
-                            {displayProfile.oauthProvider ? 
-                              (displayProfile.oauthProvider === 'google' ? '구글(Google)' :
-                               displayProfile.oauthProvider === 'kakao' ? '카카오(Kakao)' :
-                               displayProfile.oauthProvider === 'naver' ? '네이버(Naver)' : displayProfile.oauthProvider) 
+                            {displayProfile.provider ?
+                              (displayProfile.provider === 'google' ? '구글(Google)' :
+                                displayProfile.provider === 'kakao' ? '카카오(Kakao)' :
+                                  displayProfile.provider === 'naver' ? '네이버(Naver)' : displayProfile.provider)
                               : '-'}
                           </p>
                         </div>
@@ -1971,7 +1917,7 @@ const MyPage: React.FC = () => {
                     </div>
                   </>
                 )}
-                
+
                 {isPasswordVerified && !showChangePasswordForm && !showChangePhoneForm && (
                   <>
                     <h2 className={styles.contentTitle}>회원 정보 수정</h2>
@@ -2057,7 +2003,7 @@ const MyPage: React.FC = () => {
                             >
                               {editForm.emailDomain || '이메일 선택'}
                               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${styles.selectArrow} ${emailDomainSelect ? styles.selectArrowOpen : ''}`}>
-                                <path d="M7.5 5L12.5 10L7.5 15" stroke="#F0F0F0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M7.5 5L12.5 10L7.5 15" stroke="#F0F0F0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>
                             </button>
                             {emailDomainSelect && (
@@ -2087,33 +2033,6 @@ const MyPage: React.FC = () => {
                           <p className={styles.formRequired}>*</p>
                         </div>
                         <div className={styles.phoneFieldRow}>
-                          <div className={styles.phoneCarrierSelectWrapper}>
-                            <button
-                              className={styles.phoneCarrierSelect}
-                              onClick={() => setPhoneCarrierSelect(!phoneCarrierSelect)}
-                            >
-                              {editForm.phoneCarrier}
-                              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${styles.selectArrow} ${phoneCarrierSelect ? styles.selectArrowOpen : ''}`}>
-                                <path d="M7.5 5L12.5 10L7.5 15" stroke="#F0F0F0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            </button>
-                            {phoneCarrierSelect && (
-                              <div className={styles.phoneCarrierDropdown}>
-                                {['SKT', 'KT', 'LG U+'].map((carrier) => (
-                                  <button
-                                    key={carrier}
-                                    className={styles.phoneCarrierOption}
-                                    onClick={() => {
-                                      setEditForm({ ...editForm, phoneCarrier: carrier });
-                                      setPhoneCarrierSelect(false);
-                                    }}
-                                  >
-                                    {carrier}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
                           <TextField
                             variant="line"
                             type="tel"
@@ -2121,13 +2040,13 @@ const MyPage: React.FC = () => {
                             value={editForm.phoneNumber}
                             onChange={(value) => setEditForm({ ...editForm, phoneNumber: value })}
                             className={styles.phoneNumberInput}
+                            fullWidth
                           />
                           <button
                             className={styles.changePhoneButton}
                             onClick={() => {
                               setShowChangePhoneForm(true);
                               setPhoneChangeForm({
-                                phoneCarrier: editForm.phoneCarrier,
                                 phoneNumber: editForm.phoneNumber,
                               });
                               setPhoneChangeError('');
@@ -2166,36 +2085,6 @@ const MyPage: React.FC = () => {
                             <p className={styles.formRequired}>*</p>
                           </div>
                           <div className={styles.phoneChangeInputRow}>
-                            <div className={styles.phoneCarrierSelectWrapper}>
-                              <button
-                                className={`${styles.phoneCarrierSelect} ${isVerificationRequested ? styles.disabled : ''}`}
-                                onClick={() => !isVerificationRequested && setPhoneCarrierSelect(!phoneCarrierSelect)}
-                                disabled={isVerificationRequested}
-                              >
-                                {phoneChangeForm.phoneCarrier}
-                                {!isVerificationRequested && (
-                                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${styles.selectArrow} ${phoneCarrierSelect ? styles.selectArrowOpen : ''}`}>
-                                    <path d="M7.5 5L12.5 10L7.5 15" stroke="#F0F0F0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                )}
-                              </button>
-                              {phoneCarrierSelect && !isVerificationRequested && (
-                                <div className={styles.phoneCarrierDropdown}>
-                                  {['SKT', 'KT', 'LG U+'].map((carrier) => (
-                                    <button
-                                      key={carrier}
-                                      className={styles.phoneCarrierOption}
-                                      onClick={() => {
-                                        setPhoneChangeForm({ ...phoneChangeForm, phoneCarrier: carrier });
-                                        setPhoneCarrierSelect(false);
-                                      }}
-                                    >
-                                      {carrier}
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
                             <TextField
                               variant="line"
                               type="tel"
@@ -2207,9 +2096,9 @@ const MyPage: React.FC = () => {
                                 setPhoneChangeError('');
                               }}
                               className={styles.phoneNumberInput}
+                              fullWidth
                               disabled={isVerificationRequested}
                               error={!!phoneChangeError}
-                              fullWidth
                             />
                             {!isVerificationRequested ? (
                               <button
@@ -2232,9 +2121,9 @@ const MyPage: React.FC = () => {
                           {phoneChangeError && (
                             <div className={styles.phoneChangeError}>
                               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="#F35064" strokeMiterlimit="10"/>
-                                <path d="M8 5V8.5" stroke="#F35064" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M8 11.5C8.41421 11.5 8.75 11.1642 8.75 10.75C8.75 10.3358 8.41421 10 8 10C7.58579 10 7.25 10.3358 7.25 10.75C7.25 11.1642 7.58579 11.5 8 11.5Z" fill="#F35064"/>
+                                <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="#F35064" strokeMiterlimit="10" />
+                                <path d="M8 5V8.5" stroke="#F35064" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M8 11.5C8.41421 11.5 8.75 11.1642 8.75 10.75C8.75 10.3358 8.41421 10 8 10C7.58579 10 7.25 10.3358 7.25 10.75C7.25 11.1642 7.58579 11.5 8 11.5Z" fill="#F35064" />
                               </svg>
                               {phoneChangeError}
                             </div>
@@ -2277,9 +2166,9 @@ const MyPage: React.FC = () => {
                             {verificationError && (
                               <div className={styles.phoneChangeError}>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="#F35064" strokeMiterlimit="10"/>
-                                  <path d="M8 5V8.5" stroke="#F35064" strokeLinecap="round" strokeLinejoin="round"/>
-                                  <path d="M8 11.5C8.41421 11.5 8.75 11.1642 8.75 10.75C8.75 10.3358 8.41421 10 8 10C7.58579 10 7.25 10.3358 7.25 10.75C7.25 11.1642 7.58579 11.5 8 11.5Z" fill="#F35064"/>
+                                  <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="#F35064" strokeMiterlimit="10" />
+                                  <path d="M8 5V8.5" stroke="#F35064" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M8 11.5C8.41421 11.5 8.75 11.1642 8.75 10.75C8.75 10.3358 8.41421 10 8 10C7.58579 10 7.25 10.3358 7.25 10.75C7.25 11.1642 7.58579 11.5 8 11.5Z" fill="#F35064" />
                                 </svg>
                                 {verificationError}
                               </div>
@@ -2304,70 +2193,70 @@ const MyPage: React.FC = () => {
                     <h2 className={styles.contentTitle}>비밀번호 변경</h2>
                     <div className={styles.changePasswordSection}>
                       <div className={styles.changePasswordForm}>
-                      <div className={styles.passwordField}>
-                        <TextField
-                          variant="line"
-                          label="현재 비밀번호"
-                          required
-                          type="password"
-                          placeholder="현재 비밀번호를 입력해주세요"
-                          value={passwordForm.currentPassword}
-                          onChange={(value) => {
-                            setPasswordForm({ ...passwordForm, currentPassword: value });
-                            setPasswordErrors({ ...passwordErrors, currentPassword: '' });
-                          }}
-                          error={!!passwordErrors.currentPassword}
-                          errorMessage={passwordErrors.currentPassword}
-                          disabled={isChangingPassword}
-                          fullWidth
-                          showPasswordToggle
-                        />
-                      </div>
-                      <div className={styles.passwordField}>
-                        <TextField
-                          variant="line"
-                          label="새 비밀번호"
-                          required
-                          type="password"
-                          placeholder="새로운 비밀번호를 입력해주세요"
-                          value={passwordForm.newPassword}
-                          onChange={(value) => {
-                            setPasswordForm({ ...passwordForm, newPassword: value });
-                            setPasswordErrors({ ...passwordErrors, newPassword: '' });
-                          }}
-                          error={!!passwordErrors.newPassword}
-                          errorMessage={passwordErrors.newPassword}
-                          disabled={isChangingPassword}
-                          fullWidth
-                          showPasswordToggle
-                        />
-                      </div>
-                      <div className={styles.passwordField}>
-                        <TextField
-                          variant="line"
-                          label="새 비밀번호 확인"
-                          required
-                          type="password"
-                          placeholder="새로운 비밀번호를 다시 입력해주세요"
-                          value={passwordForm.confirmPassword}
-                          onChange={(value) => {
-                            setPasswordForm({ ...passwordForm, confirmPassword: value });
-                            setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
-                          }}
-                          error={!!passwordErrors.confirmPassword}
-                          errorMessage={passwordErrors.confirmPassword}
-                          disabled={isChangingPassword}
-                          fullWidth
-                          showPasswordToggle
-                        />
-                      </div>
-                      <button
-                        className={`${styles.changePasswordSubmitButton} ${passwordForm.currentPassword && passwordForm.newPassword && passwordForm.confirmPassword ? styles.changePasswordSubmitButtonActive : ''}`}
-                        onClick={handleChangePassword}
-                        disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword || isChangingPassword}
-                      >
-                        {isChangingPassword ? '변경 중...' : '비밀번호 변경'}
-                      </button>
+                        <div className={styles.passwordField}>
+                          <TextField
+                            variant="line"
+                            label="현재 비밀번호"
+                            required
+                            type="password"
+                            placeholder="현재 비밀번호를 입력해주세요"
+                            value={passwordForm.currentPassword}
+                            onChange={(value) => {
+                              setPasswordForm({ ...passwordForm, currentPassword: value });
+                              setPasswordErrors({ ...passwordErrors, currentPassword: '' });
+                            }}
+                            error={!!passwordErrors.currentPassword}
+                            errorMessage={passwordErrors.currentPassword}
+                            disabled={isChangingPassword}
+                            fullWidth
+                            showPasswordToggle
+                          />
+                        </div>
+                        <div className={styles.passwordField}>
+                          <TextField
+                            variant="line"
+                            label="새 비밀번호"
+                            required
+                            type="password"
+                            placeholder="새로운 비밀번호를 입력해주세요"
+                            value={passwordForm.newPassword}
+                            onChange={(value) => {
+                              setPasswordForm({ ...passwordForm, newPassword: value });
+                              setPasswordErrors({ ...passwordErrors, newPassword: '' });
+                            }}
+                            error={!!passwordErrors.newPassword}
+                            errorMessage={passwordErrors.newPassword}
+                            disabled={isChangingPassword}
+                            fullWidth
+                            showPasswordToggle
+                          />
+                        </div>
+                        <div className={styles.passwordField}>
+                          <TextField
+                            variant="line"
+                            label="새 비밀번호 확인"
+                            required
+                            type="password"
+                            placeholder="새로운 비밀번호를 다시 입력해주세요"
+                            value={passwordForm.confirmPassword}
+                            onChange={(value) => {
+                              setPasswordForm({ ...passwordForm, confirmPassword: value });
+                              setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
+                            }}
+                            error={!!passwordErrors.confirmPassword}
+                            errorMessage={passwordErrors.confirmPassword}
+                            disabled={isChangingPassword}
+                            fullWidth
+                            showPasswordToggle
+                          />
+                        </div>
+                        <button
+                          className={`${styles.changePasswordSubmitButton} ${passwordForm.currentPassword && passwordForm.newPassword && passwordForm.confirmPassword ? styles.changePasswordSubmitButtonActive : ''}`}
+                          onClick={handleChangePassword}
+                          disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword || isChangingPassword}
+                        >
+                          {isChangingPassword ? '변경 중...' : '비밀번호 변경'}
+                        </button>
                       </div>
                     </div>
                   </>
@@ -2410,15 +2299,15 @@ const MyPage: React.FC = () => {
                                     onClick={() => setDateFilter(period)}
                                   >
                                     {period === 'today' ? '오늘' :
-                                     period === '7days' ? '7일' :
-                                     period === '15days' ? '15일' :
-                                     period === '1month' ? '1개월' : '6개월'}
+                                      period === '7days' ? '7일' :
+                                        period === '15days' ? '15일' :
+                                          period === '1month' ? '1개월' : '6개월'}
                                   </button>
                                 ))}
                               </div>
                             </div>
                             <div className={styles.filterRight}>
-                              <div 
+                              <div
                                 className={styles.dateInput}
                                 onClick={(e) => {
                                   const rect = e.currentTarget.getBoundingClientRect();
@@ -2431,14 +2320,14 @@ const MyPage: React.FC = () => {
                                 }}
                               >
                                 <p>{startDate || '2025. 05. 19'}</p>
-                                <img 
-                                  src="/images/common/calendar-icon.svg" 
-                                  alt="달력" 
+                                <img
+                                  src="/images/common/calendar-icon.svg"
+                                  alt="달력"
                                   className={styles.calendarIcon}
                                 />
                               </div>
                               <p className={styles.dateSeparator}>~</p>
-                              <div 
+                              <div
                                 className={styles.dateInput}
                                 onClick={(e) => {
                                   const rect = e.currentTarget.getBoundingClientRect();
@@ -2451,9 +2340,9 @@ const MyPage: React.FC = () => {
                                 }}
                               >
                                 <p>{endDate || '2025. 05. 26'}</p>
-                                <img 
-                                  src="/images/common/calendar-icon.svg" 
-                                  alt="달력" 
+                                <img
+                                  src="/images/common/calendar-icon.svg"
+                                  alt="달력"
                                   className={styles.calendarIcon}
                                 />
                               </div>
@@ -2495,7 +2384,15 @@ const MyPage: React.FC = () => {
                                   </div>
                                   <div className={styles.cardContent}>
                                     <div className={styles.cardLabels}>
-                                      <span className={styles.labelStatus}>{item.statusLabel}</span>
+                                      {(() => {
+                                        const daysLeft = getDaysUntilDeadline(item.recruitmentEndDate || "");
+                                        if (daysLeft <= 0) {
+                                          return <span className={styles.labelGray}>신청마감</span>;
+                                        }
+                                        else {
+                                          return <span className={styles.labelRed}>신청마감 D-{daysLeft}</span>;
+                                        }
+                                      })()}
                                       <span className={styles.labelType}>{item.typeLabel}</span>
                                     </div>
                                     <h3 className={styles.cardTitle}>{item.name}</h3>
@@ -2503,7 +2400,7 @@ const MyPage: React.FC = () => {
                                       <p className={styles.cardLocation}>{item.location || '-'}</p>
                                       <div className={styles.cardDateWrapper}>
                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={styles.cardDateIcon}>
-                                          <path d="M3 2V4M13 2V4M2 6H14M3 2H13C13.5523 2 14 2.44772 14 3V13C14 13.5523 13.5523 14 13 14H3C2.44772 14 2 13.5523 2 13V3C2 2.44772 2.44772 2 3 2Z" stroke="#d8d8d8" strokeWidth="1" strokeLinecap="round"/>
+                                          <path d="M3 2V4M13 2V4M2 6H14M3 2H13C13.5523 2 14 2.44772 14 3V13C14 13.5523 13.5523 14 13 14H3C2.44772 14 2 13.5523 2 13V3C2 2.44772 2.44772 2 3 2Z" stroke="#d8d8d8" strokeWidth="1" strokeLinecap="round" />
                                         </svg>
                                         <p className={styles.cardDate}>
                                           {item.participationDate} {item.participationTime}
@@ -2542,15 +2439,15 @@ const MyPage: React.FC = () => {
                                     onClick={() => setDateFilter(period)}
                                   >
                                     {period === 'today' ? '오늘' :
-                                     period === '7days' ? '7일' :
-                                     period === '15days' ? '15일' :
-                                     period === '1month' ? '1개월' : '6개월'}
+                                      period === '7days' ? '7일' :
+                                        period === '15days' ? '15일' :
+                                          period === '1month' ? '1개월' : '6개월'}
                                   </button>
                                 ))}
                               </div>
                             </div>
                             <div className={styles.filterRight}>
-                              <div 
+                              <div
                                 className={styles.dateInput}
                                 onClick={(e) => {
                                   const rect = e.currentTarget.getBoundingClientRect();
@@ -2563,14 +2460,14 @@ const MyPage: React.FC = () => {
                                 }}
                               >
                                 <p>{startDate || '2025. 05. 19'}</p>
-                                <img 
-                                  src="/images/common/calendar-icon.svg" 
-                                  alt="달력" 
+                                <img
+                                  src="/images/common/calendar-icon.svg"
+                                  alt="달력"
                                   className={styles.calendarIcon}
                                 />
                               </div>
                               <p className={styles.dateSeparator}>~</p>
-                              <div 
+                              <div
                                 className={styles.dateInput}
                                 onClick={(e) => {
                                   const rect = e.currentTarget.getBoundingClientRect();
@@ -2583,9 +2480,9 @@ const MyPage: React.FC = () => {
                                 }}
                               >
                                 <p>{endDate || '2025. 05. 26'}</p>
-                                <img 
-                                  src="/images/common/calendar-icon.svg" 
-                                  alt="달력" 
+                                <img
+                                  src="/images/common/calendar-icon.svg"
+                                  alt="달력"
                                   className={styles.calendarIcon}
                                 />
                               </div>
@@ -2628,7 +2525,7 @@ const MyPage: React.FC = () => {
                             ) : (
                               consultationApplications.map((item, index) => (
                                 <React.Fragment key={item.id}>
-                                  <div 
+                                  <div
                                     className={styles.tableRow}
                                     onClick={() => handleConsultationClick(item)}
                                     style={{ cursor: 'pointer' }}

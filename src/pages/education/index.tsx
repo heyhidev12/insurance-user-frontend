@@ -10,6 +10,7 @@ import { TextField } from '@/components/common/TextField';
 import Checkbox from '@/components/common/Checkbox';
 import Button from '@/components/common/Button';
 import Pagination from '@/components/common/Pagination';
+import SEO from '@/components/SEO';
 import { get, post } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
 import type { EducationItem, EducationListResponse, EducationType } from '@/types/education';
@@ -30,6 +31,36 @@ const EducationPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [newEducationIndex, setNewEducationIndex] = useState(0);
+
+  /**
+   * GLOBAL RULE — MEMBER TYPE HANDLING (MANDATORY)
+   * - Guest: omit memberType/isApproved
+   * - INSURANCE + approved: memberType=INSURANCE&isApproved=true
+   * - INSURANCE + not approved: treat as Guest (omit both)
+   * - Other member types: memberType=<USER_TYPE>
+   */
+  const buildMemberParams = (): { memberType?: string; isApproved?: 'true' } => {
+    if (typeof window === 'undefined') return {};
+
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return {};
+
+    try {
+      const user = JSON.parse(userStr) as { memberType?: string; isApproved?: boolean } | null;
+      if (!user?.memberType) return {};
+
+      if (user.memberType === 'INSURANCE') {
+        if (user.isApproved === true) {
+          return { memberType: 'INSURANCE', isApproved: 'true' };
+        }
+        return {};
+      }
+
+      return { memberType: user.memberType };
+    } catch {
+      return {};
+    }
+  };
   
   // Newsletter form state
   const [newsletterName, setNewsletterName] = useState('');
@@ -182,8 +213,17 @@ const EducationPage: React.FC = () => {
 
   const fetchNewEducationList = async () => {
     try {
+      const memberParams = buildMemberParams();
+      const params = new URLSearchParams({
+        page: '1',
+        limit: '20',
+        sort: 'new',
+        ...(memberParams.memberType ? { memberType: memberParams.memberType } : {}),
+        ...(memberParams.isApproved ? { isApproved: memberParams.isApproved } : {}),
+      });
+
       const response = await get<EducationListResponse>(
-        `${API_ENDPOINTS.TRAINING_SEMINARS}?page=1&limit=9`
+        `${API_ENDPOINTS.TRAINING_SEMINARS}?${params.toString()}`
       );
       if (response.data) {
         setNewEducationList(response.data.items);
@@ -211,9 +251,13 @@ const EducationPage: React.FC = () => {
     setError(null);
 
     try {
+      const memberParams = buildMemberParams();
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: '9', // 3x3 그리드를 위한 9개
+        limit: '9',
+        sort: 'deadline',
+        ...(memberParams.memberType ? { memberType: memberParams.memberType } : {}),
+        ...(memberParams.isApproved ? { isApproved: memberParams.isApproved } : {}),
       });
 
       if (selectedType !== 'ALL') {
@@ -271,13 +315,15 @@ const EducationPage: React.FC = () => {
     const today = new Date();
     const deadline = new Date(endDate);
     const diffTime = deadline.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))+1;
     return diffDays > 0 ? diffDays : 0;
   };
 
   return (
-    <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+    <>
+      <SEO menuName="교육/세미나" />
+      <div className={styles.page}>
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       
       <div className={styles.container}>
@@ -338,38 +384,38 @@ const EducationPage: React.FC = () => {
               </div>
             ) : (
               <>
-                <div className={styles.newSection}>
-                  <div className={styles.sectionHeader}>
-                    <div className={styles.sectionTitleWrapper}>
-                      <div className={styles.sectionTitleBg}>
-                        <h3>New</h3>
+                {newEducationList.length > 0 && (
+                  <div className={styles.newSection}>
+                    <div className={styles.sectionHeader}>
+                      <div className={styles.sectionTitleWrapper}>
+                        <div className={styles.sectionTitleBg}>
+                          <h3>New</h3>
+                        </div>
+                        <h4 className={styles.sectionTitle}>신규 교육</h4>
                       </div>
-                      <h4 className={styles.sectionTitle}>신규 교육</h4>
+                      {hasNewEducationData && newEducationList.length > itemsPerPage && (
+                        <div className={styles.sectionNav}>
+                          <button
+                            className={styles.navButton}
+                            onClick={handlePrevEducation}
+                            disabled={newEducationIndex === 0}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                              <path d="M12.5 5L7.5 10L12.5 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </button>
+                          <button
+                            className={styles.navButton}
+                            onClick={handleNextEducation}
+                            disabled={newEducationIndex >= maxIndex}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                              <path d="M7.5 5L12.5 10L7.5 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    {hasNewEducationData && newEducationList.length > itemsPerPage && (
-                      <div className={styles.sectionNav}>
-                        <button
-                          className={styles.navButton}
-                          onClick={handlePrevEducation}
-                          disabled={newEducationIndex === 0}
-                        >
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M12.5 5L7.5 10L12.5 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </button>
-                        <button
-                          className={styles.navButton}
-                          onClick={handleNextEducation}
-                          disabled={newEducationIndex >= maxIndex}
-                        >
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M7.5 5L12.5 10L7.5 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  {newEducationList.length > 0 ? (
                     <div className={styles.educationGrid}>
                       {newEducations.map((item) => {
                         const daysLeft = getDaysUntilDeadline(item.recruitmentEndDate);
@@ -384,9 +430,13 @@ const EducationPage: React.FC = () => {
                             </div>
                             <div className={styles.cardContent}>
                               <div className={styles.cardLabels}>
-                                {daysLeft > 0 && (
+                                {daysLeft > 0 ? (
                                   <span className={styles.labelRed}>
                                     신청마감 D-{daysLeft}
+                                  </span>
+                                ) : (
+                                  <span className={styles.labelGray}>
+                                    신청마감
                                   </span>
                                 )}
                                 <span className={styles.labelWhite}>
@@ -410,13 +460,8 @@ const EducationPage: React.FC = () => {
                         );
                       })}
                     </div>
-                  ) : (
-                    <div className={styles.emptyState}>
-                      <img src="/images/education/empty-icon.svg" alt="Empty" className={styles.emptyIcon} />
-                      <p>등록된 세미나/교육이 없습니다</p>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 <div className={styles.allSection}>
                   <div className={styles.sectionHeader}>
@@ -455,7 +500,7 @@ const EducationPage: React.FC = () => {
                         onClick={() => setSelectedType('LECTURE')}
                       >
                         {selectedType === 'LECTURE' && <span className={styles.sidebarDot} />}
-                        <span>강연</span>
+                        <span>강의</span>
                       </div>
                       <div
                         className={`${styles.sidebarTab} ${selectedType === 'SEMINAR' ? styles.sidebarTabActive : ''}`}
@@ -639,6 +684,7 @@ const EducationPage: React.FC = () => {
         />
       </div>
     </div>
+    </>
   );
 };
 

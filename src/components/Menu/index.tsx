@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { get } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
+import { clearAuth } from '@/lib/auth';
 
 interface MenuProps {
   isOpen: boolean;
@@ -86,9 +87,6 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
   // 연혁 탭 노출 여부
   const [historyExposed, setHistoryExposed] = useState(true);
 
-  // 자료실 목록
-  const [dataRooms, setDataRooms] = useState<DataRoom[]>([]);
-
   // Business Areas hierarchical 데이터
   const [businessAreas, setBusinessAreas] = useState<BusinessAreaHierarchical[]>([]);
 
@@ -98,20 +96,38 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
   // 현재 사용자 타입 (회원 타입별 카테고리 접근 제어용)
   const [currentUserType, setCurrentUserType] = useState<string | null>(null);
 
-  // 사용자 타입 가져오기
+  // 사용자 타입 & 인증 상태 동기화 (/members/me 기반)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          setCurrentUserType(user.memberType || null);
-        } catch {
+    const syncAuth = async () => {
+      try {
+        const response = await get<any>(API_ENDPOINTS.AUTH.ME);
+        if (response.data) {
+          setIsAuthenticated(true);
+          setCurrentUserType(response.data.memberType || null);
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.setItem('user', JSON.stringify(response.data));
+            } catch {
+              // ignore
+            }
+          }
+        } else if (response.status === 401 || response.status === 403) {
+          clearAuth();
+          setIsAuthenticated(false);
           setCurrentUserType(null);
         }
+      } catch (err) {
+        // 401/403 등 에러 시 비인증으로 처리
+        clearAuth();
+        setIsAuthenticated(false);
+        setCurrentUserType(null);
       }
+    };
+
+    if (isOpen) {
+      syncAuth();
     }
-  }, []);
+  }, [isOpen]);
 
   // 연혁 노출 여부 및 API 데이터에 따라 메뉴 아이템 동적 생성
   const menuItems = MENU_ITEMS.map(item => {
@@ -134,18 +150,8 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
       };
     }
     if (item.id === 'insight') {
-      // Insights: category.name 목록 (isActive + targetMemberType 필터링)
-      const exposedInsights = insightsData
-        .filter(ins => {
-          if (!ins.category.isActive) return false;
-          // ALL은 모든 사용자 접근 가능
-          if (ins.category.targetMemberType === 'ALL') return true;
-          // 비로그인 사용자는 ALL만 접근 가능
-          if (!currentUserType) return false;
-          // 로그인 사용자는 자신의 타입과 일치하는 카테고리만 접근 가능
-          return currentUserType === ins.category.targetMemberType;
-        })
-        .map(ins => ins.category.name);
+      // Insights: category.name 목록 - use backend response directly, no frontend filtering
+      const exposedInsights = insightsData.map(ins => ins.category.name);
       return {
         ...item,
         subItems: exposedInsights.length > 0 ? exposedInsights : item.subItems
@@ -173,7 +179,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
         const categoryId = query.category as string;
         if (categoryId && insightsData.length > 0) {
           const insightIndex = insightsData.findIndex(
-            ins => ins.category.id === Number(categoryId) && ins.category.isActive
+            ins => ins.category.id === Number(categoryId)
           );
           setSelectedSubItem(insightIndex !== -1 ? insightIndex : null);
         } else {
@@ -240,39 +246,22 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  // 로그인 상태 확인
+  // storage 이벤트 리스너 (다른 탭에서 로그인/로그아웃 시 토큰 변경 감지)
   useEffect(() => {
-    const checkAuth = () => {
-      if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('accessToken');
-        setIsAuthenticated(!!token);
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'accessToken') {
+        // 토큰이 제거되면 비인증 상태로 전환
+        if (!event.newValue) {
+          setIsAuthenticated(false);
+          setCurrentUserType(null);
+        }
       }
-    };
-    
-    // 메뉴가 열릴 때마다 로그인 상태 확인
-    if (isOpen) {
-      checkAuth();
-    }
-    
-    // storage 이벤트 리스너 (다른 탭에서 로그인/로그아웃 시)
-    const handleStorageChange = () => {
-      checkAuth();
     };
     window.addEventListener('storage', handleStorageChange);
-    
-    // 같은 탭에서의 변경 감지를 위한 주기적 확인
-    let intervalId: NodeJS.Timeout | null = null;
-    if (isOpen) {
-      intervalId = setInterval(checkAuth, 500);
-    }
-    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
     };
-  }, [isOpen]);
+  }, []);
 
   // 메뉴가 열릴 때 연혁 노출 여부 확인
   useEffect(() => {
@@ -294,23 +283,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   // 메뉴가 열릴 때 자료실 목록 확인
-  useEffect(() => {
-    if (isOpen) {
-      const fetchDataRooms = async () => {
-        try {
-          const response = await get<DataRoomsResponse>(API_ENDPOINTS.DATA_ROOMS);
-          if (response.data?.items) {
-            setDataRooms(response.data.items);
-          } else {
-            setDataRooms([]);
-          }
-        } catch {
-          setDataRooms([]);
-        }
-      };
-      fetchDataRooms();
-    }
-  }, [isOpen]);
+
 
   // 메뉴가 열릴 때 Business Areas hierarchical 데이터 가져오기
   useEffect(() => {
@@ -338,10 +311,51 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
     if (isOpen) {
       const fetchInsights = async () => {
         try {
+          // Build query params based on user auth state
+          const params = new URLSearchParams();
+          params.append('limit', '20');
+          params.append('page', '1');
+
+          // Get user from localStorage
+          let memberType: string | null = null;
+          let isApproved: boolean | null = null;
+
+          if (typeof window !== 'undefined') {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+              try {
+                const user = JSON.parse(userStr) as { memberType?: string; isApproved?: boolean };
+                memberType = user.memberType || null;
+
+                // Only send isApproved when memberType is INSURANCE
+                if (memberType === 'INSURANCE') {
+                  isApproved = user.isApproved ?? false;
+                }
+              } catch {
+                // Invalid user data, treat as not logged in
+              }
+            }
+          }
+
+          // Add memberType to params
+          if (memberType) {
+            params.append('memberType', memberType);
+          } else {
+            // Case 3: Not logged in - send memberType=null
+            params.append('memberType', 'null');
+          }
+
+          // Add isApproved ONLY when memberType is INSURANCE
+          if (memberType === 'INSURANCE' && isApproved !== null) {
+            params.append('isApproved', String(isApproved));
+          }
+
           const response = await get<InsightsHierarchical[]>(
-            `${API_ENDPOINTS.INSIGHTS_HIERARCHICAL}?limit=20&page=1`
+            `${API_ENDPOINTS.INSIGHTS_HIERARCHICAL}?${params.toString()}`
           );
+
           if (response.data && Array.isArray(response.data)) {
+            // Use backend response directly - no frontend filtering
             setInsightsData(response.data);
           } else {
             setInsightsData([]);

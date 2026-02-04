@@ -174,7 +174,7 @@ const TestMotion: React.FC = () => {
   React.useEffect(() => {
     const fetchExperts = async () => {
       try {
-        const response = await fetch('http://13.124.98.132:3000/members?page=1&limit=20');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/members?page=1&limit=20`);
         const data = await response.json();
 
         if (data.items && Array.isArray(data.items)) {
@@ -315,25 +315,25 @@ const TestMotion: React.FC = () => {
             },
           },
         })
-        // Phase 1: Crew pill moves to center (0 - 0.2)
-        .to(visionRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
-        .to(growthRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
-        .to(crewText, { opacity: 0, duration: 0.1 }, 0)
-        .to(crewPill, {
-          x: centerX,
-          y: centerY,
-          duration: 0.2,
-          ease: 'power2.out',
-        }, 0)
-        // Phase 2: Crew pill expands (0.2 - 0.5)
-        .to(crewPill, {
-          scale: targetScale,
-          borderRadius: '0px',
-          duration: 0.3,
-          ease: 'power2.inOut',
-        }, 0.2)
-        // Overlay appears after full expansion (0.5 - 0.55)
-        .to(crewOverlay, { opacity: 1, duration: 0.05 }, 0.5);
+          // Phase 1: Crew pill moves to center (0 - 0.2)
+          .to(visionRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
+          .to(growthRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
+          .to(crewText, { opacity: 0, duration: 0.1 }, 0)
+          .to(crewPill, {
+            x: centerX,
+            y: centerY,
+            duration: 0.2,
+            ease: 'power2.out',
+          }, 0)
+          // Phase 2: Crew pill expands (0.2 - 0.5)
+          .to(crewPill, {
+            scale: targetScale,
+            borderRadius: '0px',
+            duration: 0.3,
+            ease: 'power2.inOut',
+          }, 0.2)
+          // Overlay appears after full expansion (0.5 - 0.55)
+          .to(crewOverlay, { opacity: 1, duration: 0.05 }, 0.5);
       }
 
       // Section 2: Finance - 시간 기반 텍스트 등장
@@ -400,8 +400,8 @@ const TestMotion: React.FC = () => {
             },
           },
         })
-        // 오버레이 등장 (0.2 - 0.5)
-        .to(financeOverlay, { opacity: 1, duration: 0.3 }, 0.2);
+          // 오버레이 등장 (0.2 - 0.5)
+          .to(financeOverlay, { opacity: 1, duration: 0.3 }, 0.2);
       }
 
       // Section 3: Yacht - 시간 기반 텍스트 등장
@@ -448,8 +448,8 @@ const TestMotion: React.FC = () => {
             },
           },
         })
-        // 오버레이 등장 (0.2 - 0.5)
-        .to(yachtOverlay, { opacity: 1, duration: 0.3 }, 0.2);
+          // 오버레이 등장 (0.2 - 0.5)
+          .to(yachtOverlay, { opacity: 1, duration: 0.3 }, 0.2);
       }
 
       // Section 4: Vision Text - 검은 배경에 텍스트 + highlight 효과
@@ -1771,7 +1771,7 @@ const TestMotion: React.FC = () => {
             </div>
             <div
               className="cards-wrapper"
-              style={{ 
+              style={{
                 transform: window.innerWidth <= 768
                   ? cardIndex === 0
                     ? `translateX(0)`
@@ -2192,7 +2192,9 @@ const TestMotion: React.FC = () => {
         <div className="final-content">
           <h2 className="final-title">모두가 함께하고 있습니다.</h2>
           <h2 className="final-subtitle">이제, 당신만 오시면 완성됩니다</h2>
-          <button className="final-cta">모두컨설팅과 함께하기 &gt;</button>
+          <button className="final-cta">모두컨설팅과 함께하기 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M8.85156 5L16.0016 11.5L8.85156 18" stroke="#2D2D2D" stroke-width="1.6" stroke-linecap="round" />
+          </svg></button>
         </div>
         <Footer />
       </section>

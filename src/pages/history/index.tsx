@@ -7,6 +7,7 @@ import PageHeader from '@/components/common/PageHeader';
 import FloatingButton from '@/components/common/FloatingButton';
 import Tab from '@/components/common/Tab';
 import BranchDetailModal from '@/components/history/BranchDetailModal';
+import SEO from '@/components/SEO';
 import { get } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
 import styles from './history.module.scss';
@@ -591,11 +592,14 @@ const HistoryPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
-        <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-        <div className={styles.loading}>Loading...</div>
-      </div>
+      <>
+        <SEO menuName="회사소개" />
+        <div className={styles.page}>
+         <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+          <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+          <div className={styles.loading}>Loading...</div>
+        </div>
+      </>
     );
   }
 
@@ -606,8 +610,10 @@ const HistoryPage: React.FC = () => {
   const sortedData = data.length > 0 ? [...data].sort((a, b) => b.year - a.year) : [];
 
   return (
-    <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+    <>
+      <SEO menuName="회사소개" />
+      <div className={styles.page}>
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       
       <div className={styles.container}>
@@ -1317,6 +1323,7 @@ const HistoryPage: React.FC = () => {
         branch={selectedBranch}
       />
     </div>
+    </>
   );
 };
 

@@ -78,7 +78,7 @@ export const API_ENDPOINTS = {
   },
 
   // Data Rooms (자료실)
-  DATA_ROOMS: '/data-rooms',
+  // DATA_ROOMS: '/data-rooms',
 } as const;
 
 // API 요청 타임아웃 (ms)

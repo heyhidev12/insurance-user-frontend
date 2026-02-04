@@ -1,4 +1,17 @@
 @import '../../styles/variables';
+.videoWrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  min-height: 300px;
+}
+.videoWrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+} @import '../../styles/variables';
 
 .page {
   min-height: 100vh;
@@ -46,8 +59,8 @@
   @media (max-width: $breakpoint-tablet) {
     display: flex;
     flex-direction: column;
-    gap: 32px;
-    padding: 24px 0;
+    gap: 40px;
+    padding: 0 0 68px 0;
   }
 }
 
@@ -259,10 +272,10 @@
 .cardHeader {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
 
   @media (max-width: $breakpoint-tablet) {
-    gap: 20px;
+    gap: 10px;
   }
 }
 
@@ -291,17 +304,20 @@
 
 .labelWhite {
   background: rgba(255, 255, 255, 0.1);
-  padding: 8px;
+  padding: 3px 8px;
   border-radius: 4px;
   font-family: $font-pretendard;
   font-weight: $font-weight-semibold;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.2;
   letter-spacing: -0.075px;
   color: #f8f8fc;
+  align-items: center;
+  display: inline-flex;
+  
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 6px 8px;
+    padding: 3px 8px;
     font-size: 13px;
   }
 }
@@ -309,20 +325,21 @@
 .cardTitle {
   font-family: $font-pretendard;
   font-weight: $font-weight-semibold;
-  font-size: 25px;
+  font-size: 26px;
   line-height: 1.5;
   letter-spacing: -0.125px;
   color: white;
   margin: 0;
 
   @media (max-width: $breakpoint-tablet) {
-    font-size: 21px;
+    font-size: 22px;
   }
 }
 
 .divider {
   height: 1px;
   background: #555;
+  opacity: 0.3;
   width: 100%;
 }
 
@@ -353,7 +370,7 @@
 }
 
 .infoLabel {
-  width: 84px;
+  width: 48px;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -382,10 +399,13 @@
 .educationDetails {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 0;
+@media (max-width: $breakpoint-tablet) {
+    padding: 18px;
+  }
 }
 
 .detailItem {
@@ -394,7 +414,7 @@
   gap: 20px;
   align-items: flex-start;
   padding: 12px 0;
-  border-bottom: 1px solid #555;
+  border-bottom: 1px solid #4545456b;
 
   &:first-child {
     padding-top: 0;
@@ -433,7 +453,7 @@
 .detailIcon {
   font-family: $font-pretendard;
   font-weight: $font-weight-semibold;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.5;
   letter-spacing: -0.075px;
   color: white;
@@ -443,7 +463,7 @@
 .detailValue {
   font-family: $font-pretendard;
   font-weight: $font-weight-regular;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.5;
   color: #d8d8d8;
   margin: 0;
@@ -470,7 +490,7 @@
   gap: 24px;
   align-items: center;
   border-bottom: 1px solid #555;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 
   @media (max-width: $breakpoint-tablet) {
     flex-direction: row;
@@ -479,6 +499,7 @@
     justify-content: space-between;
     border-bottom: none;
     padding-bottom: 0;
+    padding-top: 10px;
   }
 }
 
@@ -553,7 +574,7 @@
 
   @media (max-width: $breakpoint-tablet) {
     justify-content: flex-end;
-    border-bottom: 1px solid #555;
+    border-bottom: 1px solid #55555559;
     padding-bottom: 20px;
   }
 
@@ -674,7 +695,7 @@
 // 신청마감 라벨 (회색)
 .labelGray {
   background: rgba(255, 255, 255, 0.1);
-  padding: 8px;
+  padding: 3px 8px;
   border-radius: 4px;
   font-family: $font-pretendard;
   font-weight: $font-weight-semibold;
@@ -684,7 +705,7 @@
   color: #949494;
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 6px 8px;
+    padding: 3px 8px;
     font-size: 13px;
   }
 }

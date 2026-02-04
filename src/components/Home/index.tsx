@@ -132,6 +132,7 @@ const TestMotion: React.FC = () => {
 
   // System 섹션 하이라이트 진행률 (0~100)
   const [systemHighlightProgress, setSystemHighlightProgress] = React.useState(0);
+  const systemAnimationPlayedRef = useRef(false);
 
   // 섹션 Refs
   const heroRef = useRef<HTMLDivElement>(null);
@@ -176,7 +177,7 @@ const TestMotion: React.FC = () => {
   React.useEffect(() => {
     const fetchExperts = async () => {
       try {
-        const response = await fetch('http://13.124.98.132:3000/members?page=1&limit=20');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/members?page=1&limit=20`);
         const data = await response.json();
 
         if (data.items && Array.isArray(data.items)) {
@@ -297,31 +298,31 @@ const TestMotion: React.FC = () => {
             },
           },
         })
-        // Phase 1: Crew pill moves to center (0 - 0.2)
-        .to(visionRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
-        .to(growthRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
-        .to(crewText, { opacity: 0, duration: 0.1 }, 0)
-        .to(crewPill, {
-          x: centerX,
-          y: centerY,
-          duration: 0.2,
-          ease: 'power2.out',
-        }, 0)
-        // Phase 2: Crew pill expands (0.2 - 0.5)
-        .to(crewPill, {
-          width: viewportWidth,
-          height: viewportHeight,
-          duration: 0.3,
-          ease: 'power2.inOut',
-        }, 0.2)
-        // borderRadius는 더 빠르게 (0.2 - 0.4)
-        .to(crewPill, {
-          borderRadius: '0px',
-          duration: 0.2,
-          ease: 'power2.out',
-        }, 0.2)
-        // Overlay appears after full expansion (0.5 - 0.55)
-        .to(crewOverlay, { opacity: 1, duration: 0.05 }, 0.5);
+          // Phase 1: Crew pill moves to center (0 - 0.2)
+          .to(visionRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
+          .to(growthRow, { opacity: 0, y: -50, duration: 0.15 }, 0)
+          .to(crewText, { opacity: 0, duration: 0.1 }, 0)
+          .to(crewPill, {
+            x: centerX,
+            y: centerY,
+            duration: 0.2,
+            ease: 'power2.out',
+          }, 0)
+          // Phase 2: Crew pill expands (0.2 - 0.5)
+          .to(crewPill, {
+            width: viewportWidth,
+            height: viewportHeight,
+            duration: 0.3,
+            ease: 'power2.inOut',
+          }, 0.2)
+          // borderRadius는 더 빠르게 (0.2 - 0.4)
+          .to(crewPill, {
+            borderRadius: '0px',
+            duration: 0.2,
+            ease: 'power2.out',
+          }, 0.2)
+          // Overlay appears after full expansion (0.5 - 0.55)
+          .to(crewOverlay, { opacity: 1, duration: 0.05 }, 0.5);
       }
 
       // Section 2: Finance - 시간 기반 텍스트 등장
@@ -380,8 +381,8 @@ const TestMotion: React.FC = () => {
             },
           },
         })
-        // 오버레이 등장 (0.2 - 0.5)
-        .to(financeOverlay, { opacity: 1, duration: 0.3 }, 0.2);
+          // 오버레이 등장 (0.2 - 0.5)
+          .to(financeOverlay, { opacity: 1, duration: 0.3 }, 0.2);
       }
 
       // Section 3: Yacht - 시간 기반 텍스트 등장
@@ -428,8 +429,8 @@ const TestMotion: React.FC = () => {
             },
           },
         })
-        // 오버레이 등장 (0.2 - 0.5)
-        .to(yachtOverlay, { opacity: 1, duration: 0.3 }, 0.2);
+          // 오버레이 등장 (0.2 - 0.5)
+          .to(yachtOverlay, { opacity: 1, duration: 0.3 }, 0.2);
       }
 
       // Section 4: Vision Text - 검은 배경에 텍스트 + highlight 효과
@@ -861,13 +862,7 @@ const TestMotion: React.FC = () => {
         });
       }
 
-      // Section 9: System - SYSTEM 대형 텍스트 → 라벨로 변환 → 헤드라인 + highlight 텍스트
-      // [모션 순서]
-      // 1단계: "SYSTEM" 대형 텍스트가 중앙에 크게 표시 (화면 바닥에서 올라옴)
-      // 2단계: "SYSTEM" 텍스트가 상단 중앙으로 이동하면서 작아짐 (scale + y 이동)
-      // 3단계: 상단에 "SYSTEM" 라벨 유지 + 헤드라인 등장 + 설명 텍스트 등장 (회색 상태)
-      // 4단계: 설명 텍스트가 스크롤에 따라 highlight (회색 → 흰색) + 쉬는 시간
-      // 5단계: SYSTEM 라벨 + 헤드라인 + 설명 페이드아웃
+      // Section 9: System text animation is handled via IntersectionObserver in a separate effect
       if (systemRef.current) {
         const systemText = systemRef.current.querySelector('.system-text') as HTMLElement;
         const systemMainContent = systemRef.current.querySelector('.system-main-content');
@@ -879,58 +874,60 @@ const TestMotion: React.FC = () => {
         const viewportWidth = window.innerWidth;
         const isMobile = viewportWidth <= 767;
         const textStartY = viewportHeight; // 화면 바닥에서 시작
-        const textStopY = isMobile ? -80 : 300; // 모바일에서는 더 높은 위치에서 멈춤, 데스크탑: 300px 아래
+        const textStopY = isMobile ? viewportHeight / 2 : 300;
+
+        const systemTextYPercent = isMobile ? 0 : -50;
+
+
 
         // 대형 텍스트 → 라벨 변환을 위한 목표 위치/스케일 계산
         const textRect = systemText?.getBoundingClientRect();
         const textCenterY = viewportHeight / 2;
         const labelTargetY = 0; // 라벨 최종 Y 위치
         const labelTargetScale = isMobile ? 0.25 : 0.09; // 모바일: 더 큰 라벨 (약 25%), 데스크탑: 9%
-        const labelYOffset = isMobile ? -80 : textCenterY - 150; // 모바일: 화면 1/3 아래로 배치, 데스크탑: 화면 중간에서 150px 위
+        const labelYOffset = isMobile ? 0 : textCenterY - 150;
+         
+        const systemTextXConfig = isMobile ? { xPercent: 0, x: '-50%' } : { xPercent: -50, x: 0 };
 
-        // 초기 상태 설정
-        // 모바일에서는 모든 GSAP 애니메이션 제거 - CSS가 레이아웃 담당
         if (isMobile) {
           gsap.set(systemText, { clearProps: 'all' });
-          gsap.set(systemMainContent, { clearProps: 'all' });
-          gsap.set([systemHeadline, systemDescription], { clearProps: 'all' });
-        } else {
-          // 데스크탑: 기존 애니메이션
-          const systemTextXConfig = { xPercent: -50, x: 0 };
-          gsap.set(systemText, { opacity: 0, y: textStartY, scale: 1, ...systemTextXConfig, yPercent: -50 });
-          const mobileContentY = 0;
-          gsap.set(systemMainContent, { opacity: 0, y: mobileContentY });
-          gsap.set([systemHeadline, systemDescription], { opacity: 0, y: -50 }); // 위에서 시작
         }
+        else {
+          gsap.set(systemText, { opacity: 0, y: textStartY, scale: 1, ...systemTextXConfig, yPercent: -50 });
 
-        const systemTextXConfig = isMobile ? { xPercent: 0, x: '-50%' } : { xPercent: -50, x: 0 };
-        const mobileContentY = isMobile ? 100 : 0;
+        }
+        const mobileContentY = 0;
+        gsap.set(systemMainContent, { opacity: 0, y: mobileContentY });
+        gsap.set([systemHeadline, systemDescription], { opacity: 0, y: -50 }); // 위에서 시작
+        // }
+
+        // const mobileContentY = isMobile ? 100 : 0;
 
         let systemTextPlayed = false;
         let systemContentPlayed = false;
 
         // 모바일에서는 GSAP 타임라인 스킵 - CSS만으로 레이아웃 처리
-        if (!isMobile) {
-          gsap.timeline({
-            scrollTrigger: {
-              trigger: systemRef.current,
-              start: 'top top',
-              end: '+=450%', // 텍스트 섹션만을 위한 스크롤 거리 (1.5배 더 길게)
-              pin: true,
-              pinSpacing: true,
-              scrub: 0.5,
-              snap: {
-                snapTo: (progress) => {
-                  if (progress < 0.05) return 0;        // 시작
-                  if (progress < 0.15) return 0.08;    // SYSTEM 대형 텍스트 등장 후 머무르기
-                  if (progress < 0.70) return 0.65;    // 콘텐츠 + highlight 완료 후 오래 머무르기
-                  return 1;
-                },
-                duration: { min: 0.3, max: 0.6 },
-                ease: 'power2.out',
-                inertia: false,
+        // if (!isMobile) {
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: systemRef.current,
+            start: 'top top',
+            end: '+=300%', // 텍스트 섹션만을 위한 스크롤 거리 (1.5배 더 길게)
+            pin: true,
+            pinSpacing: true,
+            scrub: 0.5,
+            snap: {
+              snapTo: (progress) => {
+                if (progress < 0.05) return 0;        // 시작
+                if (progress < 0.15) return 0.08;    // SYSTEM 대형 텍스트 등장 후 머무르기
+                if (progress < 0.70) return 0.65;    // 콘텐츠 + highlight 완료 후 오래 머무르기
+                return 1;
               },
-              onUpdate: (self) => {
+              duration: { min: 0.3, max: 0.6 },
+              ease: 'power2.out',
+              inertia: false,
+            },
+            onUpdate: (self) => {
               // 1. SYSTEM 대형 텍스트 등장 (3%~8% 스크롤 연동) - 화면 바닥에서 멈춤 위치로
               if (self.progress >= 0.03 && self.progress <= 0.08) {
                 const appearProgress = (self.progress - 0.03) / 0.05;
@@ -940,7 +937,7 @@ const TestMotion: React.FC = () => {
                   y: currentY,
                   scale: 1,
                   ...systemTextXConfig,
-                  yPercent: -50
+                  yPercent: systemTextYPercent
                 });
               } else if (self.progress > 0.08 && self.progress < 0.12) {
                 // 멈춤 위치에서 머무르기
@@ -1027,10 +1024,9 @@ const TestMotion: React.FC = () => {
               }
             },
           },
-          });
-        } // end if (!isMobile)
+        });
+        // } // end if (!isMobile)
       }
-
       // Section 10: System Video - 비디오 등장/확장/이동 + 카드 표시
       // [모션 순서]
       // 1단계: 비디오 화면 중앙에 큰 상태로 등장 (화면의 50% 크기, border-radius: 28.5px)
@@ -1508,6 +1504,7 @@ const TestMotion: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
+
   return (
     <div className="test-motion-container">
       <Header
@@ -1668,10 +1665,10 @@ const TestMotion: React.FC = () => {
                 <img src={cardIndex >= SERVICE_CARDS.length - 1 ? btnRightInactive : btnRightActive} alt="Next" />
               </button>
             </div>
-            <div 
-              className="cards-wrapper" 
-              style={{ 
-                transform: isMobile 
+            <div
+              className="cards-wrapper"
+              style={{
+                transform: isMobile
                   ? cardIndex === 0
                     ? `translateX(0)`
                     : `translateX(calc(${cardIndex} * (-100vw + 20px)))`
@@ -2107,7 +2104,11 @@ const TestMotion: React.FC = () => {
         <div className="final-content">
           <h2 className="final-title">모두가 함께하고 있습니다.</h2>
           <h2 className="final-subtitle">이제, 당신만 오시면 완성됩니다</h2>
-          <button className="final-cta">모두컨설팅과 함께하기 &gt;</button>
+          <button className="final-cta">모두컨설팅과 함께하기
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M8.85156 5L16.0016 11.5L8.85156 18" stroke="#2D2D2D" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+          </button>
         </div>
         <Footer />
       </section>

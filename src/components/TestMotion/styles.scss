@@ -4,6 +4,7 @@
   width: 100%;
   background: $white;
   color: $gray-90;
+  
 }
 
 .motion-section {
@@ -174,7 +175,7 @@
       @include pretendard-72-bold;
       color: $white;
       margin: 0;
-      line-height: 1.2;
+      line-height: 1.35;
       will-change: transform, opacity;
       text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
       white-space: nowrap;
@@ -191,7 +192,7 @@
 
       @media (max-width: 480px) {
         font-size: 26px;
-        line-height: 1.8;
+        line-height: 1.6;
       }
     }
 
@@ -286,7 +287,7 @@
 
       @media (max-width: $breakpoint-tablet) {
         font-size: 32px;
-        line-height: 1.45;
+        line-height: 1.4;
         letter-spacing: -0.256px;
       }
     }
@@ -425,8 +426,9 @@
       }
 
       @media (max-width: $breakpoint-tablet) {
-        font-size: clamp(20px, 5.5vw, 25px);
-        line-height: 1.45;
+        // font-size: clamp(20px, 5.5vw, 25px);
+        font-size: 26px;
+        line-height: 1.2;
         letter-spacing: -0.2px;
       }
     }
@@ -442,7 +444,7 @@
 
   .vision-text-content {
     position: absolute;
-    top: 35%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -456,7 +458,8 @@
     width: 100%;
 
     @media (max-width: $breakpoint-tablet) {
-      top: 33%;
+      // top: 33%;
+      top:47%;
       gap: $spacing-24;
     }
   }
@@ -967,7 +970,7 @@
   }
 
   .solution-content {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -981,10 +984,20 @@
     z-index: 3;
     overflow: visible;
 
+    // position: relative;     // absolute 제거
+    // top: auto;
+    // left: auto;
+    // height: auto;           // 100% 제거
+    // min-height: 100vh;      // 섹션 첫 화면은 꽉 차게
+    // overflow: visible;      // hidden/auto 제거 (내부 스크롤 금지)
+    // padding-top: 100px;     // 기존 유지
+
+
     @media (max-width: $breakpoint-tablet) {
       justify-content: flex-start;
-      padding-top: 120px;
-      padding-bottom: $spacing-64;
+      padding-top: 100px;
+      // padding-bottom: $spacing-64;
+      padding-bottom: 0px;
     }
   }
 
@@ -1042,7 +1055,8 @@
   // Solution Grid
   .solution-grid {
     width: 100%;
-    margin-bottom: $spacing-16;
+    // margin-bottom: $spacing-16;
+    margin-bottom: 24px;
     display: flex;
     justify-content: center;
     gap: 12px;
@@ -1115,7 +1129,8 @@
     display: block;
     font-family: $font-pretendard;
     font-weight: 600;
-    font-size: 25px;
+    // font-size: 25px;
+    font-size: 21px;
     line-height: 1.2;
     letter-spacing: -0.125px;
     color: $white;
@@ -1230,8 +1245,10 @@
   will-change: opacity;
 
   @media (max-width: $breakpoint-tablet) {
-    padding-top: $spacing-64;
-    padding-bottom: $spacing-64;
+    // padding-top: $spacing-64;
+    // padding-bottom: $spacing-64;
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
 }
 
@@ -1782,7 +1799,8 @@
 
 .system-main-content {
   position: absolute;
-  top: 150px; // SYSTEM 라벨과 겹치지 않도록 조정
+  // top: 150px; // SYSTEM 라벨과 겹치지 않도록 조정
+  top: 40px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -1812,6 +1830,7 @@
   @media (max-width: $breakpoint-tablet) {
     font-size: 24px;
     line-height: 1.6;
+    margin: 12px 0 0px;
   }
 }
 
@@ -1839,6 +1858,7 @@
 
   @media (max-width: $breakpoint-tablet) {
     font-size: 14px;
+    margin: 40px 0 0;
   }
 }
 
@@ -2044,7 +2064,7 @@
   margin: 0;
 
   @media (max-width: $breakpoint-tablet) {
-    margin-bottom: 20px;
+    margin-bottom: 8px;
   }
 }
 
@@ -2065,7 +2085,7 @@
     font-size: 25px;
     font-weight: $font-weight-semibold;
     letter-spacing: -0.125px;
-    margin: 0 0 32px 0;
+    margin: 0 0 12px 0;
   }
 }
 
@@ -2077,6 +2097,7 @@
   letter-spacing: -0.085px;
   color: #afafaf;
   margin: 0;
+  margin-bottom: 20px;
 
   strong {
     color: $white;
@@ -2085,11 +2106,13 @@
 
   @media (max-width: $breakpoint-wide) {
     font-size: 15px;
+    margin-bottom: 20px;
   }
 
   @media (max-width: $breakpoint-tablet) {
     font-size: 15px;
     letter-spacing: -0.075px;
+    margin-bottom: 20px;
   }
 }
 
@@ -2209,14 +2232,17 @@
   overflow: hidden;
   background-color: #090909;
   z-index: 100;
-  padding: 120px 120px 80px;
+  // padding: 120px 120px 80px;
+  padding: 200px 0px 260px 40px;
 
   @media (max-width: $breakpoint-wide) {
-    padding: 100px 80px 60px;
+    // padding: 100px 80px 60px;
+    padding: 200px 0px 260px 40px;
+
   }
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 100px $spacing-20 40px;
+    padding: 140px 20px 180px;
     min-height: 100vh;
   }
 }
@@ -2533,7 +2559,7 @@
     font-family: $font-pretendard;
     font-weight: $font-weight-bold;
     font-size: 56px;
-    line-height: 1.4;
+    line-height: 1.5;
     letter-spacing: -0.5px;
     color: $white;
     margin: 0;
@@ -2713,7 +2739,7 @@
     font-family: $font-pretendard;
     font-weight: $font-weight-bold;
     font-size: 56px;
-    line-height: 1.2;
+    line-height: 1.5;
     letter-spacing: -0.5px;
     color: $white;
     margin: 0;
@@ -2790,10 +2816,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 4px;
   padding: 0 24px;
   flex: 1;
   will-change: opacity;
+  z-index: 1;
+  margin-bottom: 160px;
 }
 
 .final-title,

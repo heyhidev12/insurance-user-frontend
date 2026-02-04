@@ -12,6 +12,24 @@
   }
 }
 
+// Red label for active recruitment
+.labelRed {
+  background: rgba(255, 255, 255, 0.10);  ;
+  padding: 8px;
+  border-radius: 4px;
+  @include pretendard-15-semibold;
+  color: #FB7058;
+}
+
+// Gray label for closed recruitment
+.labelGray {
+  background: $gray-70;
+  padding: 8px;
+  border-radius: 4px;
+  @include pretendard-15-semibold;
+  color: $gray-10;
+}
+
 .container {
   flex: 1;
   padding: 0 240px;
@@ -824,6 +842,7 @@
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
@@ -916,6 +935,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1016,6 +1036,7 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+line-clamp: 2;
     -webkit-box-orient: vertical;
   }
 }
@@ -3368,6 +3389,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3449,6 +3471,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

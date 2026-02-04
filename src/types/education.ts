@@ -1,6 +1,11 @@
 /**
  * 교육/세미나 관련 타입 정의
  */
+export enum MemberType {
+  GENERAL = 'GENERAL',       // 일반회원
+  OTHER = 'OTHER',   // 기타
+  INSURANCE = 'INSURANCE',   // 세무사  직원
+}
 
 export type EducationType = 'SEMINAR' | 'TRAINING' | 'LECTURE' | 'VOD';
 export type RecruitmentType = 'FIRST_COME' | 'SELECTION';
@@ -42,7 +47,7 @@ export interface EducationListResponse {
 }
 
 // 사용자 신청 상태
-export type ApplicationStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'CANCELLED';
+export type ApplicationStatus = 'WAITING' | 'CONFIRMED' | 'CANCELLED';
 
 export interface UserApplication {
   id: number;
@@ -51,13 +56,16 @@ export interface UserApplication {
 }
 
 export interface EducationDetail extends EducationItem {
+  price: number;
   instructorName: string;
   target: string;
   body: string;
   vimeoVideoUrl: string | null;
   applications: any[];
   userApplication?: UserApplication | null; // 현재 사용자의 신청 정보
-  isRecruitmentClosed?: boolean; // 모집 종료 여부
+  isRecruitmentClosed?: boolean; 
+  oneLineIntro: string | null;
+  // 모집 종료 여부
 }
 
 

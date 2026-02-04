@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
@@ -8,6 +8,7 @@ import Footer from '@/components/common/Footer';
 import FloatingButton from '@/components/common/FloatingButton';
 import Button from '@/components/common/Button';
 import Icon from '@/components/common/Icon';
+import SEO from '@/components/SEO';
 import { get, post, del } from '@/lib/api';
 import { API_ENDPOINTS, API_BASE_URL } from '@/config/api';
 import styles from './detail.module.scss';
@@ -34,6 +35,11 @@ interface InsightSubcategory {
   sections: string[];
 }
 
+interface InsightSubminorCategory {
+  id: number;
+  name: string;
+}
+
 interface Attachment {
   id: number;
   name: string;
@@ -41,8 +47,11 @@ interface Attachment {
   url?: string;
 }
 
-interface PdfFile {
+interface InsightFile {
+  id: number;
+  fileName: string;
   url: string;
+  type: 'DOCUMENT' | 'IMAGE';
 }
 
 interface InsightDetail {
@@ -52,6 +61,7 @@ interface InsightDetail {
   thumbnail?: InsightThumbnail;
   category: InsightCategory;
   subcategory?: InsightSubcategory;
+  subMinorCategory?: InsightSubminorCategory;
   enableComments: boolean;
   isExposed: boolean;
   isMainExposed: boolean;
@@ -59,7 +69,8 @@ interface InsightDetail {
   updatedAt?: string;
   viewCount?: number;
   attachments?: Attachment[];
-  pdf?: PdfFile;
+  files?: InsightFile[];
+  authorName?: string;
 }
 
 interface InsightNavigation {
@@ -109,100 +120,37 @@ const InsightDetailPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id?: number; name?: string; loginId?: string } | null>(null);
 
-  useEffect(() => {
-    if (id) {
-      fetchInsightDetail();
-    }
+  // Asosiy insight data ni yuklash
+  const fetchInsightDetail = useCallback(async () => {
+    if (!id) return;
     
-    // 로그인 상태 확인 및 사용자 정보 가져오기
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('accessToken');
-      setIsAuthenticated(!!token);
-      
-      // 로그인된 경우 사용자 정보 가져오기
-      if (token) {
-        fetchCurrentUser();
-      }
-    }
-  }, [id]);
-
-  const fetchInsightDetail = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // 상세 데이터 가져오기
       const response = await get<InsightDetail>(
         `${API_ENDPOINTS.INSIGHTS}/${id}`
       );
 
       if (response.data) {
-        // API 응답 확인용 로그 (개발 중에만)
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Insight data:', response.data);
-          console.log('PDF:', response.data.pdf);
-        }
-
         setInsight(response.data);
 
         // 댓글이 활성화되어 있으면 댓글 목록 가져오기
         if (response.data.enableComments) {
-          // 토큰이 있는지 직접 확인 (state보다 정확)
           const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
           if (token) {
-            // 사용자 정보를 먼저 가져온 후 댓글 가져오기
-            const user = await fetchCurrentUser();
-            fetchComments(user);
+            await fetchCurrentUser();
+            fetchComments(currentUser);
           } else {
             fetchComments(null);
           }
         }
         
-        // 조회수 증가 (클라이언트에서만 실행, 매번 페이지 열 때마다 실행)
+        // 조회수 증가
         if (typeof window !== 'undefined') {
           try {
             await post(`${API_ENDPOINTS.INSIGHTS}/${id}/increment-view`);
-          } catch (err) {
-            // 조회수 증가 실패는 무시 (에러 로그만 출력)
-            console.log('조회수 증가 실패:', err);
-          }
-        }
-        
-        // 이전/다음 글 가져오기
-        // 먼저 초기화
-        setPrevInsight(null);
-        setNextInsight(null);
-        
-        try {
-          const navResponse = await get<{ items: InsightDetail[] }>(
-            `${API_ENDPOINTS.INSIGHTS}?page=1&limit=100`
-          );
-
-          if (navResponse.data && navResponse.data.items) {
-            const items = navResponse.data.items;
-            const currentIndex = items.findIndex(item => item.id === Number(id));
-            
-            // 현재 글을 찾았을 때만 처리
-            if (currentIndex >= 0) {
-              // 이전 글 설정
-              if (currentIndex > 0) {
-                setPrevInsight({
-                  id: items[currentIndex - 1].id,
-                  title: items[currentIndex - 1].title
-                });
-              }
-              
-              // 다음 글 설정
-              if (currentIndex < items.length - 1) {
-                setNextInsight({
-                  id: items[currentIndex + 1].id,
-                  title: items[currentIndex + 1].title
-                });
-              }
-            }
-          }
-        } catch (err) {
-          // 네비게이션 실패는 무시
+          } catch (err) {}
         }
       } else if (response.error) {
         setError(response.error);
@@ -212,7 +160,283 @@ const InsightDetailPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  }, [id]);
+
+  // Navigation va prev/next ni yuklash
+  const fetchNavigationData = useCallback(async () => {
+    if (!id || !insight) return;
+
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+      const sub = urlParams.get('sub');
+      const search = urlParams.get('search');
+
+      const params = new URLSearchParams();
+      params.append('page', '1');
+      params.append('limit', '1000');
+
+      if (insight?.category?.id) {
+        params.append('categoryId', String(insight.category.id));
+      }
+
+      if (sub && sub !== '0') {
+        params.append('subcategoryId', sub);
+      }
+
+      if (search) {
+        params.append('search', search);
+      }
+
+      let memberType = null;
+      let isApproved = null;
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('accessToken');
+        const userStr = localStorage.getItem('user');
+        if (token && userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            memberType = user.memberType || null;
+            if (memberType === 'INSURANCE') {
+              isApproved = user.isApproved || null;
+            }
+          } catch (e) {}
+        }
+      }
+
+      if (memberType) {
+        params.append('memberType', memberType);
+      } else {
+        params.append('memberType', 'null');
+      }
+
+      if (isApproved !== null) {
+        params.append('isApproved', String(isApproved));
+      }
+
+      const navResponse = await get<{ items: InsightDetail[]; total: number }>(
+        `${API_ENDPOINTS.INSIGHTS}?${params.toString()}`
+      );
+
+      if (navResponse.data && navResponse.data.items) {
+        const items = navResponse.data.items;
+        const currentIndex = items.findIndex(item => item.id === Number(id));
+        
+        if (currentIndex >= 0) {
+          if (currentIndex > 0) {
+            setPrevInsight({
+              id: items[currentIndex - 1].id,
+              title: items[currentIndex - 1].title
+            });
+          }
+          
+          if (currentIndex < items.length - 1) {
+            setNextInsight({
+              id: items[currentIndex + 1].id,
+              title: items[currentIndex + 1].title
+            });
+          }
+        }
+      }
+    } catch (err) {}
+  }, [id, insight]);
+
+  // Asosiy data yuklash
+  useEffect(() => {
+    if (id) {
+      fetchInsightDetail();
+    }
+    
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('accessToken');
+      setIsAuthenticated(!!token);
+      
+      if (token) {
+        fetchCurrentUser();
+      }
+    }
+  }, [id, fetchInsightDetail]);
+
+  // Navigation data yuklash
+  useEffect(() => {
+    if (insight) {
+      fetchNavigationData();
+    }
+  }, [insight, fetchNavigationData]);
+
+  const fetchCurrentUser = async (): Promise<{ id?: number; name?: string; loginId?: string } | null> => {
+    try {
+      const response = await get<{ id: number; name: string; loginId: string }>(
+        API_ENDPOINTS.AUTH.ME
+      );
+      
+      if (response.data) {
+        setCurrentUser(response.data);
+        return response.data;
+      } else {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            const userInfo = { id: user.id, name: user.name, loginId: user.loginId };
+            setCurrentUser(userInfo);
+            return userInfo;
+          } catch (e) {
+            return null;
+          }
+        }
+        return null;
+      }
+    } catch (err) {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          const userInfo = { id: user.id, name: user.name, loginId: user.loginId };
+          setCurrentUser(userInfo);
+          return userInfo;
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    }
   };
+
+  const fetchComments = async (user?: { id?: number; name?: string; loginId?: string } | null) => {
+    if (!id) return;
+    
+    const userToCompare = user !== undefined ? user : currentUser;
+    
+    try {
+      const response = await get<CommentsResponse>(
+        `${API_ENDPOINTS.INSIGHTS}/${id}/comments`
+      );
+      
+      if (response.data) {
+        const commentsWithIsMine = (response.data.items || []).map((comment) => {
+          if (comment.isMine === true) {
+            return comment;
+          }
+
+          if (userToCompare && userToCompare.id) {
+            let isMyComment = false;
+
+            if (comment.member?.id) {
+              isMyComment = comment.member.id === userToCompare.id;
+            }
+
+            if (!isMyComment && comment.memberId) {
+              isMyComment = comment.memberId === userToCompare.id;
+            }
+
+            if (!isMyComment && (comment.authorId || comment.userId)) {
+              isMyComment = (comment.authorId === userToCompare.id) ||
+                           (comment.userId === userToCompare.id);
+            }
+
+            if (!isMyComment && comment.authorName && (userToCompare.name || userToCompare.loginId)) {
+              isMyComment = comment.authorName === userToCompare.name ||
+                           comment.authorName === userToCompare.loginId;
+            }
+
+            return { ...comment, isMine: isMyComment };
+          }
+
+          return { ...comment, isMine: false };
+        });
+        
+        setComments(commentsWithIsMine);
+        setCommentTotal(response.data.total || 0);
+      }
+    } catch (err) {}
+  };
+
+  const handleBackToList = useCallback(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const query: Record<string, string> = {};
+    
+    const category = urlParams.get('category');
+    const sub = urlParams.get('sub');
+    const search = urlParams.get('search');
+
+    if (category) {
+      query.category = category;
+    } else if (insight?.category?.id) {
+      query.category = String(insight.category.id);
+    }
+    
+    if (sub !== null) {
+      query.sub = sub;
+    } else if (insight?.subcategory?.id !== undefined) {
+      query.sub = String(insight.subcategory.id);
+    }
+    
+    if (search) {
+      query.search = search;
+    }
+
+    router.push({
+      pathname: '/insights',
+      query: query
+    });
+  }, [router, insight]);
+
+  const handlePrevClick = useCallback(() => {
+    if (prevInsight && prevInsight.id) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query: Record<string, string> = {};
+      
+      const category = urlParams.get('category');
+      const sub = urlParams.get('sub');
+      const search = urlParams.get('search');
+
+      if (category) {
+        query.category = category;
+      }
+      
+      if (sub !== null) {
+        query.sub = sub;
+      }
+      
+      if (search) {
+        query.search = search;
+      }
+
+      router.push({
+        pathname: `/insights/${prevInsight.id}`,
+        query: query
+      });
+    }
+  }, [prevInsight, router]);
+
+  const handleNextClick = useCallback(() => {
+    if (nextInsight && nextInsight.id) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query: Record<string, string> = {};
+      
+      const category = urlParams.get('category');
+      const sub = urlParams.get('sub');
+      const search = urlParams.get('search');
+
+      if (category) {
+        query.category = category;
+      }
+      
+      if (sub !== null) {
+        query.sub = sub;
+      }
+      
+      if (search) {
+        query.search = search;
+      }
+
+      router.push({
+        pathname: `/insights/${nextInsight.id}`,
+        query: query
+      });
+    }
+  }, [nextInsight, router]);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -221,22 +445,6 @@ const InsightDetailPage: React.FC = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}.${month}.${day}`;
-  };
-
-  const handleBackToList = () => {
-    router.push('/insights');
-  };
-
-  const handlePrevClick = () => {
-    if (prevInsight && prevInsight.id) {
-      router.push(`/insights/${prevInsight.id}`);
-    }
-  };
-
-  const handleNextClick = () => {
-    if (nextInsight && nextInsight.id) {
-      router.push(`/insights/${nextInsight.id}`);
-    }
   };
 
   const handlePrint = () => {
@@ -253,7 +461,6 @@ const InsightDetailPage: React.FC = () => {
     const text = `${title} - 세무 상담`;
 
     try {
-      // Web Share API가 지원되는 경우
       if (navigator.share) {
         await navigator.share({
           title,
@@ -261,167 +468,68 @@ const InsightDetailPage: React.FC = () => {
           url,
         });
       } else {
-        // Web Share API가 지원되지 않는 경우 클립보드에 복사
         await navigator.clipboard.writeText(url);
         alert('링크가 클립보드에 복사되었습니다.');
       }
     } catch (error) {
-      // 사용자가 공유를 취소한 경우 등 에러는 무시
       if (error instanceof Error && error.name !== 'AbortError') {
-        // 클립보드 복사로 폴백
         try {
           await navigator.clipboard.writeText(url);
           alert('링크가 클립보드에 복사되었습니다.');
-        } catch (clipboardError) {
-          console.error('공유 실패:', clipboardError);
-        }
+        } catch (clipboardError) {}
       }
     }
   };
 
-  const handleDownload = (fileUrl: string, fileName: string) => {
+  const handleDownload = async (attachmentId: number, fileName: string) => {
     try {
-      // API에서 제공하는 실제 파일 URL을 직접 사용
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      link.download = fileName;
-      link.target = '_blank'; // 새 탭에서 열기
-      link.rel = 'noopener noreferrer'; // 보안을 위해
+      const headers: HeadersInit = {};
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+      }
+      
+      const downloadUrl = `${API_BASE_URL}/attachments/${attachmentId}/download`;
+      const response = await fetch(downloadUrl, {
+        method: 'GET',
+        headers,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let finalFileName = fileName;
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (fileNameMatch && fileNameMatch[1]) {
+          finalFileName = fileNameMatch[1].replace(/['"]/g, '');
+        }
+      }
+      
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = finalFileName;
+      link.style.display = "none";
       document.body.appendChild(link);
       link.click();
+      
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
-      console.error('다운로드 실패:', error);
-      alert('파일 다운로드 중 오류가 발생했습니다.');
-    }
-  };
-
-  const fetchCurrentUser = async (): Promise<{ id?: number; name?: string; loginId?: string } | null> => {
-    try {
-      const response = await get<{ id: number; name: string; loginId: string }>(
-        API_ENDPOINTS.AUTH.ME
-      );
-      
-      if (response.data) {
-        setCurrentUser(response.data);
-        return response.data;
-      } else {
-        // localStorage에서 사용자 정보 가져오기 (fallback)
-        const userStr = localStorage.getItem('user');
-        if (userStr) {
-          try {
-            const user = JSON.parse(userStr);
-            const userInfo = { id: user.id, name: user.name, loginId: user.loginId };
-            setCurrentUser(userInfo);
-            return userInfo;
-          } catch (e) {
-            // 파싱 실패 시 무시
-            return null;
-          }
-        }
-        return null;
-      }
-    } catch (err) {
-      // 인증 실패 시 localStorage에서 사용자 정보 가져오기
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          const userInfo = { id: user.id, name: user.name, loginId: user.loginId };
-          setCurrentUser(userInfo);
-          return userInfo;
-        } catch (e) {
-          // 파싱 실패 시 무시
-          return null;
-        }
-      }
-      return null;
-    }
-  };
-
-  const fetchComments = async (user?: { id?: number; name?: string; loginId?: string } | null) => {
-    if (!id) return;
-    
-    // currentUser state 또는 파라미터로 전달된 user 사용
-    const userToCompare = user !== undefined ? user : currentUser;
-    
-    try {
-      const response = await get<CommentsResponse>(
-        `${API_ENDPOINTS.INSIGHTS}/${id}/comments`
-      );
-      
-      if (response.data) {
-        // 디버깅용 로그
-        if (process.env.NODE_ENV === 'development') {
-          console.log('댓글 API 응답:', response.data);
-          console.log('현재 사용자:', userToCompare);
-        }
-        
-        // isMine 필드가 없거나 false인 경우, 현재 사용자와 비교해서 설정
-        const commentsWithIsMine = (response.data.items || []).map((comment) => {
-          // API에서 isMine이 이미 true로 오면 그대로 사용
-          if (comment.isMine === true) {
-            return comment;
-          }
-
-          // API에서 isMine이 없거나 false인 경우, 현재 사용자와 비교
-          if (userToCompare && userToCompare.id) {
-            let isMyComment = false;
-
-            // 1. member.id와 현재 사용자 id 비교 (가장 정확)
-            if (comment.member?.id) {
-              isMyComment = comment.member.id === userToCompare.id;
-            }
-
-            // 2. memberId와 현재 사용자 id 비교
-            if (!isMyComment && comment.memberId) {
-              isMyComment = comment.memberId === userToCompare.id;
-            }
-
-            // 3. authorId 또는 userId와 현재 사용자 id 비교
-            if (!isMyComment && (comment.authorId || comment.userId)) {
-              isMyComment = (comment.authorId === userToCompare.id) ||
-                           (comment.userId === userToCompare.id);
-            }
-
-            // 4. authorName과 현재 사용자 name 또는 loginId 비교
-            if (!isMyComment && comment.authorName && (userToCompare.name || userToCompare.loginId)) {
-              isMyComment = comment.authorName === userToCompare.name ||
-                           comment.authorName === userToCompare.loginId;
-            }
-
-            if (process.env.NODE_ENV === 'development') {
-              console.log(`댓글 ${comment.id}:`, {
-                authorName: comment.authorName,
-                memberId: comment.memberId,
-                memberObjId: comment.member?.id,
-                authorId: comment.authorId,
-                userId: comment.userId,
-                currentUserId: userToCompare.id,
-                currentUserName: userToCompare.name,
-                currentUserLoginId: userToCompare.loginId,
-                isMyComment
-              });
-            }
-
-            return { ...comment, isMine: isMyComment };
-          }
-
-          return { ...comment, isMine: false };
-        });
-        
-        setComments(commentsWithIsMine);
-        setCommentTotal(response.data.total || 0);
-      }
-    } catch (err) {
-      console.error('댓글 불러오기 실패:', err);
+      alert("파일 다운로드 중 오류가 발생했습니다.");
     }
   };
 
   const handleSubmitComment = async () => {
     if (!id || !commentText.trim() || isSubmittingComment) return;
 
-    // 로그인 체크
     if (!isAuthenticated) {
       if (confirm('댓글을 작성하려면 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
         router.push('/login');
@@ -440,13 +548,11 @@ const InsightDetailPage: React.FC = () => {
         const newComment = response.data;
         setCommentText('');
 
-        // 새로 작성한 댓글은 무조건 isMine: true로 설정하여 즉시 추가
         const newCommentWithIsMine: Comment = {
           ...newComment,
           isMine: true,
         };
 
-        // 댓글 목록에 새 댓글을 직접 추가 (맨 앞 또는 맨 뒤에 추가)
         setComments(prevComments => [...prevComments, newCommentWithIsMine]);
         setCommentTotal(prevTotal => prevTotal + 1);
       } else if (response.error) {
@@ -458,7 +564,6 @@ const InsightDetailPage: React.FC = () => {
         }
       }
     } catch (err) {
-      console.error('댓글 작성 실패:', err);
       alert('댓글 작성 중 오류가 발생했습니다.');
     } finally {
       setIsSubmittingComment(false);
@@ -468,7 +573,6 @@ const InsightDetailPage: React.FC = () => {
   const handleDeleteComment = async (commentId: number) => {
     if (!id || !confirm('댓글을 삭제하시겠습니까?')) return;
     
-    // 로그인 체크
     if (!isAuthenticated) {
       alert('로그인이 필요합니다.');
       return;
@@ -480,7 +584,6 @@ const InsightDetailPage: React.FC = () => {
       );
       
       if (!response.error) {
-        // 댓글 목록 새로고침
         await fetchComments(currentUser);
       } else {
         if (response.status === 401) {
@@ -493,7 +596,6 @@ const InsightDetailPage: React.FC = () => {
         }
       }
     } catch (err) {
-      console.error('댓글 삭제 실패:', err);
       alert('댓글 삭제 중 오류가 발생했습니다.');
     }
   };
@@ -501,7 +603,6 @@ const InsightDetailPage: React.FC = () => {
   const handleReportComment = async (commentId: number) => {
     if (!id || !confirm('이 댓글을 신고하시겠습니까?')) return;
     
-    // 로그인 체크
     if (!isAuthenticated) {
       if (confirm('댓글을 신고하려면 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
         router.push('/login');
@@ -528,7 +629,6 @@ const InsightDetailPage: React.FC = () => {
         }
       }
     } catch (err) {
-      console.error('댓글 신고 실패:', err);
       alert('댓글 신고 중 오류가 발생했습니다.');
     }
   };
@@ -536,7 +636,7 @@ const InsightDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.loading}>로딩 중...</div>
@@ -549,7 +649,7 @@ const InsightDetailPage: React.FC = () => {
   if (error || !insight) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.error}>
@@ -563,8 +663,14 @@ const InsightDetailPage: React.FC = () => {
   }
 
   return (
-    <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+    <>
+      <SEO
+        pageTitle={insight.title}
+        menuName="인사이트"
+        description={insight.content?.replace(/<[^>]*>/g, '').substring(0, 160) || '인사이트 상세 페이지입니다.'}
+      />
+      <div className={styles.page}>
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <div className={styles.floatingButtons}>
@@ -587,13 +693,13 @@ const InsightDetailPage: React.FC = () => {
         <div className={styles.content}>
           <div className={styles.headerSection}>
             <div className={styles.titleWrapper}>
-              <div className={styles.category}>{typeof insight.subcategory?.name === 'string' ? insight.subcategory.name : (typeof insight.category?.name === 'string' ? insight.category.name : '카테고리명')}</div>
+              <div className={styles.category}>{typeof insight.subMinorCategory?.name === 'string' ? insight.subMinorCategory.name : (typeof insight.category?.name === 'string' ? insight.category.name : '카테고리명')}</div>
               <h1 className={styles.title}>{insight.title}</h1>
             </div>
             <div className={styles.meta}>
               <div className={styles.metaLeft}>
-                <span className={styles.author}>작성자명</span>
-                <span className={styles.divider}>|</span>
+                <span className={styles.author}>{insight.authorName ? insight.authorName : "작성자명"}</span>
+                <span className={styles.divider}></span>
                 <span className={styles.date}>{formatDate(insight.createdAt)}</span>
               </div>
               <div className={styles.metaRight}>
@@ -625,31 +731,34 @@ const InsightDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {insight.pdf?.url && (
+          {insight.files && insight.files.length > 0 && (
             <div className={styles.attachmentsSection}>
               <h2 className={styles.attachmentsTitle}>첨부파일</h2>
               <div className={styles.attachmentsList}>
-                <div className={styles.attachmentItem}>
-                  <div className={styles.attachmentLeft}>
-                    <div className={styles.attachmentLabel}>1</div>
-                    <div className={styles.attachmentInfo}>
-                      <Icon type="document" size={24} className={styles.attachmentIcon} />
-                      <span className={styles.attachmentName}>
-                        {insight.pdf.url.split('/').pop() || '첨부 파일.pdf'}
-                      </span>
+                {insight.files && insight.files.map((file, index) => (
+                  <div key={file.id} className={styles.attachmentItem}>
+                    <div className={styles.attachmentLeft}>
+                      <div className={styles.attachmentLabel}>{index + 1}</div>
+                      <div className={styles.attachmentInfo}>
+                        <Icon type="document" size={24} className={styles.attachmentIcon} />
+                        <span className={styles.attachmentName}>
+                          {file.fileName || file.url.split('/').pop() || '첨부 파일.pdf'}
+                        </span>
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      className={styles.downloadButton}
+                      onClick={() => {
+                        const fileName = file.fileName || file.url.split('/').pop() || '첨부 파일.pdf';
+                        handleDownload(file.id, fileName);
+                      }}
+                    >
+                      <span className={styles.downloadButtonText}>다운로드</span>
+                      <Icon type="download-white" size={20} className={styles.downloadIcon} />
+                    </button>
                   </div>
-                  <button
-                    className={styles.downloadButton}
-                    onClick={() => {
-                      const fileName = insight.pdf?.url.split('/').pop() || '첨부 파일.pdf';
-                      handleDownload(insight.pdf!.url, fileName);
-                    }}
-                  >
-                    <span className={styles.downloadButtonText}>다운로드</span>
-                    <Icon type="download-white" size={20} className={styles.downloadIcon} />
-                  </button>
-                </div>
+                ))}
               </div>
             </div>
           )}
@@ -778,8 +887,8 @@ const InsightDetailPage: React.FC = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
 export default InsightDetailPage;
-

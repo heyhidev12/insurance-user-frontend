@@ -22,6 +22,8 @@ body {
   background-color: $black;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+
 }
 
 // Next.js 루트 요소

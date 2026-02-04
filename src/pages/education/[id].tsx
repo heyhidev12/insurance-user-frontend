@@ -8,15 +8,22 @@ import Footer from '@/components/common/Footer';
 import Icon from '@/components/common/Icon';
 import DatePickerModal from '@/components/education/DatePickerModal';
 import ApplicationModal from '@/components/education/ApplicationModal';
+import SEO from '@/components/SEO';
 import { get, del } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
-import type { EducationDetail, ApplicationStatus } from '@/types/education';
+import type { ApplicationStatus, EducationDetail } from '@/types/education';
 import styles from './detail.module.scss';
 
 interface UserProfile {
   id: number;
   loginId: string;
   name: string;
+}
+
+
+interface MyApplication {
+  id: number;
+  status: ApplicationStatus;
 }
 
 // Toast UI Viewer는 클라이언트 사이드에서만 로드
@@ -36,6 +43,8 @@ const EducationDetailPage: React.FC = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [applicationStatus, setApplicationStatus] = useState<ApplicationStatus | null>(null);
+  const [isApplicationLoading, setIsApplicationLoading] = useState(false);
 
   // 사용자 정보 가져오기
   useEffect(() => {
@@ -45,8 +54,16 @@ const EducationDetailPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       fetchEducationDetail();
+      fetchApplicationStatus();
     }
   }, [id]);
+
+  // 로그인 상태가 변경되었을 때 신청 상태 재조회
+  useEffect(() => {
+    if (id) {
+      fetchApplicationStatus();
+    }
+  }, [id, userProfile]);
 
   const fetchUserProfile = async () => {
     try {
@@ -56,6 +73,69 @@ const EducationDetailPage: React.FC = () => {
       }
     } catch (err) {
       console.error('유저 정보를 불러오는 중 오류:', err);
+    }
+  };
+
+  const getVimeoEmbedUrl = (url: string): string => {
+    // If already in embed format, return as is
+    if (url.includes("player.vimeo.com/video/")) {
+      return url;
+    }
+
+    // Extract video ID from various Vimeo URL formats
+    // Formats: https://vimeo.com/1070109559, https://vimeo.com/video/1070109559, etc.
+    const patterns = [
+      /vimeo\.com\/video\/(\d+)/,  // https://vimeo.com/video/1070109559
+      /vimeo\.com\/(\d+)/,          // https://vimeo.com/1070109559
+      /vimeo\.com\/.*\/(\d+)/,      // Other variations
+    ];
+
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return `https://player.vimeo.com/video/${match[1]}`;
+      }
+    }
+
+    // If no pattern matches, try to extract any numeric ID from the URL
+    const numericMatch = url.match(/(\d{8,})/); // Vimeo IDs are typically 8+ digits
+    if (numericMatch && numericMatch[1]) {
+      return `https://player.vimeo.com/video/${numericMatch[1]}`;
+    }
+
+    // If parsing fails, return the original URL (should not happen with valid Vimeo URLs)
+    return url;
+  };
+
+  const fetchApplicationStatus = async () => {
+    if (!id) return;
+
+    try {
+      setIsApplicationLoading(true);
+      const response = await get<MyApplication>(
+        `${API_ENDPOINTS.TRAINING_SEMINARS}/${id}/my-application`
+      );
+
+      if (response.data) {
+        setApplicationStatus(response.data.status);
+        return;
+      }
+
+      // 401 / 404 는 신청 이력 없음으로 처리
+      if (response.status === 401 || response.status === 404) {
+        setApplicationStatus(null);
+        return;
+      }
+
+      if (response.error) {
+        console.error('신청 상태 조회 중 오류:', response.error);
+        setApplicationStatus(null);
+      }
+    } catch (err) {
+      console.error('신청 상태 조회 중 예외:', err);
+      setApplicationStatus(null);
+    } finally {
+      setIsApplicationLoading(false);
     }
   };
 
@@ -84,7 +164,7 @@ const EducationDetailPage: React.FC = () => {
     const today = new Date();
     const deadline = new Date(endDate);
     const diffTime = deadline.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))+1;
     return diffDays > 0 ? diffDays : 0;
   };
 
@@ -159,7 +239,7 @@ const EducationDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.loading}>로딩 중...</div>
@@ -172,7 +252,7 @@ const EducationDetailPage: React.FC = () => {
   if (error || !education) {
     return (
       <div className={styles.page}>
-        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.error}>{error || '교육 정보를 찾을 수 없습니다.'}</div>
@@ -189,64 +269,25 @@ const EducationDetailPage: React.FC = () => {
     if (!education.recruitmentEndDate) return false;
     const today = new Date();
     const endDate = new Date(education.recruitmentEndDate);
+
+    // 날짜만 비교 (시/분/초 무시) → 마감일 당일(endDate와 같은 날)에는 신청 가능
+    today.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
     return today > endDate;
   };
 
   const isRecruitmentClosed = checkRecruitmentClosed();
 
-  // applications 배열에서 현재 사용자의 가장 최근 신청 찾기 (모달과 동일한 로직)
-  const getUserApplication = () => {
-    if (!userProfile || !education.applications || education.applications.length === 0) {
-      return null;
-    }
-    // 현재 유저의 모든 신청 찾기
-    const userApps = education.applications.filter(
-      (app: any) => app.userId === userProfile.id || app.name === userProfile.name
-    );
-    if (userApps.length === 0) return null;
-    // 가장 최근 신청 반환 (id가 큰 것 또는 appliedAt이 최신인 것)
-    return userApps.sort((a: any, b: any) => {
-      if (a.appliedAt && b.appliedAt) {
-        return new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime();
-      }
-      return (b.id || 0) - (a.id || 0);
-    })[0];
-  };
-
-  const userApplication = getUserApplication();
-  const hasApplication = !!userApplication;
-
-  // 버튼 상태 결정 (모달과 동일한 로직)
-  const getButtonState = () => {
-    if (isRecruitmentClosed) {
-      return 'recruitment_closed';
-    }
-    if (hasApplication) {
-      const status = (userApplication?.status || '').toUpperCase();
-      // 취소/거절된 경우 다시 신청 가능
-      if (status === 'CANCELLED' || status === 'REJECTED') {
-        return 'can_apply';
-      }
-      if (status === 'COMPLETED') {
-        return 'completed';
-      }
-      if (status === 'APPROVED' || status === 'CONFIRMED') {
-        return 'approved';
-      }
-      // WAITING, PENDING 등은 모두 승인 대기중
-      return 'pending';
-    }
-    return 'can_apply';
-  };
-
-  const buttonState = getButtonState();
-
   // 신청 취소 처리
   const handleCancelApplication = async () => {
-    if (!userApplication?.id) return;
-
+    if(daysLeft <= 1) {
+      alert("교육/세미나 당일에는 취소할 수 없습니다");
+      return;
+    }
     const confirmed = window.confirm('신청을 취소하시겠습니까?');
     if (!confirmed) return;
+    
 
     try {
       // 신청 취소 API: DELETE /training-seminars/{seminarId}/apply
@@ -262,7 +303,10 @@ const EducationDetailPage: React.FC = () => {
       }
 
       alert('신청이 취소되었습니다.');
+      // 서버 응답을 기다리지 않고 즉시 UI 반영
+      setApplicationStatus('CANCELLED');
       fetchEducationDetail(); // 데이터 새로고침
+      fetchApplicationStatus(); // 신청 상태 재조회
     } catch (err) {
       console.error('신청 취소 중 오류:', err);
       alert('신청 취소 기능이 현재 지원되지 않습니다.');
@@ -271,31 +315,14 @@ const EducationDetailPage: React.FC = () => {
 
   // 버튼 렌더링 함수 (모달과 동일한 로직)
   const renderActionButton = () => {
-    if (buttonState === 'recruitment_closed') {
+    if (isRecruitmentClosed) {
       return (
         <button className={styles.closedButton} disabled>
           모집 종료
         </button>
       );
     }
-
-    if (buttonState === 'completed') {
-      return (
-        <button className={styles.completedButton} disabled>
-          수강 완료
-        </button>
-      );
-    }
-
-    if (buttonState === 'approved') {
-      return (
-        <button className={styles.pendingButton} disabled>
-          승인 완료
-        </button>
-      );
-    }
-
-    if (buttonState === 'pending') {
+    if (applicationStatus === 'WAITING') {
       return (
         <>
           <button className={styles.pendingButton} disabled>
@@ -308,20 +335,45 @@ const EducationDetailPage: React.FC = () => {
       );
     }
 
-    // can_apply: 신청하기 버튼
+    if (applicationStatus === 'CONFIRMED') {
+      return (
+        <>
+          <button className={styles.completedButton} disabled>
+            신청 완료
+          </button>
+          <button className={styles.cancelLink} onClick={handleCancelApplication}>
+            신청 취소
+          </button>
+        </>
+      );
+    }
+
+    // CAN APPLY (신청 이력 없음 또는 CANCELLED / 404 / 401)
     return (
       <button
         className={styles.applyButton}
-        onClick={() => setIsApplicationModalOpen(true)}
+        onClick={() => {
+          if (!userProfile) {
+            alert('교육/세미나는 로그인 후 신청할 수 있습니다.');
+            return;
+          }
+          setIsApplicationModalOpen(true);
+        }}
       >
-        신청하기
+        {isApplicationLoading ? '불러오는 중...' : '신청하기'}
       </button>
     );
   };
 
   return (
-    <div className={styles.page}>
-      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} />
+    <>
+      <SEO
+        pageTitle={education?.name}
+        menuName="교육/세미나"
+        description={education?.oneLineIntro || `${education?.name || ''} 교육/세미나 상세 페이지입니다.`}
+      />
+      <div className={styles.page}>
+     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       
       <div className={styles.container}>
@@ -454,7 +506,7 @@ const EducationDetailPage: React.FC = () => {
               </div>
 
               <div className={styles.price}>
-                <p>0원</p>
+                <p>{education.price ?? 0}원</p>
               </div>
 
               <div className={styles.actionButtonDesktop}>
@@ -468,7 +520,19 @@ const EducationDetailPage: React.FC = () => {
             <div className={styles.bodyContent}>
               <Viewer initialValue={education.body} />
             </div>
+           
           </div>
+          {education.vimeoVideoUrl && (
+              <div className={styles.videoWrapper}>
+                <iframe
+                  src={getVimeoEmbedUrl(education.vimeoVideoUrl)}
+                  title="Vimeo Video"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
         </div>
       </div>
 
@@ -495,10 +559,12 @@ const EducationDetailPage: React.FC = () => {
           onSuccess={() => {
             // 신청 성공 후 데이터 새로고침
             fetchEducationDetail();
+            fetchApplicationStatus();
           }}
         />
       )}
     </div>
+    </>
   );
 };
 

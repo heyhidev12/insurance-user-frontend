@@ -101,6 +101,10 @@
     @include pretendard-15-semibold;
     color: $gray-10; // #F0F0F0
     letter-spacing: -0.075px;
+
+    @media (max-width: 768px) {
+      @include pretendard-13-regular;
+    }
   }
 }
 
@@ -147,6 +151,9 @@
   flex-shrink: 0;
   width: 30px;
   transition: color $transition-normal;
+  @media (max-width: 768px) {
+    @include pretendard-13-regular;
+  }
 
   &:hover {
     color: $navy-20; // #BFD8F3
