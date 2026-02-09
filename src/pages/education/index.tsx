@@ -11,6 +11,7 @@ import Checkbox from '@/components/common/Checkbox';
 import Button from '@/components/common/Button';
 import Pagination from '@/components/common/Pagination';
 import SEO from '@/components/SEO';
+import TermsModal, { TermsType } from '@/components/common/TermsModal';
 import { get, post } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
 import type { EducationItem, EducationListResponse, EducationType } from '@/types/education';
@@ -70,6 +71,30 @@ const EducationPage: React.FC = () => {
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Terms modal state
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [activeTermsType, setActiveTermsType] = useState<TermsType>('privacy');
+
+  // Open terms modal handler
+  const handleOpenTermsModal = (termsType: TermsType) => {
+    setActiveTermsType(termsType);
+    setIsTermsModalOpen(true);
+  };
+
+  // Close terms modal handler
+  const handleCloseTermsModal = () => {
+    setIsTermsModalOpen(false);
+  };
+
+  // Confirm terms modal handler - checks the corresponding checkbox
+  const handleConfirmTermsModal = () => {
+    if (activeTermsType === 'privacy') {
+      setPrivacyAgreed(true);
+    } else if (activeTermsType === 'marketing') {
+      setOptionalAgreed(true);
+    }
+  };
 
   // 로그인된 사용자 정보로 뉴스레터 폼 미리 채우기
   useEffect(() => {
@@ -173,6 +198,10 @@ const EducationPage: React.FC = () => {
       
       // Success
       alert('뉴스레터 구독이 완료되었습니다.');
+      window.gtag?.("event", "newsletter_submit", {
+        event_category: "engagement",
+        event_label: "newsletter_form",
+      });
       
       // Reset form
       setNewsletterName('');
@@ -640,7 +669,7 @@ const EducationPage: React.FC = () => {
                           onChange={setPrivacyAgreed}
                           label="[필수] 개인정보 처리 방침 이용 동의"
                         />
-                        <button className={styles.newsletterLink}>보기</button>
+                        <button type="button" className={styles.newsletterLink} onClick={() => handleOpenTermsModal('privacy')}>보기</button>
                       </div>
                       <div className={styles.newsletterCheckboxRow}>
                         <Checkbox
@@ -649,7 +678,7 @@ const EducationPage: React.FC = () => {
                           onChange={setOptionalAgreed}
                           label="[선택] OO OOOOO 이용 동의"
                         />
-                        <button className={styles.newsletterLink}>보기</button>
+                        <button type="button" className={styles.newsletterLink} onClick={() => handleOpenTermsModal('marketing')}>보기</button>
                       </div>
                     </div>
                     <Button
@@ -678,11 +707,15 @@ const EducationPage: React.FC = () => {
           label="상담 신청하기"
           onClick={() => router.push('/consultation/apply')}
         />
-        <FloatingButton
-          variant="top"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        />
       </div>
+
+      {/* Terms Modal */}
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={handleCloseTermsModal}
+        onConfirm={handleConfirmTermsModal}
+        termsType={activeTermsType}
+      />
     </div>
     </>
   );

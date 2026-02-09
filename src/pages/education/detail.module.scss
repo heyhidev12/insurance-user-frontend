@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@use '../../styles/variables' as *;
 .videoWrapper {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -11,7 +11,7 @@
   width: 100%;
   height: 100%;
   border: none;
-} @import '../../styles/variables';
+}
 
 .page {
   min-height: 100vh;
@@ -690,7 +690,12 @@
   &:hover {
     opacity: 0.8;
   }
+  @media (max-width: $breakpoint-tablet) {
+    margin-top: 0px;
+    text-align: right;
+  }
 }
+
 
 // 신청마감 라벨 (회색)
 .labelGray {
@@ -724,15 +729,27 @@
   display: none;
 
   @media (max-width: $breakpoint-tablet) {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 16px 24px;
+    padding: 12px 20px;
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
     background: #151515;
     z-index: 100;
+
+    // When button is only child (no cancel link), make it full width
+    > button:only-child {
+      width: 100%;
+    }
+
+    // When there's a cancel link, button takes remaining space
+    > button:first-child:not(:only-child) {
+      flex: 1;
+    }
   }
 }
 
@@ -745,5 +762,10 @@
   font-size: 17px;
   line-height: 1.5;
   color: #d8d8d8;
+}
+
+// Scroll to Top button
+.scrollToTop {
+  bottom: 96px;
 }
 

@@ -290,11 +290,10 @@ const HistoryPage: React.FC = () => {
           // API 에러 시 연혁 탭만 숨김 (페이지 에러로 처리하지 않음)
           setHistoryExposed(false);
         } else if (response.data) {
-          if (response.data.isExposed && response.data.data) {
+          if (response.data.data) {
             setData(response.data.data);
             setHistoryExposed(true);
           } else {
-            // isExposed가 false면 연혁 탭만 숨김
             setHistoryExposed(false);
           }
         }
@@ -343,11 +342,7 @@ const HistoryPage: React.FC = () => {
         if (response.error) {
           setCustomersError(response.error);
         } else if (response.data && response.data.items) {
-          // displayOrder로 정렬하고 isMainExposed가 true인 것만 필터링
-          const sorted = response.data.items
-            .filter(item => item.isMainExposed)
-            .sort((a, b) => a.displayOrder - b.displayOrder);
-          setCustomersData(sorted);
+          setCustomersData(response.data.items);
         } else {
           setCustomersError('데이터를 불러올 수 없습니다.');
         }
@@ -372,11 +367,7 @@ const HistoryPage: React.FC = () => {
         if (response.error) {
           setBranchesError(response.error);
         } else if (response.data && response.data.items) {
-          // displayOrder로 정렬하고 isExposed가 true인 것만 필터링
-          const sorted = response.data.items
-            .filter(item => item.isExposed)
-            .sort((a, b) => a.displayOrder - b.displayOrder);
-          setBranchesData(sorted);
+          setBranchesData(response.data.items);
         } else {
           setBranchesError('데이터를 불러올 수 없습니다.');
         }
@@ -847,8 +838,8 @@ const HistoryPage: React.FC = () => {
 
             <div className={styles.rightSection}>
               {sortedData.map((yearData, yearIndex) => {
-                // 각 연도의 항목들을 displayOrder로 정렬
-                const sortedItems = [...yearData.items].sort((a, b) => a.displayOrder - b.displayOrder);
+                // 각 연도의 항목들을 그대로 사용
+                const sortedItems = yearData.items;
 
                 // 월별로 그룹화
                 const groupedByMonth = sortedItems.reduce((acc, item) => {
@@ -942,9 +933,7 @@ const HistoryPage: React.FC = () => {
                   </div>
                 ) : (
                   awardsData.map((yearData, index) => {
-                    const sortedItems = [...yearData.items]
-                      .filter(item => item.isMainExposed)
-                      .sort((a, b) => a.displayOrder - b.displayOrder);
+                    const sortedItems = yearData.items;
 
                     if (sortedItems.length === 0) return null;
 
@@ -1008,7 +997,14 @@ const HistoryPage: React.FC = () => {
               <div className={styles.ciColorGuideSection}>
                 <div className={styles.ciColorGuideHeader}>
                   <div className={styles.ciColorGuideLogo}>
-                    <img src="/images/logo/logo-hd_w.png" alt="MODOO CONSULTING Logo" className={styles.ciColorGuideLogoImage} />
+                    <a 
+                      href="/images/logo/logo-hd_w.png" 
+                      download="modoo-logo-horizontal-white.png"
+                      className={styles.ciColorGuideLogoLink}
+                      title="로고 다운로드 (가로형 화이트)"
+                    >
+                      <img src="/images/logo/logo-hd_w.png" alt="MODOO CONSULTING Logo" className={styles.ciColorGuideLogoImage} />
+                    </a>
                   </div>
                   <div className={styles.ciColorGuideDivider} />
                   <p className={styles.ciColorGuideText}>
@@ -1075,14 +1071,28 @@ const HistoryPage: React.FC = () => {
                     <div className={styles.ciSectionDivider} />
                     <div className={styles.ciLogoItems}>
                       <div className={styles.ciLogoItem}>
-                        <div className={styles.ciLogoBox}>
-                          <img src="/images/logo/logo-hd.png" alt="Logo Horizontal" className={styles.ciLogoImage} />
-                        </div>
+                        <a 
+                          href="/images/logo/logo-hd.png" 
+                          download="modoo-logo-horizontal.png"
+                          className={styles.ciLogoDownloadLink}
+                          title="로고 다운로드 (가로형)"
+                        >
+                          <div className={styles.ciLogoBox}>
+                            <img src="/images/logo/logo-hd.png" alt="Logo Horizontal" className={styles.ciLogoImage} />
+                          </div>
+                        </a>
                       </div>
                       <div className={styles.ciLogoItem}>
-                        <div className={styles.ciLogoBox}>
-                          <img src="/images/logo/logo_s.png" alt="Logo Vertical" className={styles.ciLogoImage} />
-                        </div>
+                        <a 
+                          href="/images/logo/logo_s.png" 
+                          download="modoo-logo-vertical.png"
+                          className={styles.ciLogoDownloadLink}
+                          title="로고 다운로드 (세로형)"
+                        >
+                          <div className={styles.ciLogoBox}>
+                            <img src="/images/logo/logo_s.png" alt="Logo Vertical" className={styles.ciLogoImage} />
+                          </div>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -1306,10 +1316,6 @@ const HistoryPage: React.FC = () => {
           variant="consult"
           label="상담 신청하기"
           onClick={() => router.push('/consultation/apply')}
-        />
-        <FloatingButton
-          variant="top"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         />
       </div>
 

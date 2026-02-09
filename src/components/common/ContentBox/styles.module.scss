@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@use '../../../styles/variables' as *;
 
 .contentBox {
   background: rgba(255, 255, 255, 0.02);

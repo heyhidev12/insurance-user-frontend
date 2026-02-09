@@ -1,4 +1,4 @@
-@import '@/styles/_variables';
+@use '@/styles/_variables' as *;
 
 .page {
   min-height: 100vh;
@@ -14,7 +14,8 @@
 
 // Red label for active recruitment
 .labelRed {
-  background: rgba(255, 255, 255, 0.10);  ;
+  background: rgba(255, 255, 255, 0.10);
+  ;
   padding: 8px;
   border-radius: 4px;
   @include pretendard-15-semibold;
@@ -453,7 +454,7 @@
   flex-shrink: 0;
   color: #8e8e8e;
   margin: 0;
-  
+
   @include pretendard-15-semibold;
   color: #f0f0f0;
 }
@@ -516,6 +517,15 @@
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+.subscribeButton {
+  @extend .unsubscribeButton;
+  color: $navy-30; // green theme
+
+  &:hover:not(:disabled) {
+    color: $navy-30;
   }
 }
 
@@ -842,7 +852,7 @@
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
@@ -935,7 +945,7 @@ line-clamp: 2;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1036,7 +1046,7 @@ line-clamp: 2;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
   }
 }
@@ -1247,7 +1257,7 @@ line-clamp: 2;
   margin-bottom: 32px;
 }
 
-.modalConsultantCard + .modalDivider {
+.modalConsultantCard+.modalDivider {
   margin-top: 80px;
   margin-bottom: 80px;
 }
@@ -1799,14 +1809,14 @@ line-clamp: 2;
   display: flex;
   align-items: center;
   gap: 4px;
-  
+
   .formLabel {
     width: auto;
     @include pretendard-15-semibold;
     color: #f0f0f0;
     margin: 0;
   }
-  
+
   .formRequired {
     @include pretendard-15-regular;
     color: #f35064;
@@ -2169,7 +2179,7 @@ line-clamp: 2;
 
 .verificationCodeInput {
   flex: 1;
-  
+
   // clear 버튼과 타이머가 겹치지 않도록 padding 추가
   :global(.textfield__container) {
     padding-right: 80px;
@@ -2656,6 +2666,11 @@ line-clamp: 2;
   }
 }
 
+.mobileSubscribeButton {
+  @extend .mobileUnsubscribeButton;
+  color: $navy-30;
+}
+
 .mobileWithdrawButton {
   @include pretendard-13-regular;
   color: #e54343;
@@ -3077,6 +3092,10 @@ line-clamp: 2;
   align-items: flex-end;
   width: 100%;
   position: relative;
+
+  :global(.textfield__actions) {
+    display: none;
+  }
 }
 
 .mobileVerificationTimer {
@@ -3389,7 +3408,7 @@ line-clamp: 2;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3471,7 +3490,7 @@ line-clamp: 2;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3530,4 +3549,3 @@ line-clamp: 2;
   background-color: rgba(255, 255, 255, 0.1);
   margin-top: 0;
 }
-

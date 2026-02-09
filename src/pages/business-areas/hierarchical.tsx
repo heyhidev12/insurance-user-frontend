@@ -145,9 +145,6 @@ const HierarchicalPage: React.FC = () => {
     router.push(`/business-areas/${item.id}`);
   };
 
-  const handleTopClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const handleConsultClick = () => {
     // 상담 신청하기 로직
@@ -320,10 +317,6 @@ const HierarchicalPage: React.FC = () => {
           variant="consult"
           label="상담 신청하기"
           onClick={handleConsultClick}
-        />
-        <FloatingButton
-          variant="top"
-          onClick={handleTopClick}
         />
       </div>
     </div>

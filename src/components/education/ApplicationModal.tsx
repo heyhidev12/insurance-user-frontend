@@ -211,6 +211,12 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
       // 성공
       alert('신청이 완료되었습니다.');
+      if (window.gtag) {
+        window.gtag("event", "seminar_apply_submit", {
+          event_category: "education",
+          event_label: "seminar_apply",
+        });
+      }
       
       if (onSuccess) {
         onSuccess();

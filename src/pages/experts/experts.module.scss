@@ -1,4 +1,4 @@
-@import '@/styles/_variables';
+@use '@/styles/_variables' as *;
 
 .expertsPage {
   width: 100%;
@@ -249,17 +249,26 @@
   font-weight: 600;
 }
 
-.fieldSelector {
-  position: relative;
+// Search Container (Select + Search Input)
+.searchContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
   max-width: 800px;
-  overflow: visible;
-  z-index: 100;
   margin-top: -10px;
   
   @media (max-width: $breakpoint-tablet) {
     margin-top: 10px;
+    gap: 12px;
   }
+}
+
+.fieldSelector {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+  z-index: 100;
 }
 
 .fieldSelectorInput {
@@ -368,6 +377,66 @@
   height: 1px;
   background: rgba(240, 240, 240, 0.1);
   margin: 0;
+}
+
+// Search Input
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  background: #2d2d2d;
+  border: 1px solid #444444;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+  
+  &:hover, &:focus-within {
+    border-color: #bfd8f3;
+  }
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 20px 16px;
+  font-family: $font-pretendard;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #f0f0f0;
+  outline: none;
+  
+  &::placeholder {
+    color: #888;
+  }
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 16px;
+  cursor: pointer;
+  color: #f0f0f0;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.searchKeywordLabel {
+  font-family: $font-pretendard;
+  font-size: 16px;
+  font-weight: 400;
+  color: #888;
+  margin: 8px 0 0 0;
+  
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 14px;
+  }
 }
 
 // Experts List Section
@@ -483,6 +552,163 @@
 
 .expertCard {
   width: 100%;
+}
+
+// Empty State
+.emptyStateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  width: 100%;
+  flex: 1;
+  
+  @media (max-width: $breakpoint-tablet) {
+    padding: 60px 20px;
+  }
+}
+
+.emptyStateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 24px;
+  color: #888;
+  
+  @media (max-width: $breakpoint-tablet) {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+  }
+}
+
+.emptyStateMessage {
+  font-family: $font-pretendard;
+  font-size: 18px;
+  font-weight: 500;
+  color: #888;
+  text-align: center;
+  margin: 0;
+  
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 16px;
+  }
+}
+
+.loadingContainer,
+.errorContainer,
+.emptyContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  width: 100%;
+  flex: 1;
+  
+  p {
+    font-family: $font-pretendard;
+    font-size: 16px;
+    color: #888;
+    margin: 0;
+    
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 14px;
+    }
+  }
+}
+
+// Pagination
+.paginationWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 0 0;
+  
+  @media (max-width: $breakpoint-tablet) {
+    padding: 32px 0 0;
+    gap: 4px;
+  }
+}
+
+.paginationButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #f0f0f0;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #bfd8f3;
+  }
+  
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: $breakpoint-tablet) {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.paginationNumbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.paginationNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: $font-pretendard;
+  font-size: 14px;
+  font-weight: 500;
+  color: #888;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f0f0f0;
+  }
+  
+  @media (max-width: $breakpoint-tablet) {
+    min-width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+}
+
+.paginationNumberActive {
+  background: #bfd8f3;
+  color: #151515;
+  border-color: #bfd8f3;
+  
+  &:hover {
+    background: #bfd8f3;
+    color: #151515;
+  }
 }
 
 // Organization Section
@@ -652,7 +878,7 @@
 // Floating Buttons
 .floatingButtons {
   position: fixed;
-  bottom: 60px;
+  bottom: 128px;
   right: 20px;
   display: flex;
   flex-direction: column;
@@ -660,10 +886,10 @@
   gap: 20px;
   z-index: 1000;
 
-  @media (max-width: $breakpoint-tablet) {
-    bottom: 20px;
-    right: 16px;
-    gap: 16px;
+  @media (max-width: 767px) {
+    bottom: 92px;
+    right: 20px;
+    gap: 12px;
   }
 }
 

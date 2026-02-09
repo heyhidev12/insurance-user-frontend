@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@use '../../styles/variables' as *;
 
 .page {
   min-height: 100vh;
@@ -1246,6 +1246,8 @@
 .sidebar {
   width: 300px;
   flex-shrink: 0;
+  position: sticky;
+  top: 120px;
   align-self: flex-start;
 
   @media (max-width: $breakpoint-desktop) {
@@ -1255,22 +1257,17 @@
   @media (max-width: $breakpoint-tablet) {
     width: 100%;
     order: -1;
+    position: relative;
+    top: 0;
   }
 }
 
 .sidebarCard {
-  position: sticky;
-  top: 120px;
   background-color: #1a1a1a;
   border-radius: 12px;
   padding: 0;
   box-sizing: border-box;
   overflow: hidden;
-
-  @media (max-width: $breakpoint-tablet) {
-    position: relative;
-    top: 0;
-  }
 }
 
 .sidebarImage {
@@ -1663,17 +1660,299 @@ line-clamp: 2;
 // Floating Buttons
 .floatingButtons {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
+  bottom: 128px;
+  right: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 16px;
+  gap: 20px;
   z-index: 1000;
 
-  @media (max-width: $breakpoint-tablet) {
-    bottom: 20px;
+  @media (max-width: 767px) {
+    bottom: 92px;
     right: 20px;
     gap: 12px;
+  }
+}
+
+// ========================================
+// Print Styles - PDF Export Optimization
+// ========================================
+@media print {
+  // Hide elements that should not be printed
+  .floatingButtons,
+  .desktopActionButtons,
+  .heroActionButtons,
+  .heroBreadcrumb,
+  .navigationButtons,
+  .fullWidthSection {
+    display: none !important;
+  }
+
+  // Page setup
+  .page {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  // Hero Section Print Styles
+  .heroSection {
+    background: #ffffff !important;
+    padding: 20px 40px !important;
+    margin: 0 !important;
+    page-break-after: avoid;
+  }
+
+  .heroBackground {
+    display: none !important;
+  }
+
+  .heroContainer {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 30px !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .heroImageWrapper {
+    width: 180px !important;
+    height: 220px !important;
+    flex-shrink: 0 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .heroImage {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .heroInfo {
+    flex: 1 !important;
+    padding: 0 !important;
+  }
+
+  .heroName {
+    color: #000000 !important;
+    font-size: 28px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .heroPosition {
+    color: #333333 !important;
+    font-size: 16px !important;
+  }
+
+  .heroContact {
+    margin-top: 12px !important;
+  }
+
+  .heroContactItem {
+    color: #333333 !important;
+    
+    svg {
+      color: #333333 !important;
+    }
+  }
+
+  .heroContactLabel {
+    color: #333333 !important;
+  }
+
+  .heroWorkAreas {
+    margin-top: 16px !important;
+    padding: 12px !important;
+    background: #f5f5f5 !important;
+    border-radius: 8px !important;
+  }
+
+  .heroWorkAreasLabel {
+    color: #333333 !important;
+    font-weight: 600 !important;
+  }
+
+  .heroWorkAreaTag {
+    color: #000000 !important;
+    background: #e0e0e0 !important;
+    border: none !important;
+  }
+
+  .heroQuote,
+  .heroQuoteMobile {
+    background: #f9f9f9 !important;
+    border: 1px solid #e0e0e0 !important;
+    margin: 20px 40px !important;
+    padding: 16px 24px !important;
+    page-break-inside: avoid;
+  }
+
+  .heroQuoteText,
+  .heroQuoteMobileText {
+    color: #333333 !important;
+    font-style: italic !important;
+  }
+
+  .quoteMark,
+  .quoteMarkMobile {
+    opacity: 0.3 !important;
+  }
+
+  // About Section Print Styles
+  .aboutSectionWrapper {
+    background: #ffffff !important;
+    padding: 20px 40px !important;
+  }
+
+  .aboutContainer {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  // Hide sidebar during print
+  .sidebar {
+    display: none !important;
+  }
+
+  .aboutLayout {
+    display: block !important;
+  }
+
+  .mainContent {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  // About the Expert Section
+  .aboutSection {
+    margin-bottom: 24px !important;
+    page-break-inside: avoid;
+  }
+
+  .aboutHeader {
+    margin-bottom: 16px !important;
+  }
+
+  .aboutTitle {
+    color: #000000 !important;
+    font-size: 24px !important;
+    line-height: 1.3 !important;
+  }
+
+  .aboutContent {
+    background: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+  }
+
+  .aboutFieldTitle {
+    color: #000000 !important;
+    font-weight: 600 !important;
+  }
+
+  .aboutDivider {
+    background: #e0e0e0 !important;
+  }
+
+  .aboutContentInner {
+    color: #333333 !important;
+    
+    * {
+      color: #333333 !important;
+    }
+  }
+
+  // Section Print Styles
+  .section {
+    margin-bottom: 24px !important;
+    page-break-inside: avoid;
+  }
+
+  .sectionHeader {
+    margin-bottom: 12px !important;
+  }
+
+  .sectionTitle {
+    color: #000000 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #000000 !important;
+    padding-bottom: 8px !important;
+  }
+
+  .sectionContent {
+    background: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+  }
+
+  .listContent {
+    color: #333333 !important;
+    
+    * {
+      color: #333333 !important;
+    }
+
+    ul, ol {
+      padding-left: 20px !important;
+    }
+
+    li {
+      margin-bottom: 6px !important;
+    }
+  }
+
+  // Toast UI Viewer Print Styles
+  :global(.toastui-editor-contents) {
+    color: #333333 !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    
+    * {
+      color: #333333 !important;
+    }
+
+    p {
+      margin-bottom: 8px !important;
+    }
+
+    ul, ol {
+      padding-left: 20px !important;
+      margin-bottom: 8px !important;
+    }
+
+    li {
+      margin-bottom: 4px !important;
+    }
+
+    strong {
+      font-weight: 600 !important;
+    }
+  }
+
+  // ContentBox Print Styles
+  :global(.content-box) {
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  // Page breaks
+  .aboutSection,
+  .section {
+    page-break-inside: avoid;
+  }
+
+  // Ensure proper margins for print
+  @page {
+    margin: 15mm;
+    size: A4;
   }
 }

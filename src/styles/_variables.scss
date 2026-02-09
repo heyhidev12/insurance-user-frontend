@@ -91,7 +91,7 @@ $radius-circle: 50%;
 // ==================== BREAKPOINTS ====================
 
 $breakpoint-mobile: 375px;
-$breakpoint-tablet: 768px;
+$breakpoint-tablet: 767px;
 $breakpoint-desktop: 1024px;
 $breakpoint-wide: 1440px;
 $breakpoint-ultra-wide: 1920px;
@@ -146,7 +146,7 @@ $checkbox-size-48: 48px;
 
 // Mobile first approach mixins
 @mixin mobile {
-  @media (max-width: $breakpoint-tablet - 1px) {
+  @media (max-width: $breakpoint-tablet) {
     @content;
   }
 }
@@ -158,7 +158,7 @@ $checkbox-size-48: 48px;
 }
 
 @mixin tablet {
-  @media (min-width: $breakpoint-tablet) and (max-width: $breakpoint-desktop - 1px) {
+  @media (min-width: $breakpoint-tablet) and (max-width: $breakpoint-desktop) {
     @content;
   }
 }

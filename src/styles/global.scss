@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables' as *;
 
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -57,7 +57,7 @@ input, textarea {
   font-family: inherit;
 }
 
-// Print Styles - 인쇄 시 헤더, 메뉴, 푸터 숨김
+// Print Styles - 인쇄 시 헤더, 메뉴, 푸터, 스크롤 버튼 숨김
 @media print {
   body {
     background-color: white !important;
@@ -66,21 +66,41 @@ input, textarea {
     print-color-adjust: exact !important;
   }
 
-  // Header 숨김 (header HTML element)
-  header {
+  // Header 숨김 (header HTML element and class)
+  header,
+  [class*="header"],
+  [class*="Header"] {
     display: none !important;
   }
 
   // Menu 숨김
   .menu-wrapper,
   .menu-overlay,
-  .menu-container {
+  .menu-container,
+  [class*="menu"],
+  [class*="Menu"] {
     display: none !important;
   }
 
   // Footer 숨김
   footer,
-  .footer {
+  .footer,
+  [class*="footer"],
+  [class*="Footer"] {
+    display: none !important;
+  }
+
+  // ScrollToTop 버튼 숨김
+  [class*="scrollToTop"],
+  [class*="ScrollToTop"],
+  [aria-label="맨 위로"] {
+    display: none !important;
+  }
+
+  // Floating buttons 숨김
+  [class*="floatingButton"],
+  [class*="FloatingButton"],
+  [class*="floating-button"] {
     display: none !important;
   }
 }

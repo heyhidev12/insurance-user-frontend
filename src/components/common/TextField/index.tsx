@@ -239,6 +239,29 @@ export function TextField({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Handle Enter key for form submission
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Find the closest form and submit it
+      const form = inputRef.current?.closest('form');
+      if (form) {
+        // Use requestSubmit for proper form validation and submission
+        if (typeof form.requestSubmit === 'function') {
+          form.requestSubmit();
+        } else {
+          // Fallback for older browsers
+          const submitButton = form.querySelector('button[type="submit"], input[type="submit"]') as HTMLButtonElement | HTMLInputElement | null;
+          if (submitButton && !submitButton.disabled) {
+            submitButton.click();
+          } else {
+            // Last resort: dispatch submit event
+            form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          }
+        }
+      }
+      return;
+    }
+    
     if (!supportsSelection) return;
     requestAnimationFrame(() => {
       if (inputRef.current && document.activeElement === inputRef.current) {
@@ -353,6 +376,7 @@ export function TextField({
                   placeholder={placeholder}
                   value={internalValue}
                   onChange={handleChange}
+                  onKeyDown={handleKeyDown}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   readOnly={readOnly}

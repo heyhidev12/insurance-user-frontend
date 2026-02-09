@@ -10,6 +10,12 @@ import Pagination from '@/components/common/Pagination';
 import { get, post, patch, del } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
 import { clearAuth } from '@/lib/auth';
+import { formatPhoneInput, normalizePhone, validatePhone } from '@/lib/phoneValidation';
+import {
+  getPasswordRuleFeedback,
+  validatePassword as validatePasswordRule,
+  validatePasswordMatch as validatePasswordMatchRule,
+} from '@/lib/passwordValidation';
 import styles from './my.module.scss';
 import { MemberType } from '@/types/education';
 
@@ -197,6 +203,7 @@ const MyPage: React.FC = () => {
   const [isUnsubscribing, setIsUnsubscribing] = useState(false);
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const [newsletterLoading, setNewsletterLoading] = useState(true);
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   // 타이머 효과
   useEffect(() => {
@@ -579,8 +586,39 @@ const MyPage: React.FC = () => {
     }
   };
 
+  // 뉴스레터 구독 핸들러
+  const handleNewsletterSubscribe = async () => {
+    const name = displayProfile?.name || userProfile?.name || '';
+    const email = displayProfile?.email || userProfile?.email || '';
+
+    if (!name || !email) {
+      alert('뉴스레터 구독을 위해 이름과 이메일 정보가 필요합니다.');
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      // Backend payload format: { name, email }
+      const response = await post(API_ENDPOINTS.NEWSLETTER.SUBSCRIBE, { name, email });
+
+      if (response.error) {
+        alert('구독에 실패했습니다.');
+        return;
+      }
+
+      // UI 즉시 업데이트
+      setNewsletterSubscribed(true);
+      alert('뉴스레터 구독이 완료되었습니다.');
+    } catch (err) {
+      alert('구독 중 오류가 발생했습니다.');
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   // 비밀번호 확인 핸들러
-  const handlePasswordVerify = async () => {
+  const handlePasswordVerify = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!passwordVerify) {
       setPasswordVerifyError('비밀번호를 입력해주세요.');
       return;
@@ -603,7 +641,7 @@ const MyPage: React.FC = () => {
         name: displayProfile.name || '',
         email: emailParts[0] || '',
         emailDomain: emailParts[1] || '',
-        phoneNumber: displayProfile.phoneNumber || '',
+        phoneNumber: normalizePhone(displayProfile.phoneNumber || ''),
       });
     };
 
@@ -637,7 +675,8 @@ const MyPage: React.FC = () => {
   };
 
   // 회원정보 수정 저장 핸들러
-  const handleSaveProfile = async () => {
+  const handleSaveProfile = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setIsSaving(true);
 
     try {
@@ -645,10 +684,12 @@ const MyPage: React.FC = () => {
         ? `${editForm.email}@${editForm.emailDomain}`
         : editForm.email;
 
-      // 휴대폰 번호에서 하이픈 제거하여 숫자만 전송
-      const phoneNumberOnly = editForm.phoneNumber
-        ? editForm.phoneNumber.replace(/\D/g, '')
-        : '';
+      const phoneNumberOnly = normalizePhone(editForm.phoneNumber ?? '');
+      const phoneValidation = validatePhone(editForm.phoneNumber ?? '');
+      if (phoneNumberOnly && !phoneValidation.valid) {
+        alert(phoneValidation.error ?? '휴대폰 번호 형식을 확인해주세요.');
+        return;
+      }
 
       const response = await patch(
         API_ENDPOINTS.AUTH.PROFILE,
@@ -682,7 +723,8 @@ const MyPage: React.FC = () => {
   };
 
   // 비밀번호 변경 핸들러
-  const handleChangePassword = async () => {
+  const handleChangePassword = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     // 유효성 검사
     const errors = {
       currentPassword: '',
@@ -693,10 +735,11 @@ const MyPage: React.FC = () => {
     if (!passwordForm.currentPassword) {
       errors.currentPassword = '현재 비밀번호를 입력해주세요.';
     }
+    const newPwdValidation = validatePasswordRule(passwordForm.newPassword);
     if (!passwordForm.newPassword) {
       errors.newPassword = '새 비밀번호를 입력해주세요.';
-    } else if (passwordForm.newPassword.length < 8) {
-      errors.newPassword = '비밀번호는 8자 이상이어야 합니다.';
+    } else if (!newPwdValidation.valid) {
+      errors.newPassword = newPwdValidation.error ?? '영문자, 숫자, 특수문자 중 2가지 이상 조합, 6~12자';
     }
     if (!passwordForm.confirmPassword) {
       errors.confirmPassword = '새 비밀번호 확인을 입력해주세요.';
@@ -744,42 +787,17 @@ const MyPage: React.FC = () => {
     }
   };
 
-  // 휴대폰 번호 포맷팅 함수 (하이픈 자동 추가)
-  const formatPhoneNumber = (value: string) => {
-    // 숫자만 추출
-    const numbers = value.replace(/\D/g, '');
-    // 11자리 제한
-    const limited = numbers.slice(0, 11);
-
-    // 하이픈 자동 추가
-    if (limited.length <= 3) {
-      return limited;
-    } else if (limited.length <= 7) {
-      return `${limited.slice(0, 3)}-${limited.slice(3)}`;
-    } else {
-      return `${limited.slice(0, 3)}-${limited.slice(3, 7)}-${limited.slice(7)}`;
-    }
-  };
-
   // 휴대폰 번호 변경 핸들러
   const handleRequestPhoneVerification = async () => {
     setPhoneChangeError('');
 
-    // 휴대폰 번호 유효성 검사 (하이픈 있거나 없거나 둘 다 허용)
-    const phoneRegex = /^010-?\d{4}-?\d{4}$/;
-    const phoneNumberOnly = phoneChangeForm.phoneNumber.replace(/\D/g, '');
-
-    if (!phoneChangeForm.phoneNumber) {
-      setPhoneChangeError('휴대폰 번호를 입력해주세요.');
+    const validation = validatePhone(phoneChangeForm.phoneNumber);
+    if (!validation.valid) {
+      setPhoneChangeError(validation.error ?? '휴대폰 번호를 입력해주세요.');
       return;
     }
 
-    // 숫자만으로 11자리인지 확인
-    if (phoneNumberOnly.length !== 11 || !phoneNumberOnly.startsWith('010')) {
-      setPhoneChangeError('올바른 휴대폰번호 양식을 입력해주세요.');
-      return;
-    }
-
+    const phoneNumberOnly = normalizePhone(phoneChangeForm.phoneNumber);
     setIsRequestingVerification(true);
 
     try {
@@ -814,7 +832,7 @@ const MyPage: React.FC = () => {
 
     try {
       setIsVerifyingCode(true);
-      const phoneNumberOnly = phoneChangeForm.phoneNumber.replace(/\D/g, '');
+      const phoneNumberOnly = normalizePhone(phoneChangeForm.phoneNumber);
       const response = await post(API_ENDPOINTS.AUTH.PHONE_VERIFY, {
         phone: phoneNumberOnly,
         code: verificationCode
@@ -842,7 +860,7 @@ const MyPage: React.FC = () => {
 
     setIsChangingPhone(true);
     try {
-      const phoneNumberOnly = phoneChangeForm.phoneNumber.replace(/\D/g, '');
+      const phoneNumberOnly = normalizePhone(phoneChangeForm.phoneNumber);
 
       // 프로필 수정 API 호출 (휴대폰 번호만 업데이트)
       const response = await patch(API_ENDPOINTS.AUTH.PROFILE, {
@@ -869,6 +887,22 @@ const MyPage: React.FC = () => {
       alert('휴대폰 번호 변경 중 오류가 발생했습니다.');
     } finally {
       setIsChangingPhone(false);
+    }
+  };
+
+  // 휴대폰 변경 폼 submit 핸들러 (단계별 엔터 키 동작 통합)
+  const handlePhoneChangeFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isVerificationRequested) {
+      // 1단계: 인증 요청
+      void handleRequestPhoneVerification();
+    } else if (!isCodeVerified) {
+      // 2단계: 인증번호 확인
+      void handleVerifyPhoneCode();
+    } else {
+      // 3단계: 최종 휴대폰 번호 변경
+      void handleChangePhoneNumber();
     }
   };
 
@@ -1106,6 +1140,15 @@ const MyPage: React.FC = () => {
                           {isUnsubscribing ? '처리 중...' : '구독 해제'}
                         </button>
                       )}
+                      {!newsletterSubscribed && !newsletterLoading && (
+                        <button
+                          className={styles.mobileSubscribeButton}
+                          onClick={handleNewsletterSubscribe}
+                          disabled={isSubscribing}
+                        >
+                          {isSubscribing ? '처리 중...' : '구독'}
+                        </button>
+                      )}
                     </div>
                   </div>
                   <button className={styles.mobileWithdrawButton} onClick={handleWithdrawClick}>탈퇴하기</button>
@@ -1126,7 +1169,7 @@ const MyPage: React.FC = () => {
 
             {/* Mobile Password Verify */}
             {showPasswordVerify && !isPasswordVerified && (
-              <div className={styles.mobilePasswordVerifySection}>
+              <form className={styles.mobilePasswordVerifySection} onSubmit={(e) => { e.preventDefault(); handlePasswordVerify(); }}>
                 <div className={styles.mobilePasswordVerifyBox}>
                   <p className={styles.mobilePasswordVerifyDescription}>
                     개인정보 보호를 위해<br />
@@ -1150,18 +1193,18 @@ const MyPage: React.FC = () => {
                   </div>
                 </div>
                 <button
+                  type="submit"
                   className={`${styles.mobilePasswordVerifyButton} ${passwordVerify ? styles.mobilePasswordVerifyButtonActive : ''}`}
-                  onClick={handlePasswordVerify}
                   disabled={!passwordVerify || isVerifying}
                 >
                   확인
                 </button>
-              </div>
+              </form>
             )}
 
             {/* Mobile Edit Profile Form */}
             {isPasswordVerified && !showChangePasswordForm && !showChangePhoneForm && mobileView === 'profile' && (
-              <div className={styles.mobileEditProfileSection}>
+              <form className={styles.mobileEditProfileSection} onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
                 <div className={styles.mobileEditProfileBox}>
                   {/* 아이디 */}
                   <div className={styles.mobileEditFormField}>
@@ -1190,6 +1233,7 @@ const MyPage: React.FC = () => {
                         fullWidth
                       />
                       <button
+                        type="button"
                         className={styles.mobileChangeButton}
                         onClick={() => setShowChangePasswordForm(true)}
                       >
@@ -1239,6 +1283,7 @@ const MyPage: React.FC = () => {
                   <div className={styles.mobileEditFormField}>
                     <div className={styles.mobileDropdownWrapper}>
                       <button
+                        type="button"
                         className={styles.mobileEmailDomainSelect}
                         onClick={() => setIsEmailDomainDropdownOpen(!isEmailDomainDropdownOpen)}
                       >
@@ -1256,12 +1301,13 @@ const MyPage: React.FC = () => {
                       </button>
                       {isEmailDomainDropdownOpen && (
                         <div className={styles.mobileDropdownMenu}>
-                          {['naver.com', 'gmail.com', 'daum.net', 'hanmail.net', 'nate.com', '직접입력'].map((domain) => (
+                          {['naver.com', 'gmail.com', 'daum.net', 'hanmail.net', 'nate.com', '직접 입력'].map((domain) => (
                             <button
+                              type="button"
                               key={domain}
                               className={styles.mobileDropdownItem}
                               onClick={() => {
-                                if (domain === '직접입력') {
+                                if (domain === '직접 입력') {
                                   setEditForm({ ...editForm, emailDomain: '' });
                                 } else {
                                   setEditForm({ ...editForm, emailDomain: domain });
@@ -1284,12 +1330,13 @@ const MyPage: React.FC = () => {
                       <TextField
                         variant="line"
                         type="tel"
-                        placeholder="010-0000-0000"
+                        placeholder="01012345678 (숫자만 입력)"
                         value={editForm.phoneNumber}
-                        onChange={(value) => setEditForm({ ...editForm, phoneNumber: value })}
+                        onChange={(value) => setEditForm({ ...editForm, phoneNumber: formatPhoneInput(value) })}
                         fullWidth
                       />
                       <button
+                        type="button"
                         className={styles.mobileChangeButton}
                         onClick={() => {
                           setShowChangePhoneForm(true);
@@ -1304,19 +1351,19 @@ const MyPage: React.FC = () => {
                   </div>
                 </div>
                 <button
+                  type="submit"
                   className={styles.mobileConfirmButton}
-                  onClick={handleSaveProfile}
                   disabled={isSaving}
                 >
                   확인
                 </button>
-              </div>
+              </form>
             )}
 
             {/* Mobile Password Change Form */}
             {showChangePasswordForm && (
               <div className={styles.mobilePasswordChangeSection}>
-                <div className={styles.mobilePasswordChangeBox}>
+                <form className={styles.mobilePasswordChangeBox} onSubmit={handleChangePassword}>
                   <div className={styles.mobilePasswordChangeField}>
                     <TextField
                       variant="line"
@@ -1338,9 +1385,15 @@ const MyPage: React.FC = () => {
                       label="새 비밀번호"
                       required
                       type="password"
-                      placeholder="새로운 비밀번호를 입력해주세요"
+                      placeholder="새로운 비밀번호를 입력해주세요 (6~12자)"
                       value={passwordForm.newPassword}
-                      onChange={(value) => setPasswordForm({ ...passwordForm, newPassword: value })}
+                      onChange={(value) => {
+                        setPasswordForm({ ...passwordForm, newPassword: value });
+                        const v = validatePasswordRule(value);
+                        setPasswordErrors((e) => ({ ...e, newPassword: v.valid ? '' : (v.error ?? '') }));
+                        const m = validatePasswordMatchRule(value, passwordForm.confirmPassword);
+                        setPasswordErrors((e) => ({ ...e, confirmPassword: m.valid ? '' : (m.error ?? '') }));
+                      }}
                       error={!!passwordErrors.newPassword}
                       errorMessage={passwordErrors.newPassword}
                       fullWidth
@@ -1355,30 +1408,45 @@ const MyPage: React.FC = () => {
                       type="password"
                       placeholder="새로운 비밀번호를 다시 입력해주세요"
                       value={passwordForm.confirmPassword}
-                      onChange={(value) => setPasswordForm({ ...passwordForm, confirmPassword: value })}
+                      onChange={(value) => {
+                        setPasswordForm({ ...passwordForm, confirmPassword: value });
+                        const m = validatePasswordMatchRule(passwordForm.newPassword, value);
+                        setPasswordErrors((e) => ({ ...e, confirmPassword: m.valid ? '' : (m.error ?? '') }));
+                      }}
                       error={!!passwordErrors.confirmPassword}
                       errorMessage={passwordErrors.confirmPassword}
                       fullWidth
                       showPasswordToggle
                     />
                   </div>
-                </div>
                 <button
-                  className={`${styles.mobilePasswordChangeButton} ${passwordForm.currentPassword && passwordForm.newPassword && passwordForm.confirmPassword
+                  type="submit"
+                  className={`${styles.mobilePasswordChangeButton} ${
+                    passwordForm.currentPassword &&
+                    getPasswordRuleFeedback(passwordForm.newPassword).valid &&
+                    passwordForm.newPassword === passwordForm.confirmPassword &&
+                    passwordForm.confirmPassword
                       ? styles.mobilePasswordChangeButtonActive
                       : ''
-                    }`}
+                  }`}
                   onClick={handleChangePassword}
-                  disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword || isChangingPassword}
+                  disabled={
+                    !passwordForm.currentPassword ||
+                    !getPasswordRuleFeedback(passwordForm.newPassword).valid ||
+                    passwordForm.newPassword !== passwordForm.confirmPassword ||
+                    !passwordForm.confirmPassword ||
+                    isChangingPassword
+                  }
                 >
                   비밀번호 변경
                 </button>
+                </form>
               </div>
             )}
 
             {/* Mobile Phone Change Form */}
             {showChangePhoneForm && (
-              <div className={styles.mobilePhoneChangeSection}>
+              <form className={styles.mobilePhoneChangeSection} onSubmit={(e) => { e.preventDefault(); handleChangePhoneNumber(); }}>
                 <div className={styles.mobilePhoneChangeBox}>
                   <div className={styles.mobilePhoneChangeField}>
                     <p className={styles.mobilePhoneChangeLabel}>휴대폰 번호 <span style={{ color: '#f35064' }}>*</span></p>
@@ -1388,14 +1456,20 @@ const MyPage: React.FC = () => {
                       <TextField
                         variant="line"
                         type="tel"
-                        placeholder="휴대폰 번호를 입력해주세요"
+                        placeholder="01012345678 (숫자만 입력)"
                         value={phoneChangeForm.phoneNumber}
-                        onChange={(value) => setPhoneChangeForm({ ...phoneChangeForm, phoneNumber: value })}
+                        onChange={(value) => {
+                          const digits = formatPhoneInput(value);
+                          setPhoneChangeForm({ ...phoneChangeForm, phoneNumber: digits });
+                          const v = validatePhone(digits);
+                          setPhoneChangeError(v.valid ? '' : (v.error ?? ''));
+                        }}
                         error={!!phoneChangeError}
                         errorMessage={phoneChangeError}
                         fullWidth
                       />
                       <button
+                        type="button"
                         className={styles.mobileVerifyRequestButton}
                         onClick={handleRequestPhoneVerification}
                         disabled={!phoneChangeForm.phoneNumber || isRequestingVerification}
@@ -1422,6 +1496,7 @@ const MyPage: React.FC = () => {
                           </span>
                         )}
                         <button
+                          type="button"
                           className={styles.mobileVerifyCodeButton}
                           onClick={handleVerifyPhoneCode}
                           disabled={!verificationCode || isVerifyingCode}
@@ -1433,14 +1508,14 @@ const MyPage: React.FC = () => {
                   )}
                 </div>
                 <button
+                  type="submit"
                   className={`${styles.mobilePhoneChangeButton} ${isCodeVerified ? styles.mobilePhoneChangeButtonActive : ''
                     }`}
-                  onClick={handleChangePhoneNumber}
                   disabled={!isCodeVerified || isChangingPhone}
                 >
                   휴대폰 번호 변경
                 </button>
-              </div>
+              </form>
             )}
           </>
         )}
@@ -1868,6 +1943,15 @@ const MyPage: React.FC = () => {
                               {isUnsubscribing ? '처리 중...' : '구독 해제'}
                             </button>
                           )}
+                          {!newsletterSubscribed && !newsletterLoading && (
+                            <button
+                              className={styles.subscribeButton}
+                              onClick={handleNewsletterSubscribe}
+                              disabled={isSubscribing}
+                            >
+                              {isSubscribing ? '처리 중...' : '구독'}
+                            </button>
+                          )}
                         </div>
                         <button className={styles.withdrawButton} onClick={handleWithdrawClick}>탈퇴하기</button>
                         <div className={styles.formDivider} />
@@ -1885,7 +1969,7 @@ const MyPage: React.FC = () => {
                   <>
                     <h2 className={styles.contentTitle}>회원 정보 수정</h2>
                     <div className={styles.passwordVerifySection}>
-                      <div className={styles.passwordVerifyForm}>
+                      <form className={styles.passwordVerifyForm} onSubmit={(e) => { e.preventDefault(); handlePasswordVerify(); }}>
                         <p className={styles.passwordVerifyDescription}>
                           개인정보 보호를 위해<br />
                           비밀번호를 입력해 주세요
@@ -1907,13 +1991,13 @@ const MyPage: React.FC = () => {
                           />
                         </div>
                         <button
+                          type="submit"
                           className={`${styles.passwordVerifyButton} ${passwordVerify ? styles.passwordVerifyButtonActive : ''}`}
-                          onClick={handlePasswordVerify}
                           disabled={!passwordVerify || isVerifying}
                         >
                           {isVerifying ? '확인 중...' : '확인'}
                         </button>
-                      </div>
+                      </form>
                     </div>
                   </>
                 )}
@@ -1921,7 +2005,7 @@ const MyPage: React.FC = () => {
                 {isPasswordVerified && !showChangePasswordForm && !showChangePhoneForm && (
                   <>
                     <h2 className={styles.contentTitle}>회원 정보 수정</h2>
-                    <div className={styles.editProfileForm}>
+                    <form className={styles.editProfileForm} onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
                       {/* 아이디 */}
                       <div className={styles.editFormField}>
                         <TextField
@@ -1949,6 +2033,7 @@ const MyPage: React.FC = () => {
                             fullWidth
                           />
                           <button
+                            type="button"
                             className={styles.changePasswordButton}
                             onClick={() => {
                               setShowChangePasswordForm(true);
@@ -1998,6 +2083,7 @@ const MyPage: React.FC = () => {
                           />
                           <div className={styles.emailDomainSelectWrapper}>
                             <button
+                              type="button"
                               className={styles.emailDomainSelect}
                               onClick={() => setEmailDomainSelect(!emailDomainSelect)}
                             >
@@ -2008,12 +2094,17 @@ const MyPage: React.FC = () => {
                             </button>
                             {emailDomainSelect && (
                               <div className={styles.emailDomainDropdown}>
-                                {['naver.com', 'gmail.com', 'daum.net', 'kakao.com'].map((domain) => (
+                                {['naver.com', 'gmail.com', 'daum.net', 'kakao.com', '직접 입력'].map((domain) => (
                                   <button
+                                    type="button"
                                     key={domain}
                                     className={styles.emailDomainOption}
                                     onClick={() => {
-                                      setEditForm({ ...editForm, emailDomain: domain });
+                                      if (domain === '직접 입력') {
+                                        setEditForm({ ...editForm, emailDomain: '' });
+                                      } else {
+                                        setEditForm({ ...editForm, emailDomain: domain });
+                                      }
                                       setEmailDomainSelect(false);
                                     }}
                                   >
@@ -2036,13 +2127,14 @@ const MyPage: React.FC = () => {
                           <TextField
                             variant="line"
                             type="tel"
-                            placeholder="010-0000-0000"
+                            placeholder="01012345678 (숫자만 입력)"
                             value={editForm.phoneNumber}
-                            onChange={(value) => setEditForm({ ...editForm, phoneNumber: value })}
+                            onChange={(value) => setEditForm({ ...editForm, phoneNumber: formatPhoneInput(value) })}
                             className={styles.phoneNumberInput}
                             fullWidth
                           />
                           <button
+                            type="button"
                             className={styles.changePhoneButton}
                             onClick={() => {
                               setShowChangePhoneForm(true);
@@ -2063,13 +2155,13 @@ const MyPage: React.FC = () => {
                       </div>
 
                       <button
+                        type="submit"
                         className={styles.saveProfileButton}
-                        onClick={handleSaveProfile}
                         disabled={isSaving}
                       >
                         {isSaving ? '저장 중...' : '확인'}
                       </button>
-                    </div>
+                    </form>
                   </>
                 )}
 
@@ -2077,7 +2169,7 @@ const MyPage: React.FC = () => {
                   <>
                     <h2 className={styles.contentTitle}>휴대폰 번호 변경</h2>
                     <div className={styles.changePhoneSection}>
-                      <div className={styles.changePhoneForm}>
+                      <form className={styles.changePhoneForm} onSubmit={handleChangePhoneNumber}>
                         {/* 휴대폰 번호 입력 */}
                         <div className={styles.phoneChangeField}>
                           <div className={styles.editFormFieldLabel}>
@@ -2088,12 +2180,13 @@ const MyPage: React.FC = () => {
                             <TextField
                               variant="line"
                               type="tel"
-                              placeholder="010-1234-5678"
+                              placeholder="01012345678 (숫자만 입력)"
                               value={phoneChangeForm.phoneNumber}
                               onChange={(value) => {
-                                const formatted = formatPhoneNumber(value);
-                                setPhoneChangeForm({ ...phoneChangeForm, phoneNumber: formatted });
-                                setPhoneChangeError('');
+                                const digits = formatPhoneInput(value);
+                                setPhoneChangeForm({ ...phoneChangeForm, phoneNumber: digits });
+                                const v = validatePhone(digits);
+                                setPhoneChangeError(v.valid ? '' : (v.error ?? ''));
                               }}
                               className={styles.phoneNumberInput}
                               fullWidth
@@ -2177,13 +2270,13 @@ const MyPage: React.FC = () => {
                         )}
 
                         <button
+                          type="submit"
                           className={`${styles.changePhoneSubmitButton} ${isCodeVerified ? styles.changePhoneSubmitButtonActive : ''}`}
-                          onClick={handleChangePhoneNumber}
                           disabled={!isCodeVerified || isChangingPhone}
                         >
                           {isChangingPhone ? '변경 중...' : '휴대폰 번호 변경'}
                         </button>
-                      </div>
+                      </form>
                     </div>
                   </>
                 )}
@@ -2192,7 +2285,7 @@ const MyPage: React.FC = () => {
                   <>
                     <h2 className={styles.contentTitle}>비밀번호 변경</h2>
                     <div className={styles.changePasswordSection}>
-                      <div className={styles.changePasswordForm}>
+                      <form className={styles.changePasswordForm} onSubmit={handleChangePassword}>
                         <div className={styles.passwordField}>
                           <TextField
                             variant="line"
@@ -2218,11 +2311,14 @@ const MyPage: React.FC = () => {
                             label="새 비밀번호"
                             required
                             type="password"
-                            placeholder="새로운 비밀번호를 입력해주세요"
+                            placeholder="새로운 비밀번호를 입력해주세요 (6~12자)"
                             value={passwordForm.newPassword}
                             onChange={(value) => {
                               setPasswordForm({ ...passwordForm, newPassword: value });
-                              setPasswordErrors({ ...passwordErrors, newPassword: '' });
+                              const v = validatePasswordRule(value);
+                              setPasswordErrors((e) => ({ ...e, newPassword: v.valid ? '' : (v.error ?? '') }));
+                              const m = validatePasswordMatchRule(value, passwordForm.confirmPassword);
+                              setPasswordErrors((e) => ({ ...e, confirmPassword: m.valid ? '' : (m.error ?? '') }));
                             }}
                             error={!!passwordErrors.newPassword}
                             errorMessage={passwordErrors.newPassword}
@@ -2241,7 +2337,8 @@ const MyPage: React.FC = () => {
                             value={passwordForm.confirmPassword}
                             onChange={(value) => {
                               setPasswordForm({ ...passwordForm, confirmPassword: value });
-                              setPasswordErrors({ ...passwordErrors, confirmPassword: '' });
+                              const m = validatePasswordMatchRule(passwordForm.newPassword, value);
+                              setPasswordErrors((e) => ({ ...e, confirmPassword: m.valid ? '' : (m.error ?? '') }));
                             }}
                             error={!!passwordErrors.confirmPassword}
                             errorMessage={passwordErrors.confirmPassword}
@@ -2251,13 +2348,26 @@ const MyPage: React.FC = () => {
                           />
                         </div>
                         <button
-                          className={`${styles.changePasswordSubmitButton} ${passwordForm.currentPassword && passwordForm.newPassword && passwordForm.confirmPassword ? styles.changePasswordSubmitButtonActive : ''}`}
-                          onClick={handleChangePassword}
-                          disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword || isChangingPassword}
+                          type="submit"
+                          className={`${styles.changePasswordSubmitButton} ${
+                            passwordForm.currentPassword &&
+                            getPasswordRuleFeedback(passwordForm.newPassword).valid &&
+                            passwordForm.newPassword === passwordForm.confirmPassword &&
+                            passwordForm.confirmPassword
+                              ? styles.changePasswordSubmitButtonActive
+                              : ''
+                          }`}
+                          disabled={
+                            !passwordForm.currentPassword ||
+                            !getPasswordRuleFeedback(passwordForm.newPassword).valid ||
+                            passwordForm.newPassword !== passwordForm.confirmPassword ||
+                            !passwordForm.confirmPassword ||
+                            isChangingPassword
+                          }
                         >
                           {isChangingPassword ? '변경 중...' : '비밀번호 변경'}
                         </button>
-                      </div>
+                      </form>
                     </div>
                   </>
                 )}
@@ -2639,10 +2749,11 @@ const MyPage: React.FC = () => {
       {/* 회원 탈퇴 비밀번호 확인 모달 */}
       {showDeletePasswordModal && (
         <div className={styles.modalOverlay} onClick={() => setShowDeletePasswordModal(false)}>
-          <div className={styles.deleteModalContent} onClick={(e) => e.stopPropagation()}>
+          <form className={styles.deleteModalContent} onClick={(e) => e.stopPropagation()} onSubmit={(e) => { e.preventDefault(); handleDeleteAccount(); }}>
             <div className={styles.deleteModalHeader}>
               <h3>회원 탈퇴</h3>
               <button
+                type="button"
                 className={styles.modalClose}
                 onClick={() => setShowDeletePasswordModal(false)}
               >
@@ -2671,6 +2782,7 @@ const MyPage: React.FC = () => {
             </div>
             <div className={styles.deleteModalFooter}>
               <button
+                type="button"
                 className={styles.deleteModalCancelButton}
                 onClick={() => setShowDeletePasswordModal(false)}
                 disabled={isDeleting}
@@ -2678,14 +2790,14 @@ const MyPage: React.FC = () => {
                 취소
               </button>
               <button
+                type="submit"
                 className={styles.deleteModalConfirmButton}
-                onClick={handleDeleteAccount}
                 disabled={!deletePassword || isDeleting}
               >
                 {isDeleting ? '처리 중...' : '탈퇴하기'}
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
 

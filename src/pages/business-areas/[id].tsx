@@ -396,9 +396,6 @@ const BusinessAreaDetailPage: React.FC = () => {
     }
   }, [data?.youtubeUrls]);
 
-  const handleTopClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const handleConsultClick = () => {
     router.push('/consultation/apply');
@@ -779,22 +776,11 @@ const BusinessAreaDetailPage: React.FC = () => {
                           </div>
                           {expert.tags && expert.tags.length > 0 && (
                             <div className={styles.expertTags}>
-                              {expert.tags.map((tag, tagIndex) => {
-                                // 인덱스에 따라 표시 변경
-                                let indicator = '';
-                                if (tagIndex === 0) {
-                                  indicator = ' ■■■';
-                                } else if (tagIndex === 1) {
-                                  indicator = ' ■■□';
-                                } else if (tagIndex === 2) {
-                                  indicator = ' ■□□';
-                                }
-                                return (
-                                  <span key={tagIndex} className={styles.expertTag}>
-                                    {tag}{indicator}
-                                  </span>
-                                );
-                              })}
+                              {expert.tags.map((tag, tagIndex) => (
+                                <span key={tagIndex} className={styles.expertTag}>
+                                  {tag}
+                                </span>
+                              ))}
                             </div>
                           )}
                         </div>
@@ -979,7 +965,6 @@ const BusinessAreaDetailPage: React.FC = () => {
           label="상담 신청하기"
           onClick={handleConsultClick}
         />
-        <FloatingButton variant="top" onClick={handleTopClick} />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@use '../../styles/variables' as *;
 
 .page {
   min-height: 100vh;
@@ -2014,7 +2014,7 @@ line-clamp: 2;
 // Floating Buttons
 .floatingButtons {
   position: fixed;
-  bottom: 60px;
+  bottom: 128px;
   right: 20px;
   display: flex;
   flex-direction: column;
@@ -2022,10 +2022,10 @@ line-clamp: 2;
   gap: 20px;
   z-index: 1000;
 
-  @media (max-width: $breakpoint-tablet) {
-    bottom: 20px;
-    right: 16px;
-    gap: 16px;
+  @media (max-width: 767px) {
+    bottom: 92px;
+    right: 20px;
+    gap: 12px;
   }
 }
 

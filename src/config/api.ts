@@ -14,6 +14,8 @@ export const API_ENDPOINTS = {
   AUTH: {
     SIGN_UP: '/auth/sign-up',
     LOGIN: '/auth/login',
+    REFRESH: '/auth/refresh',
+    LOGOUT: '/auth/logout',
     CHECK_ID: '/auth/check-id',
     ME: '/auth/me',
     PROFILE: '/auth/profile',
@@ -79,6 +81,12 @@ export const API_ENDPOINTS = {
 
   // Data Rooms (자료실)
   // DATA_ROOMS: '/data-rooms',
+
+  // Footer
+  FOOTER: {
+    POLICIES: '/footer/policies',
+    FAMILY_SITES: '/footer/family-sites',
+  },
 } as const;
 
 // API 요청 타임아웃 (ms)

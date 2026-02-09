@@ -9,8 +9,14 @@ import Checkbox from '@/components/common/Checkbox';
 import StepIndicator from '@/components/common/StepIndicator';
 import Button from '@/components/common/Button';
 import Icon from '@/components/common/Icon';
+import TermsModal, { TermsType } from '@/components/common/TermsModal';
 import { get, post } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
+import { formatPhoneInput, normalizePhone, validatePhone } from '@/lib/phoneValidation';
+import {
+  validatePassword as validatePasswordRule,
+  validatePasswordMatch,
+} from '@/lib/passwordValidation';
 
 type StepType = 1 | 2 | 3;
 type MemberType = 'general' | 'taxAccountant' | 'other';
@@ -72,6 +78,26 @@ const Signup: React.FC = () => {
   const [passwordError, setPasswordError] = useState('');
   const [passwordConfirmError, setPasswordConfirmError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Terms modal state
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [activeTermsType, setActiveTermsType] = useState<TermsType>('privacy');
+
+  // Open terms modal handler
+  const handleOpenTermsModal = (termsType: TermsType) => {
+    setActiveTermsType(termsType);
+    setIsTermsModalOpen(true);
+  };
+
+  // Close terms modal handler
+  const handleCloseTermsModal = () => {
+    setIsTermsModalOpen(false);
+  };
+
+  // Confirm terms modal handler - checks the corresponding checkbox
+  const handleConfirmTermsModal = () => {
+    setTerms(prev => ({ ...prev, [activeTermsType]: true }));
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -143,14 +169,29 @@ const Signup: React.FC = () => {
 
   const isRequiredTermsAgreed = terms.terms && terms.privacy;
 
-  const handleStep1Submit = () => {
+  const handleStep1Submit = useCallback(() => {
     if (!isRequiredTermsAgreed) {
       setError('필수 약관에 동의해주세요.');
       return;
     }
     setError('');
     setStep(2);
-  };
+  }, [isRequiredTermsAgreed]);
+
+  // Step 1: Handle Enter key to submit when required terms are agreed
+  useEffect(() => {
+    if (step !== 1) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && isRequiredTermsAgreed) {
+        e.preventDefault();
+        handleStep1Submit();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [step, isRequiredTermsAgreed, handleStep1Submit]);
 
   const handleCheckUserId = useCallback(async () => {
     console.log('[DEBUG] handleCheckUserId 호출됨, userId:', userId);
@@ -215,21 +256,16 @@ const Signup: React.FC = () => {
   }, [userId]);
 
   const handleRequestVerification = useCallback(async () => {
-    if (!phone) {
-      setPhoneError('휴대폰번호를 입력해주세요');
-      return;
-    }
-
-    // 휴대폰 번호 형식 정리 (숫자만 추출)
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
-      setPhoneError('올바른 휴대폰 번호를 입력해주세요');
+    const validation = validatePhone(phone);
+    if (!validation.valid) {
+      setPhoneError(validation.error ?? '휴대폰 번호를 입력해주세요.');
       return;
     }
 
     setPhoneError('');
 
     try {
+      const cleanPhone = normalizePhone(phone);
       const response = await post(API_ENDPOINTS.AUTH.PHONE_SEND, {
         phone: cleanPhone
       });
@@ -254,7 +290,7 @@ const Signup: React.FC = () => {
     }
 
     try {
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      const cleanPhone = normalizePhone(phone);
       const response = await post(API_ENDPOINTS.AUTH.PHONE_VERIFY, {
         phone: cleanPhone,
         code: verificationCode
@@ -315,60 +351,8 @@ const Signup: React.FC = () => {
     setEmailError('');
   }, [emailLocal, emailDomain]);
 
-  const validatePassword = useCallback((pwd: string, showError: boolean = false) => {
-    if (!pwd) {
-      setPasswordError('');
-      return;
-    }
-    // 입력 중에는 오류를 표시하지 않음 (6자 이상 입력 후에만 검증)
-    if (!showError && pwd.length < 6) {
-      setPasswordError('');
-      return;
-    }
-    const hasUppercase = /[A-Z]/.test(pwd);
-    const hasLowercase = /[a-z]/.test(pwd);
-    const hasNumber = /[0-9]/.test(pwd);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
-    const typeCount = [hasUppercase, hasLowercase, hasNumber, hasSpecial].filter(Boolean).length;
-    
-    if (pwd.length < 6 || pwd.length > 12) {
-      setPasswordError('영문자, 숫자, 특수문자 중 2가지 이상 조합, 6~12자');
-    } else if (typeCount < 2) {
-      setPasswordError('영문자, 숫자, 특수문자 중 2가지 이상 조합, 6~12자');
-    } else {
-      setPasswordError('');
-    }
-  }, []);
-
-  const validatePasswordConfirm = useCallback((pwd: string, confirm: string, showError: boolean = false) => {
-    if (!confirm) {
-      setPasswordConfirmError('');
-      return;
-    }
-    // 입력 중에는 오류를 표시하지 않음 (비밀번호가 입력된 후에만 검증)
-    if (!showError && !pwd) {
-      setPasswordConfirmError('');
-      return;
-    }
-    if (pwd !== confirm) {
-      setPasswordConfirmError('비밀번호가 일치하지 않습니다.');
-    } else {
-      setPasswordConfirmError('');
-    }
-  }, []);
-
   // 비밀번호 유효성 검사 (6-12자, 영문자/숫자/특수문자 중 2가지 이상)
-  const isPasswordValid = useMemo(() => {
-    if (!password || password.length < 6 || password.length > 12) {
-      return false;
-    }
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const typeCount = [hasUppercase, hasLowercase, hasNumber, hasSpecial].filter(Boolean).length;
-    return typeCount >= 2;
-  }, [password]);
+  const isPasswordValid = useMemo(() => validatePasswordRule(password).valid, [password]);
 
   const isPasswordMatch = password === passwordConfirm && passwordConfirm !== '';
   const fullEmail = emailLocal && emailDomain ? `${emailLocal}@${emailDomain}` : '';
@@ -390,24 +374,28 @@ const Signup: React.FC = () => {
       hasError = true;
     }
     
-    // 휴대폰 번호 검증
-    if (!phone) {
-      setPhoneError('휴대폰번호를 입력해주세요');
+    // 휴대폰 번호 검증 (010 + 8자리)
+    const phoneValidation = validatePhone(phone);
+    if (!phoneValidation.valid) {
+      setPhoneError(phoneValidation.error ?? '휴대폰 번호를 입력해주세요.');
       hasError = true;
     }
     
     // 비밀번호 검증
-    if (password) {
-      validatePassword(password, true);
+    const pwdValidation = validatePasswordRule(password);
+    if (!pwdValidation.valid) {
+      setPasswordError(pwdValidation.error ?? '');
+      hasError = true;
     }
-    
     // 비밀번호 확인 검증
-    if (passwordConfirm) {
-      validatePasswordConfirm(password, passwordConfirm, true);
+    const matchValidation = validatePasswordMatch(password, passwordConfirm);
+    if (!matchValidation.valid && passwordConfirm) {
+      setPasswordConfirmError(matchValidation.error ?? '');
+      hasError = true;
     }
-    
+
     return !hasError;
-  }, [name, emailLocal, emailDomain, phone, password, passwordConfirm, validateEmail, validatePassword, validatePasswordConfirm]);
+  }, [name, emailLocal, emailDomain, phone, password, passwordConfirm, validateEmail]);
 
   const handleStep2Submit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -433,7 +421,7 @@ const Signup: React.FC = () => {
         other: 'INSURANCE',
       };
 
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      const cleanPhone = normalizePhone(phone);
 
       const response = await post(API_ENDPOINTS.AUTH.SIGN_UP, {
         loginId: userId,
@@ -496,7 +484,7 @@ const Signup: React.FC = () => {
                 label="[필수] 개인정보 처리 방침 이용 동의"
                 onChange={() => handleTermChange('privacy')}
               />
-              <button type="button" className="signup-view-link">보기</button>
+              <button type="button" className="signup-view-link" onClick={() => handleOpenTermsModal('privacy')}>보기</button>
             </div>
             <div className="signup-term-item-wrapper">
               <Checkbox
@@ -505,7 +493,7 @@ const Signup: React.FC = () => {
                 label="[필수] OO OOOOO 이용 동의"
                 onChange={() => handleTermChange('terms')}
               />
-              <button type="button" className="signup-view-link">보기</button>
+              <button type="button" className="signup-view-link" onClick={() => handleOpenTermsModal('terms')}>보기</button>
             </div>
             <div className="signup-term-item-wrapper">
               <Checkbox
@@ -514,7 +502,7 @@ const Signup: React.FC = () => {
                 label="[선택] OO OOOOO 이용 동의"
                 onChange={() => handleTermChange('marketing')}
               />
-              <button type="button" className="signup-view-link">보기</button>
+              <button type="button" className="signup-view-link" onClick={() => handleOpenTermsModal('marketing')}>보기</button>
             </div>
           </div>
           {error && <p className="auth-error-message">{error}</p>}
@@ -538,7 +526,7 @@ const Signup: React.FC = () => {
   const renderStep2 = () => (
     <>
       <div className="auth-form-container">
-        <form className="auth-form" onSubmit={handleStep2Submit}>
+        <form id="signup-step2-form" className="auth-form" onSubmit={handleStep2Submit}>
           <div className="auth-input-group">
             <label className="auth-input-label">회원 유형 <span className="auth-required-mark">*</span></label>
             <div className="signup-member-type-group">
@@ -699,12 +687,13 @@ const Signup: React.FC = () => {
               <TextField
                 variant="line"
                 type="tel"
-                placeholder="휴대폰 번호를 입력해주세요"
+                placeholder="01012345678 (숫자만 입력)"
                 value={phone}
                 onChange={(val) => {
-                  setPhone(val);
+                  setPhone(formatPhoneInput(val));
                   if (val) {
-                    setPhoneError('');
+                    const v = validatePhone(val);
+                    setPhoneError(v.valid ? '' : (v.error ?? ''));
                   }
                 }}
                 readOnly={isPhoneVerified}
@@ -778,20 +767,14 @@ const Signup: React.FC = () => {
             <TextField
               variant="line"
               type="password"
-              placeholder="비밀번호를 입력해주세요"
+              placeholder="비밀번호를 입력해주세요 (6~12자)"
               value={password}
               onChange={(val) => {
                 setPassword(val);
-                // 입력 중에는 오류를 표시하지 않음 (6자 이상 입력 후에만 검증)
-                if (val.length >= 6) {
-                  validatePassword(val, true);
-                } else {
-                  setPasswordError('');
-                }
-                // 비밀번호가 변경되면 비밀번호 확인도 다시 검증
-                if (passwordConfirm) {
-                  validatePasswordConfirm(val, passwordConfirm, true);
-                }
+                const v = validatePasswordRule(val);
+                setPasswordError(v.valid ? '' : (v.error ?? ''));
+                const m = validatePasswordMatch(val, passwordConfirm);
+                setPasswordConfirmError(m.valid ? '' : (m.error ?? ''));
               }}
               showPasswordToggle
               error={!!passwordError}
@@ -814,6 +797,8 @@ const Signup: React.FC = () => {
               value={passwordConfirm}
               onChange={(val) => {
                 setPasswordConfirm(val);
+                const m = validatePasswordMatch(password, val);
+                setPasswordConfirmError(m.valid ? '' : (m.error ?? ''));
               }}
               showPasswordToggle
               error={!!passwordConfirmError}
@@ -845,7 +830,8 @@ const Signup: React.FC = () => {
           size="large"
           rightIcon="arrow-right2-gray"
           disabled={!isStep2Valid || isLoading}
-          onClick={handleStep2Submit}
+          htmlType="submit"
+          form="signup-step2-form"
         >
           {isLoading ? '가입 중...' : '다음'}
         </Button>
@@ -884,6 +870,14 @@ const Signup: React.FC = () => {
         {step === 3 && renderStep3()}
       </section>
       <Footer />
+      
+      {/* Terms Modal */}
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={handleCloseTermsModal}
+        onConfirm={handleConfirmTermsModal}
+        termsType={activeTermsType}
+      />
     </div>
   );
 };

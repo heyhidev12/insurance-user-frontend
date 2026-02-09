@@ -17,6 +17,8 @@ export interface ButtonProps {
   fullWidth?: boolean;
   /** HTML button type (submit, button, reset) */
   htmlType?: 'submit' | 'button' | 'reset';
+  /** HTML form attribute to associate button with a form by its id */
+  form?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -30,6 +32,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   fullWidth = false,
   htmlType = 'button',
+  form,
 }) => {
   const getIconSize = (): 16 | 20 | 24 => {
     switch (size) {
@@ -51,6 +54,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       type={htmlType}
+      form={form}
       className={`button button--${type} button--${size} ${fullWidth ? 'button--full-width' : ''} ${className}`}
       disabled={disabled}
       onClick={onClick}

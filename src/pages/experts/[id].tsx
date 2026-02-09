@@ -20,6 +20,12 @@ const Viewer = dynamic(
   { ssr: false }
 );
 
+interface MemberCategory {
+  categoryId: number;
+  categoryName: string;
+  displayOrder: number;
+}
+
 interface MemberDetail {
   id: number;
   name: string;
@@ -31,7 +37,7 @@ interface MemberDetail {
     id: number;
     url: string;
   };
-  workAreas: string[] | Array<{ id: number; value: string }>;
+  categories: MemberCategory[];
   affiliation: string;
   phoneNumber: string;
   email: string;
@@ -210,9 +216,6 @@ const ExpertDetailPage: React.FC = () => {
     return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
   };
 
-  const handleTopClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const handleConsultClick = () => {
     router.push('/consultation/apply');
@@ -420,19 +423,15 @@ const ExpertDetailPage: React.FC = () => {
               )}
             </div>
             {/* 주요 업무 분야 */}
-            {data.workAreas && data.workAreas.length > 0 && (
+            {data.categories && data.categories.length > 0 && (
               <div className={`${styles.heroWorkAreas} ${isMobile ? styles.heroWorkAreasMobile : ''}`}>
                 <p className={styles.heroWorkAreasLabel}>주요 업무 분야</p>
                 <div className={styles.heroWorkAreasTags}>
-                  {data.workAreas.map((area, index) => {
-                    const areaName = typeof area === 'string' ? area : (area?.value || String(area?.id || ''));
-                    const indicator = index === 0 ? '■■■' : index === 1 ? '■■□' : '■□□';
-                    return (
-                      <span key={index} className={styles.heroWorkAreaTag}>
-                        {areaName} {indicator}
-                      </span>
-                    );
-                  })}
+                  {data.categories.map((category) => (
+                    <span key={category.categoryId} className={styles.heroWorkAreaTag}>
+                      {category.categoryName}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
@@ -558,19 +557,15 @@ const ExpertDetailPage: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    {data.workAreas && data.workAreas.length > 0 && (
+                    {data.categories && data.categories.length > 0 && (
                       <div className={styles.sidebarWorkAreas}>
                         <p className={styles.sidebarWorkAreasLabel}>주요 업무 분야</p>
                         <div className={styles.sidebarWorkAreasTags}>
-                          {data.workAreas.map((area, index) => {
-                            const areaName = typeof area === 'string' ? area : (area?.value || String(area?.id || ''));
-                            const indicator = index === 0 ? '■■■' : index === 1 ? '■■□' : '■□□';
-                            return (
-                              <span key={index} className={styles.sidebarWorkAreaTag}>
-                                {areaName}{indicator}
-                              </span>
-                            );
-                          })}
+                          {data.categories.map((category) => (
+                            <span key={category.categoryId} className={styles.sidebarWorkAreaTag}>
+                              {category.categoryName}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     )}
@@ -743,10 +738,6 @@ const ExpertDetailPage: React.FC = () => {
           variant="consult"
           label="상담 신청하기"
           onClick={handleConsultClick}
-        />
-        <FloatingButton
-          variant="top"
-          onClick={handleTopClick}
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@use '../../../styles/variables' as *;
 
 // Accent color from Figma
 $accent-red: #D11F00;
@@ -9,6 +9,7 @@ $accent-red: #D11F00;
   border: none;
   cursor: pointer;
   transition: all $transition-fast;
+  
 
   &Consult {
     gap: 8px;
@@ -25,8 +26,8 @@ $accent-red: #D11F00;
       background: rgba($white, 0.2);
     }
 
-    // 모바일: 아이콘만 표시
-    @media (max-width: $breakpoint-tablet) {
+    // 모바일: 아이콘만 표시 (40x40)
+    @media (max-width: 767px) {
       padding: 0;
       background: transparent;
       backdrop-filter: none;
@@ -53,10 +54,10 @@ $accent-red: #D11F00;
       background-color: $gray-80;
     }
 
-    // 모바일
-    @media (max-width: $breakpoint-tablet) {
-      width: 48px;
-      height: 48px;
+    // 모바일: 40x40 크기
+    @media (max-width: 767px) {
+      width: 40px;
+      height: 40px;
       background-color: $black;
 
       &:hover {
@@ -81,7 +82,7 @@ $accent-red: #D11F00;
   white-space: nowrap;
 
   // 모바일: 라벨 숨기기
-  @media (max-width: $breakpoint-tablet) {
+  @media (max-width: 767px) {
     display: none;
   }
 }
@@ -106,10 +107,10 @@ $accent-red: #D11F00;
       }
     }
 
-    // 모바일: 아이콘 크기 조정
-    @media (max-width: $breakpoint-tablet) {
-      width: 48px;
-      height: 48px;
+    // 모바일: 아이콘 크기 40x40
+    @media (max-width: 767px) {
+      width: 40px;
+      height: 40px;
     }
   }
 }

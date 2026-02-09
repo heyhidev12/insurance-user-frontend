@@ -7,7 +7,7 @@ import Footer from '@/components/common/Footer';
 import { TextField } from '@/components/common/TextField';
 import Checkbox from '@/components/common/Checkbox';
 import Button from '@/components/common/Button';
-import { post } from '@/lib/api';
+import { post, setAuthToken } from '@/lib/api';
 import { API_BASE_URL, API_ENDPOINTS } from '@/config/api';
 
 interface LoginResponse {
@@ -72,7 +72,7 @@ const Login: React.FC = () => {
       // 토큰 저장
       if (data.accessToken) {
         localStorage.setItem('accessToken', data.accessToken);
-
+        setAuthToken(data.accessToken, rememberMe);
         // 자동 로그인 설정 시 토큰을 더 오래 유지
         if (rememberMe) {
           localStorage.setItem('autoLogin', 'true');

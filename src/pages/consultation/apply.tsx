@@ -6,8 +6,10 @@ import Footer from '@/components/common/Footer';
 import PageHeader from '@/components/common/PageHeader';
 import Checkbox from '@/components/common/Checkbox';
 import Button from '@/components/common/Button';
+import TermsModal, { TermsType } from '@/components/common/TermsModal';
 import { get, post } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
+import { formatPhoneInput, normalizePhone, validatePhone } from '@/lib/phoneValidation';
 import styles from './apply.module.scss';
 
 interface ConsultationFormData {
@@ -80,6 +82,35 @@ const ConsultationApplyPage: React.FC = () => {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitAttempted, setIsSubmitAttempted] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  
+  // Terms modal state
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [activeTermsType, setActiveTermsType] = useState<TermsType>('privacy');
+
+  // Open terms modal handler
+  const handleOpenTermsModal = (termsType: TermsType) => {
+    setActiveTermsType(termsType);
+    setIsTermsModalOpen(true);
+  };
+
+  // Close terms modal handler
+  const handleCloseTermsModal = () => {
+    setIsTermsModalOpen(false);
+  };
+
+  // Confirm terms modal handler - checks the corresponding checkbox
+  const handleConfirmTermsModal = () => {
+    // Map terms type to form field
+    const fieldMap: Record<TermsType, keyof ConsultationFormData | null> = {
+      privacy: 'privacyAgreement',
+      terms: 'termsAgreement',
+      marketing: null, // Not used in this form
+    };
+    const field = fieldMap[activeTermsType];
+    if (field) {
+      setFormData(prev => ({ ...prev, [field]: true }));
+    }
+  };
 
   // API에서 가져온 데이터
   const [consultationFields, setConsultationFields] = useState<SelectOption[]>([
@@ -220,7 +251,8 @@ const ConsultationApplyPage: React.FC = () => {
   };
 
   const handleInputChange = (field: keyof ConsultationFormData) => (value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const nextValue = field === 'phone' ? formatPhoneInput(value) : value;
+    setFormData(prev => ({ ...prev, [field]: nextValue }));
     // 필드 값 변경 시 해당 필드의 API 오류 초기화
     if (fieldErrors[field]) {
       setFieldErrors(prev => {
@@ -233,6 +265,16 @@ const ConsultationApplyPage: React.FC = () => {
 
   const handleCheckboxChange = (field: 'privacyAgreement' | 'termsAgreement') => (checked: boolean) => {
     setFormData(prev => ({ ...prev, [field]: checked }));
+  };
+
+  const allRequiredAgreementsChecked = formData.privacyAgreement && formData.termsAgreement;
+
+  const handleAllAgreementsChange = (checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      privacyAgreement: checked,
+      termsAgreement: checked,
+    }));
   };
 
   const handleBlur = (field: string) => {
@@ -253,8 +295,10 @@ const ConsultationApplyPage: React.FC = () => {
         return !formData.taxAccountant ? '담당 세무사를 선택해주세요' : null;
       case 'name':
         return !formData.name ? '이름을 입력해주세요' : null;
-      case 'phone':
-        return !formData.phone ? '휴대폰 번호를 입력해주세요' : null;
+      case 'phone': {
+        const phoneValidation = validatePhone(formData.phone);
+        return phoneValidation.valid ? null : (phoneValidation.error ?? '휴대폰 번호를 입력해주세요');
+      }
       case 'additionalRequest':
         return !formData.additionalRequest ? '추가 요청사항을 입력해주세요' : null;
       case 'privacyAgreement':
@@ -319,9 +363,17 @@ const ConsultationApplyPage: React.FC = () => {
       const selectedField = consultationFields.find(f => f.value === formData.consultationField);
       const selectedAccountant = taxAccountants.find(a => a.value === formData.taxAccountant);
 
+      const phoneDigits = normalizePhone(formData.phone);
+      const phoneValidation = validatePhone(formData.phone);
+      if (!phoneValidation.valid) {
+        setFieldErrors(prev => ({ ...prev, phone: phoneValidation.error ?? '휴대폰 번호를 입력해주세요' }));
+        setIsSubmitting(false);
+        return;
+      }
+
       const apiRequestBody: ConsultationApiRequest = {
         name: formData.name,
-        phoneNumber: formData.phone.replace(/-/g, ''), // 하이픈 제거
+        phoneNumber: phoneDigits,
         consultingField: selectedField?.label || formData.consultationField,
         assignedTaxAccountant: selectedAccountant?.label || formData.taxAccountant,
         content: formData.additionalRequest,
@@ -336,7 +388,12 @@ const ConsultationApplyPage: React.FC = () => {
       if (response.error) {
         throw new Error(response.error || '상담 신청에 실패했습니다. 다시 시도해주세요.');
       }
-
+      if (window.gtag) {
+        window.gtag("event", "consultation_submit", {
+          event_category: "lead",
+          event_label: "consultation_form",
+        });
+      }
       setIsSuccessModalOpen(true);
     } catch (error) {
       console.error('Consultation submission error:', error);
@@ -574,8 +631,10 @@ const ConsultationApplyPage: React.FC = () => {
                     </label>
                     <input
                       type="tel"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={`${styles.textInput} ${getFieldError('phone') ? styles.textInputError : ''}`}
-                      placeholder="휴대폰 번호를 입력해주세요"
+                      placeholder="01012345678 (숫자만 입력)"
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone')(e.target.value)}
                       onBlur={() => handleBlur('phone')}
@@ -607,6 +666,22 @@ const ConsultationApplyPage: React.FC = () => {
 
                 {/* 동의 체크박스 */}
                 <div className={styles.agreements}>
+                  {/* 전체 동의 */}
+                  <div className={styles.agreementItemWrapper}>
+                    <div
+                      className={`${styles.allAgreeWrapper} ${
+                        allRequiredAgreementsChecked ? styles.allAgreeWrapperChecked : ''
+                      }`}
+                    >
+                      <Checkbox
+                        variant="square"
+                        checked={allRequiredAgreementsChecked}
+                        onChange={handleAllAgreementsChange}
+                        label="전체 동의"
+                      />
+                    </div>
+                  </div>
+
                   <div className={styles.agreementItemWrapper}>
                     <div className={styles.agreementItem}>
                       <Checkbox
@@ -615,7 +690,7 @@ const ConsultationApplyPage: React.FC = () => {
                         onChange={handleCheckboxChange('privacyAgreement')}
                         label="[필수] 개인정보 처리 방침 이용 동의"
                       />
-                      <button type="button" className={styles.viewLink}>
+                      <button type="button" className={styles.viewLink} onClick={() => handleOpenTermsModal('privacy')}>
                         보기
                       </button>
                     </div>
@@ -631,7 +706,7 @@ const ConsultationApplyPage: React.FC = () => {
                         onChange={handleCheckboxChange('termsAgreement')}
                         label="[필수] OO OOOOO 이용 동의"
                       />
-                      <button type="button" className={styles.viewLink}>
+                      <button type="button" className={styles.viewLink} onClick={() => handleOpenTermsModal('terms')}>
                         보기
                       </button>
                     </div>
@@ -649,7 +724,7 @@ const ConsultationApplyPage: React.FC = () => {
                 <Button
                   type="primary"
                   size="large"
-                  disabled={!isFormValid() || isSubmitting}
+                  disabled={!isFormValid() || !allRequiredAgreementsChecked || isSubmitting}
                   htmlType="submit"
                   className={styles.submitButton}
                 >
@@ -718,6 +793,14 @@ const ConsultationApplyPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Terms Modal */}
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={handleCloseTermsModal}
+        onConfirm={handleConfirmTermsModal}
+        termsType={activeTermsType}
+      />
     </div>
   );
 };

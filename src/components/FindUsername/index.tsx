@@ -8,6 +8,7 @@ import Tab from '@/components/common/Tab';
 import Button from '@/components/common/Button';
 import { post } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
+import { formatPhoneInput, normalizePhone, validatePhone } from '@/lib/phoneValidation';
 
 type TabType = 'sms' | 'email';
 type StepType = 'input' | 'verification' | 'result';
@@ -45,7 +46,8 @@ const FindUsername: React.FC = () => {
     return () => clearInterval(interval);
   }, [isTimerActive, timeLeft]);
 
-  const handleRequestVerification = useCallback(async () => {
+  const handleRequestVerification = useCallback(async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setError('');
     setIsLoading(true);
 
@@ -56,9 +58,10 @@ const FindUsername: React.FC = () => {
           return;
         }
 
-        const cleanPhone = phone.replace(/[^0-9]/g, '');
-        if (cleanPhone.length < 10 || cleanPhone.length > 11) {
-          setError('올바른 휴대폰 번호를 입력해주세요.');
+        const cleanPhone = normalizePhone(phone);
+        const validation = validatePhone(phone);
+        if (!validation.valid) {
+          setError(validation.error ?? '올바른 휴대폰 번호를 입력해주세요.');
           return;
         }
 
@@ -130,7 +133,7 @@ const FindUsername: React.FC = () => {
     try {
       let response;
       if (activeTab === 'sms') {
-        const cleanPhone = phone.replace(/[^0-9]/g, '');
+        const cleanPhone = normalizePhone(phone);
         response = await post<{ loginId: string }>(API_ENDPOINTS.AUTH.FIND_ID_PHONE_VERIFY, {
           name: name,
           phoneNumber: cleanPhone,
@@ -187,7 +190,7 @@ const FindUsername: React.FC = () => {
   const renderInputForm = () => (
     <>
       <div className="find-username-form-container">
-        <form className="find-username-form" onSubmit={(e) => { e.preventDefault(); handleRequestVerification(); }}>
+        <form id="find-username-input-form" className="find-username-form" onSubmit={handleRequestVerification}>
           <div className="find-username-form-fields">
             <TextField
               variant="line"
@@ -204,16 +207,16 @@ const FindUsername: React.FC = () => {
                   variant="line"
                   label="휴대폰 번호"
                   type="tel"
-                  placeholder="휴대폰 번호를 입력해주세요"
+                  placeholder="01012345678 (숫자만 입력)"
                   value={phone}
-                  onChange={setPhone}
+                  onChange={(val) => setPhone(formatPhoneInput(val))}
                   fullWidth
                 />
                 <Button
                   type="line-white"
                   size="medium"
-                  onClick={handleRequestVerification}
                   disabled={!name || !phone || isLoading}
+                  htmlType="submit"
                 >
                   {isLoading ? '발송 중...' : '인증 요청'}
                 </Button>
@@ -245,7 +248,8 @@ const FindUsername: React.FC = () => {
           type="primary"
           size="large"
           disabled={!name || (activeTab === 'sms' ? !phone : !email) || isLoading}
-          onClick={handleRequestVerification}
+          htmlType="submit"
+          form="find-username-input-form"
         >
           {isLoading ? '확인 중...' : '확인'}
         </Button>
@@ -272,7 +276,7 @@ const FindUsername: React.FC = () => {
         </p>
       )}
       <div className="find-username-form-container">
-        <form className="find-username-form" onSubmit={handleVerifyCode}>
+        <form id="find-username-verify-form" className="find-username-form" onSubmit={handleVerifyCode}>
           <div className="find-username-form-fields">
             {activeTab === 'sms' ? (
               <>
@@ -344,7 +348,8 @@ const FindUsername: React.FC = () => {
           type={verificationCode && isTimerActive && !error ? "primary" : "secondary"}
           size="large"
           disabled={!verificationCode || !isTimerActive || !!error || isLoading}
-          onClick={handleVerifyCode}
+          htmlType="submit"
+          form="find-username-verify-form"
         >
           {isLoading ? '확인 중...' : '확인'}
         </Button>

@@ -6,6 +6,7 @@ import Header from '@/components/common/Header';
 import Menu from '@/components/Menu';
 import Footer from '@/components/common/Footer';
 import Icon from '@/components/common/Icon';
+import ScrollToTop from '@/components/common/ScrollToTop';
 import DatePickerModal from '@/components/education/DatePickerModal';
 import ApplicationModal from '@/components/education/ApplicationModal';
 import SEO from '@/components/SEO';
@@ -168,9 +169,6 @@ const EducationDetailPage: React.FC = () => {
     return diffDays > 0 ? diffDays : 0;
   };
 
-  const formatDate = (dateString: string) => {
-    return dateString.replace(/\./g, '.');
-  };
 
   // 교육 일자 포맷팅 (첫 번째 날짜 ~ 마지막 날짜 형식)
   const formatEducationDates = (dates: string[]) => {
@@ -540,6 +538,9 @@ const EducationDetailPage: React.FC = () => {
       <div className={styles.stickyButtonWrapper}>
         {renderActionButton()}
       </div>
+
+      {/* Scroll to Top Button */}
+      <ScrollToTop className={styles.scrollToTop} />
 
       <Footer />
 

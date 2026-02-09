@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@use '../../styles/variables' as *;
 
 .page {
   min-height: 100vh;
@@ -49,17 +49,18 @@
 
 .floatingButtons {
   position: fixed;
-  bottom: 60px;
+  bottom: 128px;
   right: 20px;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 20px;
   z-index: 1000;
 
-  @media (max-width: $breakpoint-tablet) {
-    bottom: 20px;
-    right: 16px;
-    gap: 16px;
+  @media (max-width: 767px) {
+    bottom: 92px;
+    right: 20px;
+    gap: 12px;
   }
 }
 
@@ -509,6 +510,7 @@ line-clamp: 2;
 }
 
 .attachmentName {
+  cursor: pointer;
   font-family: $font-pretendard;
   font-weight: $font-weight-medium;
   font-size: 15px;
@@ -973,8 +975,15 @@ line-clamp: 2;
   font-size: 15px;
   line-height: 1.5;
   color: #8e8e8e;
-  text-align: center;
-  width: 100%;
+}
+
+.navItemDisabled {
+  opacity: 0.5;
+  cursor: default !important;
+  
+  &:hover {
+    background: transparent !important;
+  }
 }
 
 .backButton {

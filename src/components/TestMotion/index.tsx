@@ -182,12 +182,12 @@ const TestMotion: React.FC = () => {
             id: number;
             name: string;
             mainPhoto?: { url: string };
-            workAreas?: { value: string }[];
+            categories?: { categoryId: number; categoryName: string; displayOrder: number }[];
             oneLineIntro?: string;
           }) => ({
             id: item.id,
             name: item.name,
-            role: item.workAreas && item.workAreas.length > 0 ? item.workAreas[0].value : '전문가',
+            role: item.categories && item.categories.length > 0 ? item.categories[0].categoryName : '전문가',
             quote: item.oneLineIntro || '',
             image: item.mainPhoto?.url || '/images/main/experts/expert1.png',
           }));
@@ -2193,7 +2193,7 @@ const TestMotion: React.FC = () => {
           <h2 className="final-title">모두가 함께하고 있습니다.</h2>
           <h2 className="final-subtitle">이제, 당신만 오시면 완성됩니다</h2>
           <button className="final-cta">모두컨설팅과 함께하기 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M8.85156 5L16.0016 11.5L8.85156 18" stroke="#2D2D2D" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M8.85156 5L16.0016 11.5L8.85156 18" stroke="#2D2D2D" strokeWidth="1.6" strokeLinecap="round" />
           </svg></button>
         </div>
         <Footer />

@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@use '../../../styles/variables' as *;
 
 // Label colors from Figma
 $label-skyblue-bg: $navy-20; // #BFD8F3

@@ -1,0 +1,68 @@
+@use '../../../styles/variables' as *;
+
+.root {
+  position: fixed;
+  right: 24px;
+  bottom: 60px;
+  z-index: $z-fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: $radius-circle;
+  background-color: $gray-70;
+  color: $white;
+  cursor: pointer;
+  box-shadow: $shadow-md;
+  transition:
+    background-color $transition-fast,
+    opacity $transition-normal,
+    transform $transition-normal;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  &:hover {
+    background-color: $gray-60;
+  }
+
+  &:active {
+    background-color: $gray-80;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-40;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    right: 20px;
+    bottom: 40px;
+    width: 40px;
+    height: 40px;
+    background-color: $black;
+
+    &:hover {
+      background-color: $gray-90;
+    }
+
+    &:active {
+      background-color: $gray-80;
+    }
+  }
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

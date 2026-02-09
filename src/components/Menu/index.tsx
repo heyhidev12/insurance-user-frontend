@@ -447,7 +447,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
       // 인사이트 서브메뉴 - API 데이터에서 해당 카테고리 찾기
       const insightCategory = insightsData.find(ins => ins.category.name === subItem);
       if (insightCategory) {
-        setTimeout(() => router.push(`/insights?category=${insightCategory.category.id}`), 500);
+        setTimeout(() => router.push(`/insights?category=${insightCategory.category.id}&sub=0`), 500);
       }
     }
   };

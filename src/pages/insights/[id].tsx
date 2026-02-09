@@ -123,7 +123,7 @@ const InsightDetailPage: React.FC = () => {
   // Asosiy insight data ni yuklash
   const fetchInsightDetail = useCallback(async () => {
     if (!id) return;
-    
+
     setLoading(true);
     setError(null);
 
@@ -145,12 +145,12 @@ const InsightDetailPage: React.FC = () => {
             fetchComments(null);
           }
         }
-        
+
         // 조회수 증가
         if (typeof window !== 'undefined') {
           try {
             await post(`${API_ENDPOINTS.INSIGHTS}/${id}/increment-view`);
-          } catch (err) {}
+          } catch (err) { }
         }
       } else if (response.error) {
         setError(response.error);
@@ -166,11 +166,17 @@ const InsightDetailPage: React.FC = () => {
   const fetchNavigationData = useCallback(async () => {
     if (!id || !insight) return;
 
+    // IMPORTANT: Reset prev/next to null first to ensure proper state
+    setPrevInsight(null);
+    setNextInsight(null);
+
     try {
       const urlParams = new URLSearchParams(window.location.search);
       const category = urlParams.get('category');
       const sub = urlParams.get('sub');
       const search = urlParams.get('search');
+
+      console.log('[fetchNavigationData] URL params - category:', category, 'sub:', sub, 'search:', search);
 
       const params = new URLSearchParams();
       params.append('page', '1');
@@ -180,6 +186,7 @@ const InsightDetailPage: React.FC = () => {
         params.append('categoryId', String(insight.category.id));
       }
 
+      // Only add subcategoryId if sub is not "0" (which means "all")
       if (sub && sub !== '0') {
         params.append('subcategoryId', sub);
       }
@@ -200,7 +207,7 @@ const InsightDetailPage: React.FC = () => {
             if (memberType === 'INSURANCE') {
               isApproved = user.isApproved || null;
             }
-          } catch (e) {}
+          } catch (e) { }
         }
       }
 
@@ -214,6 +221,8 @@ const InsightDetailPage: React.FC = () => {
         params.append('isApproved', String(isApproved));
       }
 
+      console.log('[fetchNavigationData] Fetching with params:', params.toString());
+
       const navResponse = await get<{ items: InsightDetail[]; total: number }>(
         `${API_ENDPOINTS.INSIGHTS}?${params.toString()}`
       );
@@ -221,24 +230,38 @@ const InsightDetailPage: React.FC = () => {
       if (navResponse.data && navResponse.data.items) {
         const items = navResponse.data.items;
         const currentIndex = items.findIndex(item => item.id === Number(id));
-        
+
+        console.log('[fetchNavigationData] Found', items.length, 'items, current index:', currentIndex);
+
         if (currentIndex >= 0) {
+          // Set prev only if not first item
           if (currentIndex > 0) {
             setPrevInsight({
               id: items[currentIndex - 1].id,
               title: items[currentIndex - 1].title
             });
+            console.log('[fetchNavigationData] Set prevInsight:', items[currentIndex - 1].title);
+          } else {
+            console.log('[fetchNavigationData] No previous item (first in list)');
           }
-          
+
+          // Set next only if not last item
           if (currentIndex < items.length - 1) {
             setNextInsight({
               id: items[currentIndex + 1].id,
               title: items[currentIndex + 1].title
             });
+            console.log('[fetchNavigationData] Set nextInsight:', items[currentIndex + 1].title);
+          } else {
+            console.log('[fetchNavigationData] No next item (last in list)');
           }
+        } else {
+          console.log('[fetchNavigationData] Current item not found in list');
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error('[fetchNavigationData] Error:', err);
+    }
   }, [id, insight]);
 
   // Asosiy data yuklash
@@ -246,11 +269,11 @@ const InsightDetailPage: React.FC = () => {
     if (id) {
       fetchInsightDetail();
     }
-    
+
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('accessToken');
       setIsAuthenticated(!!token);
-      
+
       if (token) {
         fetchCurrentUser();
       }
@@ -269,7 +292,7 @@ const InsightDetailPage: React.FC = () => {
       const response = await get<{ id: number; name: string; loginId: string }>(
         API_ENDPOINTS.AUTH.ME
       );
-      
+
       if (response.data) {
         setCurrentUser(response.data);
         return response.data;
@@ -305,14 +328,14 @@ const InsightDetailPage: React.FC = () => {
 
   const fetchComments = async (user?: { id?: number; name?: string; loginId?: string } | null) => {
     if (!id) return;
-    
+
     const userToCompare = user !== undefined ? user : currentUser;
-    
+
     try {
       const response = await get<CommentsResponse>(
         `${API_ENDPOINTS.INSIGHTS}/${id}/comments`
       );
-      
+
       if (response.data) {
         const commentsWithIsMine = (response.data.items || []).map((comment) => {
           if (comment.isMine === true) {
@@ -332,12 +355,12 @@ const InsightDetailPage: React.FC = () => {
 
             if (!isMyComment && (comment.authorId || comment.userId)) {
               isMyComment = (comment.authorId === userToCompare.id) ||
-                           (comment.userId === userToCompare.id);
+                (comment.userId === userToCompare.id);
             }
 
             if (!isMyComment && comment.authorName && (userToCompare.name || userToCompare.loginId)) {
               isMyComment = comment.authorName === userToCompare.name ||
-                           comment.authorName === userToCompare.loginId;
+                comment.authorName === userToCompare.loginId;
             }
 
             return { ...comment, isMine: isMyComment };
@@ -345,36 +368,43 @@ const InsightDetailPage: React.FC = () => {
 
           return { ...comment, isMine: false };
         });
-        
+
         setComments(commentsWithIsMine);
         setCommentTotal(response.data.total || 0);
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleBackToList = useCallback(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const query: Record<string, string> = {};
-    
+
     const category = urlParams.get('category');
     const sub = urlParams.get('sub');
     const search = urlParams.get('search');
 
+    // Always include category
     if (category) {
       query.category = category;
     } else if (insight?.category?.id) {
       query.category = String(insight.category.id);
     }
-    
-    if (sub !== null) {
+
+    // Always include sub parameter - preserve from URL or default to "0" (all)
+    if (sub !== null && sub !== undefined) {
       query.sub = sub;
     } else if (insight?.subcategory?.id !== undefined) {
       query.sub = String(insight.subcategory.id);
+    } else {
+      query.sub = '0'; // Default to "all" if no subcategory specified
     }
-    
+
+    // Include search if exists
     if (search) {
       query.search = search;
     }
+
+    console.log('[handleBackToList] Navigating back with query:', query);
 
     router.push({
       pathname: '/insights',
@@ -383,59 +413,69 @@ const InsightDetailPage: React.FC = () => {
   }, [router, insight]);
 
   const handlePrevClick = useCallback(() => {
-    if (prevInsight && prevInsight.id) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const query: Record<string, string> = {};
-      
-      const category = urlParams.get('category');
-      const sub = urlParams.get('sub');
-      const search = urlParams.get('search');
-
-      if (category) {
-        query.category = category;
-      }
-      
-      if (sub !== null) {
-        query.sub = sub;
-      }
-      
-      if (search) {
-        query.search = search;
-      }
-
-      router.push({
-        pathname: `/insights/${prevInsight.id}`,
-        query: query
-      });
+    if (!prevInsight) {
+      // No previous item - do nothing (UI should show "이전 글이 없습니다")
+      console.log('[handlePrevClick] No previous insight available');
+      return;
     }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const query: Record<string, string> = {};
+
+    const category = urlParams.get('category');
+    const sub = urlParams.get('sub');
+    const search = urlParams.get('search');
+
+    if (category) {
+      query.category = category;
+    }
+
+    // Always include sub - default to "0" if not present
+    query.sub = sub !== null && sub !== undefined ? sub : '0';
+
+    if (search) {
+      query.search = search;
+    }
+
+    console.log('[handlePrevClick] Navigating to prev with query:', query);
+
+    router.push({
+      pathname: `/insights/${prevInsight.id}`,
+      query: query
+    });
   }, [prevInsight, router]);
 
   const handleNextClick = useCallback(() => {
-    if (nextInsight && nextInsight.id) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const query: Record<string, string> = {};
-      
-      const category = urlParams.get('category');
-      const sub = urlParams.get('sub');
-      const search = urlParams.get('search');
-
-      if (category) {
-        query.category = category;
-      }
-      
-      if (sub !== null) {
-        query.sub = sub;
-      }
-      
-      if (search) {
-        query.search = search;
-      }
-
-      router.push({
-        pathname: `/insights/${nextInsight.id}`,
-        query: query
-      });
+    if (!nextInsight) {
+      // No next item - do nothing (UI should show "다음 글이 없습니다")
+      console.log('[handleNextClick] No next insight available');
+      return;
     }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const query: Record<string, string> = {};
+
+    const category = urlParams.get('category');
+    const sub = urlParams.get('sub');
+    const search = urlParams.get('search');
+
+    if (category) {
+      query.category = category;
+    }
+
+    // Always include sub - default to "0" if not present
+    query.sub = sub !== null && sub !== undefined ? sub : '0';
+
+    if (search) {
+      query.search = search;
+    }
+
+    console.log('[handleNextClick] Navigating to next with query:', query);
+
+    router.push({
+      pathname: `/insights/${nextInsight.id}`,
+      query: query
+    });
   }, [nextInsight, router]);
 
   const formatDate = (dateString?: string) => {
@@ -476,7 +516,7 @@ const InsightDetailPage: React.FC = () => {
         try {
           await navigator.clipboard.writeText(url);
           alert('링크가 클립보드에 복사되었습니다.');
-        } catch (clipboardError) {}
+        } catch (clipboardError) { }
       }
     }
   };
@@ -490,19 +530,19 @@ const InsightDetailPage: React.FC = () => {
           headers['Authorization'] = `Bearer ${token}`;
         }
       }
-      
+
       const downloadUrl = `${API_BASE_URL}/attachments/${attachmentId}/download`;
       const response = await fetch(downloadUrl, {
         method: 'GET',
         headers,
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const blob = await response.blob();
-      
+
       const contentDisposition = response.headers.get('Content-Disposition');
       let finalFileName = fileName;
       if (contentDisposition) {
@@ -511,7 +551,7 @@ const InsightDetailPage: React.FC = () => {
           finalFileName = fileNameMatch[1].replace(/['"]/g, '');
         }
       }
-      
+
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
@@ -519,7 +559,7 @@ const InsightDetailPage: React.FC = () => {
       link.style.display = "none";
       document.body.appendChild(link);
       link.click();
-      
+
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
@@ -572,17 +612,17 @@ const InsightDetailPage: React.FC = () => {
 
   const handleDeleteComment = async (commentId: number) => {
     if (!id || !confirm('댓글을 삭제하시겠습니까?')) return;
-    
+
     if (!isAuthenticated) {
       alert('로그인이 필요합니다.');
       return;
     }
-    
+
     try {
       const response = await del(
         `${API_ENDPOINTS.INSIGHTS}/${id}/comments/${commentId}`
       );
-      
+
       if (!response.error) {
         await fetchComments(currentUser);
       } else {
@@ -602,20 +642,20 @@ const InsightDetailPage: React.FC = () => {
 
   const handleReportComment = async (commentId: number) => {
     if (!id || !confirm('이 댓글을 신고하시겠습니까?')) return;
-    
+
     if (!isAuthenticated) {
       if (confirm('댓글을 신고하려면 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
         router.push('/login');
       }
       return;
     }
-    
+
     try {
       const response = await post(
         `${API_ENDPOINTS.INSIGHTS}/${id}/comments/${commentId}/report`,
         {}
       );
-      
+
       if (!response.error) {
         alert('신고가 접수되었습니다.');
       } else {
@@ -636,7 +676,7 @@ const InsightDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.page}>
-       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.loading}>로딩 중...</div>
@@ -649,7 +689,7 @@ const InsightDetailPage: React.FC = () => {
   if (error || !insight) {
     return (
       <div className={styles.page}>
-       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.container}>
           <div className={styles.error}>
@@ -670,223 +710,232 @@ const InsightDetailPage: React.FC = () => {
         description={insight.content?.replace(/<[^>]*>/g, '').substring(0, 160) || '인사이트 상세 페이지입니다.'}
       />
       <div className={styles.page}>
-     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
-      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
+        <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
-      <div className={styles.floatingButtons}>
-        <FloatingButton
-          variant="consult"
-          label="상담 신청하기"
-          onClick={() => router.push('/consultation/apply')}
-        />
-        <FloatingButton
-          variant="top"
-          onClick={() => {
-            if (typeof window !== 'undefined') {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-          }}
-        />
-      </div>
+        <div className={styles.floatingButtons}>
+          <FloatingButton
+            variant="consult"
+            label="상담 신청하기"
+            onClick={() => router.push('/consultation/apply')}
+          />
+        </div>
 
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.headerSection}>
-            <div className={styles.titleWrapper}>
-              <div className={styles.category}>{typeof insight.subMinorCategory?.name === 'string' ? insight.subMinorCategory.name : (typeof insight.category?.name === 'string' ? insight.category.name : '카테고리명')}</div>
-              <h1 className={styles.title}>{insight.title}</h1>
-            </div>
-            <div className={styles.meta}>
-              <div className={styles.metaLeft}>
-                <span className={styles.author}>{insight.authorName ? insight.authorName : "작성자명"}</span>
-                <span className={styles.divider}></span>
-                <span className={styles.date}>{formatDate(insight.createdAt)}</span>
+        <div className={styles.container}>
+          <div className={styles.content}>
+            <div className={styles.headerSection}>
+              <div className={styles.titleWrapper}>
+                <div className={styles.category}>{typeof insight.subMinorCategory?.name === 'string' ? insight.subMinorCategory.name : (typeof insight.category?.name === 'string' ? insight.category.name : '카테고리명')}</div>
+                <h1 className={styles.title}>{insight.title}</h1>
               </div>
-              <div className={styles.metaRight}>
-                <img
-                  src="/images/insights/icons/printer.svg"
-                  alt="프린트"
-                  className={styles.icon}
-                  onClick={handlePrint}
-                />
-                <span className={styles.iconDivider} />
-                <img
-                  src="/images/insights/icons/share.svg"
-                  alt="공유"
-                  className={styles.icon}
-                  onClick={handleShare}
-                />
+              <div className={styles.meta}>
+                <div className={styles.metaLeft}>
+                  <span className={styles.author}>{insight.authorName ? insight.authorName : "작성자명"}</span>
+                  <span className={styles.divider}></span>
+                  <span className={styles.date}>{formatDate(insight.createdAt)}</span>
+                </div>
+                <div className={styles.metaRight}>
+                  <img
+                    src="/images/insights/icons/printer.svg"
+                    alt="프린트"
+                    className={styles.icon}
+                    onClick={handlePrint}
+                  />
+                  <span className={styles.iconDivider} />
+                  <img
+                    src="/images/insights/icons/share.svg"
+                    alt="공유"
+                    className={styles.icon}
+                    onClick={handleShare}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className={styles.bodySection}>
-            {insight.thumbnail && (
-              <div className={styles.imageSection}>
-                <img src={insight.thumbnail.url} alt={insight.title} />
+            <div className={styles.bodySection}>
+              {insight.thumbnail && (
+                <div className={styles.imageSection}>
+                  <img src={insight.thumbnail.url} alt={insight.title} />
+                </div>
+              )}
+              <div className={styles.bodyContent}>
+                <Viewer initialValue={insight.content.replace(/\*\*\*/g, '')} />
+              </div>
+            </div>
+
+            {insight.files && insight.files.length > 0 && (
+              <div className={styles.attachmentsSection}>
+                <h2 className={styles.attachmentsTitle}>첨부파일</h2>
+                <div className={styles.attachmentsList}>
+                  {insight.files && insight.files.map((file, index) => (
+                    <div key={file.id} className={styles.attachmentItem}>
+                      <div className={styles.attachmentLeft}>
+                        <div className={styles.attachmentLabel}>{index + 1}</div>
+                        <div className={styles.attachmentInfo}>
+                          <Icon type="document" size={24} className={styles.attachmentIcon} />
+                          <span className={styles.attachmentName} onClick={() => {
+                            const fileName = file.fileName || file.url.split('/').pop() || '첨부 파일.pdf';
+                            handleDownload(file.id, fileName);
+                          }} >
+                            {file.fileName || file.url.split('/').pop() || '첨부 파일.pdf'}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.downloadButton}
+                        onClick={() => {
+                          const fileName = file.fileName || file.url.split('/').pop() || '첨부 파일.pdf';
+                          handleDownload(file.id, fileName);
+                        }}
+                      >
+                        <span className={styles.downloadButtonText}>다운로드</span>
+                        <Icon type="download-white" size={20} className={styles.downloadIcon} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
-            <div className={styles.bodyContent}>
-              <Viewer initialValue={insight.content.replace(/\*\*\*/g, '')} />
-            </div>
-          </div>
 
-          {insight.files && insight.files.length > 0 && (
-            <div className={styles.attachmentsSection}>
-              <h2 className={styles.attachmentsTitle}>첨부파일</h2>
-              <div className={styles.attachmentsList}>
-                {insight.files && insight.files.map((file, index) => (
-                  <div key={file.id} className={styles.attachmentItem}>
-                    <div className={styles.attachmentLeft}>
-                      <div className={styles.attachmentLabel}>{index + 1}</div>
-                      <div className={styles.attachmentInfo}>
-                        <Icon type="document" size={24} className={styles.attachmentIcon} />
-                        <span className={styles.attachmentName}>
-                          {file.fileName || file.url.split('/').pop() || '첨부 파일.pdf'}
-                        </span>
-                      </div>
+            {insight.enableComments && (
+              <div className={styles.commentsSection}>
+                <div className={styles.commentsDivider} />
+                <div className={styles.commentsContent}>
+                  <div className={styles.commentsHeader}>
+                    <h2 className={styles.commentsTitle}>댓글</h2>
+                    <p className={styles.commentsDescription}>칼럼을 읽고 댓글을 남겨주세요.</p>
+                  </div>
+
+                  <div className={styles.commentForm}>
+                    <div className={styles.commentFormHeader}>
+                      <span className={styles.commentAuthor}>작성자명</span>
+                    </div>
+                    <div className={styles.commentInputWrapper}>
+                      <textarea
+                        className={styles.commentInput}
+                        placeholder="댓글을 입력하세요..."
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        rows={4}
+                      />
                     </div>
                     <button
-                      type="button"
-                      className={styles.downloadButton}
-                      onClick={() => {
-                        const fileName = file.fileName || file.url.split('/').pop() || '첨부 파일.pdf';
-                        handleDownload(file.id, fileName);
-                      }}
+                      className={styles.commentSubmitButton}
+                      onClick={handleSubmitComment}
+                      disabled={!commentText.trim() || isSubmittingComment}
                     >
-                      <span className={styles.downloadButtonText}>다운로드</span>
-                      <Icon type="download-white" size={20} className={styles.downloadIcon} />
+                      등록
                     </button>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
 
-          {insight.enableComments && (
-            <div className={styles.commentsSection}>
-              <div className={styles.commentsDivider} />
-              <div className={styles.commentsContent}>
-                <div className={styles.commentsHeader}>
-                  <h2 className={styles.commentsTitle}>댓글</h2>
-                  <p className={styles.commentsDescription}>칼럼을 읽고 댓글을 남겨주세요.</p>
-                </div>
-                
-                <div className={styles.commentForm}>
-                  <div className={styles.commentFormHeader}>
-                    <span className={styles.commentAuthor}>작성자명</span>
+                  <div className={styles.commentsListHeader}>
+                    <h3 className={styles.commentsTotalTitle}>
+                      총 댓글 <span className={styles.commentsTotalCount}>{commentTotal}</span>
+                    </h3>
                   </div>
-                  <div className={styles.commentInputWrapper}>
-                    <textarea
-                      className={styles.commentInput}
-                      placeholder="댓글을 입력하세요..."
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      rows={4}
-                    />
-                  </div>
-                  <button
-                    className={styles.commentSubmitButton}
-                    onClick={handleSubmitComment}
-                    disabled={!commentText.trim() || isSubmittingComment}
-                  >
-                    등록
-                  </button>
-                </div>
 
-                <div className={styles.commentsListHeader}>
-                  <h3 className={styles.commentsTotalTitle}>
-                    총 댓글 <span className={styles.commentsTotalCount}>{commentTotal}</span>
-                  </h3>
-                </div>
-
-                <div className={styles.commentsList}>
-                  {comments.length > 0 ? (
-                    comments.map((comment) => (
-                      <div
-                        key={comment.id}
-                        className={`${styles.commentItem} ${comment.isHidden ? styles.commentHidden : ''}`}
-                      >
-                        <div className={styles.commentHeader}>
-                          <span className={styles.commentAuthorName}>{comment.authorName || ''}</span>
-                          {isAuthenticated && (
-                            <>
-                              {comment.isMine ? (
-                                <button
-                                  className={styles.commentAction}
-                                  onClick={() => handleDeleteComment(comment.id)}
-                                >
-                                  삭제
-                                </button>
-                              ) : (
-                                <button
-                                  className={styles.commentAction}
-                                  onClick={() => handleReportComment(comment.id)}
-                                >
-                                  신고
-                                </button>
-                              )}
-                            </>
-                          )}
+                  <div className={styles.commentsList}>
+                    {comments.length > 0 ? (
+                      comments.map((comment) => (
+                        <div
+                          key={comment.id}
+                          className={`${styles.commentItem} ${comment.isHidden ? styles.commentHidden : ''}`}
+                        >
+                          <div className={styles.commentHeader}>
+                            <span className={styles.commentAuthorName}>{comment.authorName || ''}</span>
+                            {isAuthenticated && (
+                              <>
+                                {comment.isMine ? (
+                                  <button
+                                    className={styles.commentAction}
+                                    onClick={() => handleDeleteComment(comment.id)}
+                                  >
+                                    삭제
+                                  </button>
+                                ) : (
+                                  <button
+                                    className={styles.commentAction}
+                                    onClick={() => handleReportComment(comment.id)}
+                                  >
+                                    신고
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </div>
+                          <p className={styles.commentContent}>
+                            {comment.isHidden
+                              ? '해당 댓글은 다수 사용자의 신고에 의해 가려졌습니다.'
+                              : comment.body}
+                          </p>
+                          <p className={styles.commentDate}>{formatDate(comment.createdAt)}</p>
+                          <div className={styles.commentDivider} />
                         </div>
-                        <p className={styles.commentContent}>
-                          {comment.isHidden
-                            ? '해당 댓글은 다수 사용자의 신고에 의해 가려졌습니다.'
-                            : comment.body}
-                        </p>
-                        <p className={styles.commentDate}>{formatDate(comment.createdAt)}</p>
-                        <div className={styles.commentDivider} />
-                      </div>
-                    ))
+                      ))
+                    ) : (
+                      <p className={styles.noComments}>아직 댓글이 없습니다.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className={styles.navigationSection}>
+              <div className={styles.dividerLine} />
+              <div className={styles.navigation}>
+                <div 
+                  className={`${styles.navItem} ${!prevInsight ? styles.navItemDisabled : ''}`} 
+                  onClick={prevInsight ? handlePrevClick : undefined}
+                  style={{ cursor: prevInsight ? 'pointer' : 'default' }}
+                >
+                  {prevInsight ? (
+                    <>
+                      <Icon type="arrow-left-gray" size={24} className={styles.navIcon} />
+                      <span className={styles.navLabel}>이전 글</span>
+                      <span className={styles.navTitle}>{prevInsight.title}</span>
+                    </>
                   ) : (
-                    <p className={styles.noComments}>아직 댓글이 없습니다.</p>
+                    <>
+                      <Icon type="arrow-left-gray" size={24} className={styles.navIcon} />
+                      <span className={styles.navEmpty}>이전 글이 없습니다</span>
+                    </>
+                  )}
+                </div>
+                <div 
+                  className={`${styles.navItem} ${styles.navItemNext} ${!nextInsight ? styles.navItemDisabled : ''}`} 
+                  onClick={nextInsight ? handleNextClick : undefined}
+                  style={{ cursor: nextInsight ? 'pointer' : 'default' }}
+                >
+                  {nextInsight ? (
+                    <>
+                      <span className={styles.navLabel}>다음 글</span>
+                      <span className={styles.navTitle}>{nextInsight.title}</span>
+                      <Icon type="arrow-right-gray" size={24} className={styles.navIcon} />
+                    </>
+                  ) : (
+                    <>
+                      <span className={styles.navEmpty}>다음 글이 없습니다</span>
+                      <Icon type="arrow-right-gray" size={24} className={styles.navIcon} />
+                    </>
                   )}
                 </div>
               </div>
+              <Button
+                type="line-white"
+                size="large"
+                onClick={handleBackToList}
+                leftIcon="list-white"
+                className={styles.backButton}
+              >
+                목록보기
+              </Button>
             </div>
-          )}
-
-          <div className={styles.navigationSection}>
-            <div className={styles.dividerLine} />
-            <div className={styles.navigation}>
-              <div className={styles.navItem} onClick={handlePrevClick}>
-                {prevInsight ? (
-                  <>
-                    <Icon type="arrow-left-gray" size={24} className={styles.navIcon} />
-                    <span className={styles.navLabel}>이전 글</span>
-                    <span className={styles.navTitle}>{prevInsight.title}</span>
-                  </>
-                ) : (
-                  <div className={styles.navEmpty}>이전 글이 없습니다</div>
-                )}
-              </div>
-              <div className={`${styles.navItem} ${styles.navItemNext}`} onClick={handleNextClick}>
-                {nextInsight ? (
-                  <>
-                    <span className={styles.navLabel}>다음 글</span>
-                    <span className={styles.navTitle}>{nextInsight.title}</span>
-                    <Icon type="arrow-right-gray" size={24} className={styles.navIcon} />
-                  </>
-                ) : (
-                  <div className={styles.navEmpty}>다음 글이 없습니다</div>
-                )}
-              </div>
-            </div>
-            <Button
-              type="line-white"
-              size="large"
-              onClick={handleBackToList}
-              leftIcon="list-white"
-              className={styles.backButton}
-            >
-              목록보기
-            </Button>
           </div>
         </div>
-      </div>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
     </>
   );
 };

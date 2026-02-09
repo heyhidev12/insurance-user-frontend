@@ -24,7 +24,7 @@ export default function Document() {
         />
 
         {/* Default Meta Tags */}
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* NOTE: viewport must be set in _app or per-page Head to avoid Next.js warning */}
         <meta name="theme-color" content="#000000" />
         <meta name="format-detection" content="telephone=no" />
 

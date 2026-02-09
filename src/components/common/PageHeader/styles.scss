@@ -102,6 +102,10 @@ $color-breadcrumb: #bebec7;
     .page-header__breadcrumb {
       gap: 0;
       height: 44px;
+      overflow: scroll;
+      scrollbar-width: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       svg {
         flex-shrink: 0;
@@ -172,9 +176,9 @@ $color-breadcrumb: #bebec7;
       .page-header__title {
         font-size: 40px;
         font-weight: 600;
-        line-height: 1;
+        line-height: 1.45;
         letter-spacing: 1px;
-        white-space: nowrap; // 한 줄로 유지
+        // white-space: nowrap; // 한 줄로 유지
       }
 
       .page-header__tabs {

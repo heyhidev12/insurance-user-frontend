@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@use '../../../styles/variables' as *;
 
 // ==================== TextField ====================
 .textfield {
@@ -61,6 +61,10 @@
     padding: 20px 0;
     border-bottom: 1px solid $gray-70; // #555555
     transition: border-color $transition-fast;
+
+    @media (max-width: $breakpoint-tablet) {
+      padding: 12px 0;
+    }
   }
 
   // Actions (password toggle, clear, timer)

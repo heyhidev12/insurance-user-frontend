@@ -1,6 +1,6 @@
-@import '../../styles/variables';
-@import '../../styles/auth-common';
-@import '../FindUsername/styles';
+@use '../../styles/variables' as *;
+@use '../../styles/auth-common';
+@use '../FindUsername/styles';
 
 // FindPassword는 FindUsername과 동일한 스타일을 사용
 // FindUsername의 스타일을 재사용

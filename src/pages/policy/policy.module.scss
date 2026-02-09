@@ -1,0 +1,321 @@
+@use '../../styles/variables' as *;
+
+.policyPage {
+  min-height: 100vh;
+  background-color: #151515;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding-top: 56px;
+  }
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.contentWrapper {
+  flex: 1;
+  padding-top: 60px;
+  padding-bottom: 120px;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding-top: 40px;
+    padding-bottom: 80px;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 240px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: $breakpoint-wide) {
+    padding: 0 120px;
+  }
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: 0 60px;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 24px;
+  }
+}
+
+// Page Title (outside white card)
+.pageTitle {
+  @include pretendard-50-bold;
+  color: $white;
+  margin-bottom: 40px;
+
+  @media (max-width: $breakpoint-tablet) {
+    @include pretendard-32-bold;
+    margin-bottom: 24px;
+  }
+}
+
+// Loading State
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+
+  p {
+    @include pretendard-17-regular;
+    color: $gray-40;
+  }
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid $gray-70;
+  border-top-color: $white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Error State
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 24px;
+}
+
+.errorText {
+  @include pretendard-17-regular;
+  color: $gray-40;
+  text-align: center;
+}
+
+.retryButton {
+  padding: 12px 32px;
+  background-color: $white;
+  color: $black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  @include pretendard-15-medium;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: $gray-20;
+  }
+}
+
+// Empty State
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background-color: $white;
+  border-radius: 16px;
+  padding: 48px;
+
+  @media (max-width: $breakpoint-tablet) {
+    min-height: 200px;
+    padding: 24px;
+    border-radius: 12px;
+  }
+
+  p {
+    @include pretendard-17-regular;
+    color: $gray-60;
+  }
+}
+
+// Policy Content
+.policyContent {
+  background-color: $white;
+  border-radius: 16px;
+  padding: 48px;
+  min-height: 400px;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: 24px;
+    border-radius: 12px;
+  }
+}
+
+.policyTitle {
+  @include pretendard-32-bold;
+  color: $black;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid $gray-20;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: -0.12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+  }
+}
+
+.contentArea {
+  color: $gray-80;
+
+  // Scrollable area for long content
+  max-height: 80vh;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $gray-10;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $gray-30;
+    border-radius: 4px;
+
+    &:hover {
+      background: $gray-40;
+    }
+  }
+}
+
+// HTML Content styles
+.htmlContent {
+  font-family: $font-pretendard;
+  font-size: 16px;
+  line-height: 1.8;
+  color: $gray-80;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $black;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: 28px;
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 24px;
+    }
+  }
+
+  h2 {
+    font-size: 24px;
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 20px;
+    }
+  }
+
+  h3 {
+    font-size: 20px;
+    @media (max-width: $breakpoint-tablet) {
+      font-size: 18px;
+    }
+  }
+
+  p {
+    margin-bottom: 16px;
+  }
+
+  ul, ol {
+    padding-left: 24px;
+    margin-bottom: 16px;
+
+    li {
+      margin-bottom: 8px;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+
+    th, td {
+      border: 1px solid $gray-20;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: $gray-10;
+      font-weight: 600;
+    }
+  }
+
+  a {
+    color: $navy-30;
+    text-decoration: underline;
+
+    &:hover {
+      color: $navy-30;
+    }
+  }
+
+  blockquote {
+    border-left: 4px solid $gray-30;
+    padding-left: 16px;
+    margin: 16px 0;
+    color: $gray-60;
+  }
+
+  code {
+    background-color: $gray-10;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+
+  pre {
+    background-color: $gray-10;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+
+    code {
+      background: none;
+      padding: 0;
+    }
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid $gray-20;
+    margin: 32px 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 16px 0;
+  }
+}

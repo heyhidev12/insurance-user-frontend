@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@use '../../../styles/variables' as *;
 
 // Design tokens from Figma
 $icon-check-border-color: #c6c6c6;
