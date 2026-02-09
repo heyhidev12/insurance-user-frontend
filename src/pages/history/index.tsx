@@ -83,7 +83,6 @@ const HistoryPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [data, setData] = useState<HistoryYear[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   // 연혁 탭 노출 여부 (다른 state보다 먼저 선언)
   const [historyExposed, setHistoryExposed] = useState(true);
@@ -116,7 +115,7 @@ const HistoryPage: React.FC = () => {
   const [awardsData, setAwardsData] = useState<AwardYear[]>([]);
   const [awardsLoading, setAwardsLoading] = useState(true);
   const [awardsError, setAwardsError] = useState<string | null>(null);
-  const [customersData, setCustomersData] = useState<Array<{ id: number; logo: { id: number; url: string }; displayOrder: number; isMainExposed: boolean; isExposed: boolean }>>([]);
+  const [customersData, setCustomersData] = useState<Array<{ id: number; logo: { id: number; url: string }; displayOrder: number; isMainExposed: boolean; isExposed: boolean; websiteUrl: string | null }>>([]);
   const [customersLoading, setCustomersLoading] = useState(true);
   const [customersError, setCustomersError] = useState<string | null>(null);
   const [branchesData, setBranchesData] = useState<BranchItem[]>([]);
@@ -290,7 +289,7 @@ const HistoryPage: React.FC = () => {
           // API 에러 시 연혁 탭만 숨김 (페이지 에러로 처리하지 않음)
           setHistoryExposed(false);
         } else if (response.data) {
-          if (response.data.data) {
+          if (response.data.data && response.data.isExposed) {
             setData(response.data.data);
             setHistoryExposed(true);
           } else {
@@ -337,7 +336,7 @@ const HistoryPage: React.FC = () => {
     const fetchCustomers = async () => {
       try {
         setCustomersLoading(true);
-        const response = await get<{ items: Array<{ id: number; logo: { id: number; url: string }; displayOrder: number; isMainExposed: boolean; isExposed: boolean }>; total: number; page: number; limit: number }>(`${API_ENDPOINTS.KEY_CUSTOMERS}?page=1&limit=20`);
+        const response = await get<{ items: Array<{ id: number; logo: { id: number; url: string }; displayOrder: number; isMainExposed: boolean; isExposed: boolean; websiteUrl: string | null }>; total: number; page: number; limit: number }>(`${API_ENDPOINTS.KEY_CUSTOMERS}?page=1&limit=20`);
 
         if (response.error) {
           setCustomersError(response.error);
@@ -391,7 +390,7 @@ const HistoryPage: React.FC = () => {
     }
 
     // 인증 실패 처리 함수 설정 (공식 문서 권장)
-    (window as any).navermap_authFailure = function() {
+    (window as any).navermap_authFailure = function () {
       console.error('네이버 지도 API 인증이 실패했습니다. 클라이언트 아이디와 웹 서비스 URL을 확인해 주세요.');
     };
 
@@ -503,7 +502,7 @@ const HistoryPage: React.FC = () => {
     };
 
     // 전역 callback 함수 설정 (공식 문서 권장 방식)
-    (window as any).initNaverMap = function() {
+    (window as any).initNaverMap = function () {
       // 약간의 지연을 두고 초기화 (DOM이 완전히 렌더링될 때까지 대기)
       setTimeout(() => {
         initMap();
@@ -517,7 +516,7 @@ const HistoryPage: React.FC = () => {
         setTimeout(() => {
           initMap();
         }, 100);
-        
+
         if (checkInterval) {
           clearInterval(checkInterval);
           checkInterval = null;
@@ -586,7 +585,7 @@ const HistoryPage: React.FC = () => {
       <>
         <SEO menuName="회사소개" />
         <div className={styles.page}>
-         <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+          <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
           <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
           <div className={styles.loading}>Loading...</div>
         </div>
@@ -604,731 +603,745 @@ const HistoryPage: React.FC = () => {
     <>
       <SEO menuName="회사소개" />
       <div className={styles.page}>
-     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
-      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-      
-      <div className={styles.container}>
-        <div className={styles.pageHeaderWrapper}>
-          <PageHeader
-            title="모두 소개"
-            breadcrumbs={[{ label: '모두 소개' }]}
-          />
-        </div>
+        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
+        <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
-        <div className={styles.tabSection}>
-          <Tab
-            items={filteredTabItems}
-            activeId={activeTab}
-            onChange={(tabId) => {
-              setActiveTab(tabId);
-              // URL 쿼리 파라미터 업데이트 (브라우저 히스토리에 추가하지 않음)
-              router.replace(`/history?tab=${tabId}`, undefined, { shallow: true });
-            }}
-            style="box"
-            size="large"
-            showActiveDot={true}
-          />
-        </div>
+        <div className={styles.container}>
+          <div className={styles.pageHeaderWrapper}>
+            <PageHeader
+              title="모두 소개"
+              breadcrumbs={[{ label: '모두 소개' }]}
+            />
+          </div>
 
-        {activeTab === 'intro' && (
-          <>
-            <div className={styles.introPhilosophySection}>
-              <div className={styles.introPhilosophyBackground}>
-                <img 
-                  src={cardImages[activeCard]} 
-                  alt="Background" 
-                  className={styles.introPhilosophyBgImage}
-                />
-                <div className={styles.introPhilosophyOverlay} />
-              </div>
-              <div className={styles.introPhilosophyContent}>
-                <div className={styles.introPhilosophyLeft}>
-                  <p className={styles.introPhilosophyLabel}>(회사 철학)</p>
-                  <div className={styles.introPhilosophyTitle}>
-                    <h2>CORPORATE</h2>
-                    <h2>PHILOSOPHY</h2>
-                  </div>
-                  {/* Mobile: Swipe area containing image and description */}
-                  <div
-                    className={styles.introPhilosophySwipeArea}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                  >
-                    <div className={styles.introPhilosophyMobileImage}>
-                      <img src={cardImages[activeCard]} alt={cardContents[activeCard].title} />
+          <div className={styles.tabSection}>
+            <Tab
+              items={filteredTabItems}
+              activeId={activeTab}
+              onChange={(tabId) => {
+                setActiveTab(tabId);
+                // URL 쿼리 파라미터 업데이트 (브라우저 히스토리에 추가하지 않음)
+                router.replace(`/history?tab=${tabId}`, undefined, { shallow: true });
+              }}
+              style="box"
+              size="large"
+              showActiveDot={true}
+            />
+          </div>
+
+          {activeTab === 'intro' && (
+            <>
+              <div className={styles.introPhilosophySection}>
+                <div className={styles.introPhilosophyBackground}>
+                  <img
+                    src={cardImages[activeCard]}
+                    alt="Background"
+                    className={styles.introPhilosophyBgImage}
+                  />
+                  <div className={styles.introPhilosophyOverlay} />
+                </div>
+                <div className={styles.introPhilosophyContent}>
+                  <div className={styles.introPhilosophyLeft}>
+                    <p className={styles.introPhilosophyLabel}>(회사 철학)</p>
+                    <div className={styles.introPhilosophyTitle}>
+                      <h2>CORPORATE</h2>
+                      <h2>PHILOSOPHY</h2>
                     </div>
-                    <div className={styles.introPhilosophyDescription}>
+                    {/* Mobile: Swipe area containing image and description */}
+                    <div
+                      className={styles.introPhilosophySwipeArea}
+                      onTouchStart={handleTouchStart}
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
+                    >
+                      <div className={styles.introPhilosophyMobileImage}>
+                        <img src={cardImages[activeCard]} alt={cardContents[activeCard].title} />
+                      </div>
+                      <div className={styles.introPhilosophyDescription}>
+                        <h3 className={styles.introPhilosophySubtitle}>{cardContents[activeCard].title}</h3>
+                        <div className={styles.introPhilosophyText}>
+                          {cardContents[activeCard].content}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Desktop: Description only (not in swipe area) */}
+                    <div className={styles.introPhilosophyDescriptionDesktop}>
                       <h3 className={styles.introPhilosophySubtitle}>{cardContents[activeCard].title}</h3>
                       <div className={styles.introPhilosophyText}>
                         {cardContents[activeCard].content}
                       </div>
                     </div>
-                  </div>
-                  {/* Desktop: Description only (not in swipe area) */}
-                  <div className={styles.introPhilosophyDescriptionDesktop}>
-                    <h3 className={styles.introPhilosophySubtitle}>{cardContents[activeCard].title}</h3>
-                    <div className={styles.introPhilosophyText}>
-                      {cardContents[activeCard].content}
+                    {/* Mobile: Pagination dots */}
+                    <div className={styles.introPhilosophyPagination}>
+                      <div
+                        className={`${styles.introPhilosophyPaginationDot} ${activeCard === 'professionalism' ? styles.active : ''}`}
+                        onClick={() => setActiveCard('professionalism')}
+                      />
+                      <div
+                        className={`${styles.introPhilosophyPaginationDot} ${activeCard === 'consulting' ? styles.active : ''}`}
+                        onClick={() => setActiveCard('consulting')}
+                      />
+                      <div
+                        className={`${styles.introPhilosophyPaginationDot} ${activeCard === 'trust' ? styles.active : ''}`}
+                        onClick={() => setActiveCard('trust')}
+                      />
                     </div>
                   </div>
-                  {/* Mobile: Pagination dots */}
-                  <div className={styles.introPhilosophyPagination}>
+                  <div className={styles.introPhilosophyRight}>
                     <div
-                      className={`${styles.introPhilosophyPaginationDot} ${activeCard === 'professionalism' ? styles.active : ''}`}
+                      className={`${styles.introPhilosophyCard} ${activeCard === 'professionalism' ? styles.introPhilosophyCardActive : styles.introPhilosophyCardInactive}`}
                       onClick={() => setActiveCard('professionalism')}
-                    />
+                    >
+                      <p className={styles.introPhilosophyCardLabel}>전문성</p>
+                      <div className={styles.introPhilosophyCardImage}>
+                        <img src="/images/intro/meeting.jpg" alt="Professionalism" />
+                      </div>
+                    </div>
                     <div
-                      className={`${styles.introPhilosophyPaginationDot} ${activeCard === 'consulting' ? styles.active : ''}`}
+                      className={`${styles.introPhilosophyCard} ${activeCard === 'consulting' ? styles.introPhilosophyCardActive : styles.introPhilosophyCardInactive}`}
                       onClick={() => setActiveCard('consulting')}
-                    />
+                    >
+                      <p className={styles.introPhilosophyCardLabel}>통합 컨설팅</p>
+                      <div className={styles.introPhilosophyCardImage}>
+                        <img src="/images/intro/building.jpg" alt="Integrated Consulting" />
+                      </div>
+                    </div>
                     <div
-                      className={`${styles.introPhilosophyPaginationDot} ${activeCard === 'trust' ? styles.active : ''}`}
+                      className={`${styles.introPhilosophyCard} ${activeCard === 'trust' ? styles.introPhilosophyCardActive : styles.introPhilosophyCardInactive}`}
                       onClick={() => setActiveCard('trust')}
-                    />
-                  </div>
-                </div>
-                <div className={styles.introPhilosophyRight}>
-                  <div
-                    className={`${styles.introPhilosophyCard} ${activeCard === 'professionalism' ? styles.introPhilosophyCardActive : styles.introPhilosophyCardInactive}`}
-                    onClick={() => setActiveCard('professionalism')}
-                  >
-                    <p className={styles.introPhilosophyCardLabel}>전문성</p>
-                    <div className={styles.introPhilosophyCardImage}>
-                      <img src="/images/intro/meeting.jpg" alt="Professionalism" />
-                    </div>
-                  </div>
-                  <div
-                    className={`${styles.introPhilosophyCard} ${activeCard === 'consulting' ? styles.introPhilosophyCardActive : styles.introPhilosophyCardInactive}`}
-                    onClick={() => setActiveCard('consulting')}
-                  >
-                    <p className={styles.introPhilosophyCardLabel}>통합 컨설팅</p>
-                    <div className={styles.introPhilosophyCardImage}>
-                      <img src="/images/intro/building.jpg" alt="Integrated Consulting" />
-                    </div>
-                  </div>
-                  <div
-                    className={`${styles.introPhilosophyCard} ${activeCard === 'trust' ? styles.introPhilosophyCardActive : styles.introPhilosophyCardInactive}`}
-                    onClick={() => setActiveCard('trust')}
-                  >
-                    <p className={styles.introPhilosophyCardLabel}>동행과 신뢰</p>
-                    <div className={styles.introPhilosophyCardImage}>
-                      <img src="/images/intro/hands-together.jpg" alt="Trust and Partnership" />
+                    >
+                      <p className={styles.introPhilosophyCardLabel}>동행과 신뢰</p>
+                      <div className={styles.introPhilosophyCardImage}>
+                        <img src="/images/intro/hands-together.jpg" alt="Trust and Partnership" />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className={styles.introMessageSection}>
-              <div className={styles.introMessageTitle}>
-                <h2>MESSAGE</h2>
-                <h2>FROM THE CEO</h2>
-              </div>
-              <div className={styles.introMessageContent}>
-                <div className={styles.introMessageCard}>
-                <div className={styles.introMessageLeft}>
-                  <h3 className={styles.introMessageGreeting}>
-                    고객 여러분의<br />
-                    행복한 사업장과<br />
-                    든든한 가정을 위해<br />
-                    함께하겠습니다.
-                  </h3>
-                  <div className={styles.introMessageSignature}>
-                    <p>세무법인 함께</p>
-                    <img src="/images/intro/signature.png" alt="Signature" className={styles.introSignatureImage} />
+              <div className={styles.introMessageSection}>
+                <div className={styles.introMessageTitle}>
+                  <h2>MESSAGE</h2>
+                  <h2>FROM THE CEO</h2>
+                </div>
+                <div className={styles.introMessageContent}>
+                  <div className={styles.introMessageCard}>
+                    <div className={styles.introMessageLeft}>
+                      <h3 className={styles.introMessageGreeting}>
+                        고객 여러분의<br />
+                        행복한 사업장과<br />
+                        든든한 가정을 위해<br />
+                        함께하겠습니다.
+                      </h3>
+                      <div className={styles.introMessageSignature}>
+                        <p>세무법인 함께</p>
+                        <img src="/images/intro/signature.png" alt="Signature" className={styles.introSignatureImage} />
+                      </div>
+                    </div>
+                    <div className={styles.introMessageDivider} />
+                    <div className={styles.introMessageRight}>
+                      <div className={styles.introMessageText}>
+                        <p>
+                          <strong>안녕하세요.</strong>
+                          <br />
+                          변화하는 환경 속에서도 사업장과 가정에서 각자의 자리에서 최선을 다하고 계신 고객 여러분의 <strong>지속적인 발전과 행복</strong>을 진심으로 기원드립니다.
+                          <br />
+                          세무법인 함께는 <strong>"고객의 입장에서, 마치 내 회사와 내 가정이라면 어떻게 결정할까"</strong>라는 마음으로 항상 최선의 해결책을 고민하고 실천하고 있습니다.
+                          <br />
+                          <br />
+                          어떠한 상황에서도 변함없는 진심으로, 고객 여러분의 <strong>행복한 사업장과 든든한 가정</strong>을 위해 함께하겠습니다.
+                          <br />
+                          앞으로도 고객 곁에서 믿음직한 동반자로 함께 성장해 나가겠습니다.
+                          <br />
+                          감사합니다.
+                          <br />
+                          <br />
+                        </p>
+                        <p>
+                          <strong>세무법인 함께</strong>
+                          <br />
+                          대표이사 <strong>최영우</strong> 드림
+                        </p>
+                      </div>
+                      <div className={styles.introMessageDivider2} />
+                      <div className={styles.introMessageText}>
+                        <p>
+                          <strong>Greetings,</strong>
+                          <br />
+                          In today's ever-changing environment, we extend our sincere wishes for the continued growth and prosperity of all our valued clients, who dedicate themselves wholeheartedly to both their businesses and families.
+                          <br />
+                          <strong>At Hamhke Tax Corporation</strong>, we uphold the principle of serving our clients with the utmost sincerity — always asking ourselves, "If this were my own company or my own family, how would I think, decide, and act?"
+                          <br />
+                          <br />
+                          Guided by this philosophy, we remain steadfast in our commitment to providing thoughtful, professional, and reliable services that <strong>contribute to the happiness and success of our clients.</strong>
+                          <br />
+                          We pledge to stand beside you at all times, as a trusted and enduring partner on your journey toward sustainable growth and stability.
+                          <br />
+                          Thank you for your continued trust and confidence.
+                          <br />
+                          <br />
+                        </p>
+                        <p>
+                          <strong>세무법인 함께</strong>
+                          <br />
+                          Chief Executive Officer
+                          <br />
+                          <strong>Hamhke Tax Corporation</strong>
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className={styles.introMessageDivider} />
-                <div className={styles.introMessageRight}>
-                  <div className={styles.introMessageText}>
-                    <p>
-                      <strong>안녕하세요.</strong>
-                      <br />
-                      변화하는 환경 속에서도 사업장과 가정에서 각자의 자리에서 최선을 다하고 계신 고객 여러분의 <strong>지속적인 발전과 행복</strong>을 진심으로 기원드립니다.
-                      <br />
-                      세무법인 함께는 <strong>"고객의 입장에서, 마치 내 회사와 내 가정이라면 어떻게 결정할까"</strong>라는 마음으로 항상 최선의 해결책을 고민하고 실천하고 있습니다.
-                      <br />
-                      <br />
-                      어떠한 상황에서도 변함없는 진심으로, 고객 여러분의 <strong>행복한 사업장과 든든한 가정</strong>을 위해 함께하겠습니다.
-                      <br />
-                      앞으로도 고객 곁에서 믿음직한 동반자로 함께 성장해 나가겠습니다.
-                      <br />
-                      감사합니다.
-                      <br />
-                      <br />
-                    </p>
-                    <p>
-                      <strong>세무법인 함께</strong>
-                      <br />
-                      대표이사 <strong>최영우</strong> 드림
-                    </p>
-                  </div>
-                  <div className={styles.introMessageDivider2} />
-                  <div className={styles.introMessageText}>
-                    <p>
-                      <strong>Greetings,</strong>
-                      <br />
-                      In today's ever-changing environment, we extend our sincere wishes for the continued growth and prosperity of all our valued clients, who dedicate themselves wholeheartedly to both their businesses and families.
-                      <br />
-                      <strong>At Hamhke Tax Corporation</strong>, we uphold the principle of serving our clients with the utmost sincerity — always asking ourselves, "If this were my own company or my own family, how would I think, decide, and act?"
-                      <br />
-                      <br />
-                      Guided by this philosophy, we remain steadfast in our commitment to providing thoughtful, professional, and reliable services that <strong>contribute to the happiness and success of our clients.</strong>
-                      <br />
-                      We pledge to stand beside you at all times, as a trusted and enduring partner on your journey toward sustainable growth and stability.
-                      <br />
-                      Thank you for your continued trust and confidence.
-                      <br />
-                      <br />
-                    </p>
-                    <p>
-                      <strong>세무법인 함께</strong>
-                      <br />
-                      Chief Executive Officer
-                      <br />
-                      <strong>Hamhke Tax Corporation</strong>
-                    </p>
-                  </div>
-                </div>
-                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
 
-        {activeTab === 'history' && (
-          <>
-            <div className={styles.historyHero}>
-              <img 
-                src="/images/history/hero/history-hero.jpg" 
-                alt="History" 
-                className={styles.historyHeroImage}
-              />
-              <div className={styles.historyHeroOverlay} />
-              <p className={styles.historyHeroLabel}>(연혁)</p>
-              <h2 className={styles.historyHeroTitle}>HISTORY</h2>
-              <div className={styles.historyHeroContent}>
-                <p className={styles.historyHeroDescription}>
-                  세무법인 함께는 전문성 세무 서비스로<br />
-                  지속 성장을 함께 만들어갑니다.
-                </p>
-              </div>
-            </div>
-
-            <div className={styles.spacer} />
-          </>
-        )}
-
-        {activeTab === 'history' && (
-          <div className={styles.content}>
-            <div className={styles.leftSection}>
-              <div className={styles.leftSectionImage}>
-                <img 
-                  src="/images/history/backgrounds/history-left.jpg" 
-                  alt="History Background" 
-                  className={styles.leftSectionImageBg}
+          {activeTab === 'history' && (
+            <>
+              <div className={styles.historyHero}>
+                <img
+                  src="/images/history/hero/history-hero.jpg"
+                  alt="History"
+                  className={styles.historyHeroImage}
                 />
-                <div className={styles.titleSection}>
-                  <h2 className={styles.titleMain}>THE HISTORY</h2>
-                  <h2 className={styles.titleSub}>OF MODOO</h2>
+                <div className={styles.historyHeroOverlay} />
+                <p className={styles.historyHeroLabel}>(연혁)</p>
+                <h2 className={styles.historyHeroTitle}>HISTORY</h2>
+                <div className={styles.historyHeroContent}>
+                  <p className={styles.historyHeroDescription}>
+                    세무법인 함께는 전문성 세무 서비스로<br />
+                    지속 성장을 함께 만들어갑니다.
+                  </p>
                 </div>
               </div>
-            </div>
 
-            <div className={styles.rightSection}>
-              {sortedData.map((yearData, yearIndex) => {
-                // 각 연도의 항목들을 그대로 사용
-                const sortedItems = yearData.items;
+              <div className={styles.spacer} />
+            </>
+          )}
 
-                // 월별로 그룹화
-                const groupedByMonth = sortedItems.reduce((acc, item) => {
-                  const monthKey = formatMonth(item);
-                  if (!acc[monthKey]) {
-                    acc[monthKey] = [];
-                  }
-                  acc[monthKey].push(item);
-                  return acc;
-                }, {} as Record<string, HistoryItem[]>);
+          {activeTab === 'history' && (
+            <div className={styles.content}>
+              <div className={styles.leftSection}>
+                <div className={styles.leftSectionImage}>
+                  <img
+                    src="/images/history/backgrounds/history-left.jpg"
+                    alt="History Background"
+                    className={styles.leftSectionImageBg}
+                  />
+                  <div className={styles.titleSection}>
+                    <h2 className={styles.titleMain}>THE HISTORY</h2>
+                    <h2 className={styles.titleSub}>OF MODOO</h2>
+                  </div>
+                </div>
+              </div>
 
-                const monthGroups = Object.entries(groupedByMonth);
+              <div className={styles.rightSection}>
+                {sortedData.map((yearData, yearIndex) => {
+                  // 각 연도의 항목들을 그대로 사용
+                  const sortedItems = yearData.items;
 
-                return (
-                  <div key={yearData.year} className={styles.yearGroup}>
-                    <h3 className={styles.yearTitle}>{yearData.year}</h3>
+                  // 월별로 그룹화
+                  const groupedByMonth = sortedItems.reduce((acc, item) => {
+                    const monthKey = formatMonth(item);
+                    if (!acc[monthKey]) {
+                      acc[monthKey] = [];
+                    }
+                    acc[monthKey].push(item);
+                    return acc;
+                  }, {} as Record<string, HistoryItem[]>);
 
-                    {monthGroups.map(([month, items], monthIndex) => {
-                      // 해당 월의 모든 content를 \n으로 분리하여 평탄화
-                      const allContentItems: { id: number; content: string; isFirst: boolean }[] = [];
-                      items.forEach((item, itemIdx) => {
-                        const contentParts = parseContentItems(item.content);
-                        contentParts.forEach((part, partIdx) => {
-                          allContentItems.push({
-                            id: item.id,
-                            content: part,
-                            isFirst: itemIdx === 0 && partIdx === 0,
+                  const monthGroups = Object.entries(groupedByMonth);
+
+                  return (
+                    <div key={yearData.year} className={styles.yearGroup}>
+                      <h3 className={styles.yearTitle}>{yearData.year}</h3>
+
+                      {monthGroups.map(([month, items], monthIndex) => {
+                        // 해당 월의 모든 content를 \n으로 분리하여 평탄화
+                        const allContentItems: { id: number; content: string; isFirst: boolean }[] = [];
+                        items.forEach((item, itemIdx) => {
+                          const contentParts = parseContentItems(item.content);
+                          contentParts.forEach((part, partIdx) => {
+                            allContentItems.push({
+                              id: item.id,
+                              content: part,
+                              isFirst: itemIdx === 0 && partIdx === 0,
+                            });
                           });
                         });
-                      });
+
+                        return (
+                          <div key={month} className={styles.dateGroup}>
+                            {allContentItems.map((contentItem, contentIndex) => (
+                              <div key={`${contentItem.id}-${contentIndex}`} className={styles.historyItem}>
+                                {contentIndex === 0 && (
+                                  <div className={styles.date}>{month}</div>
+                                )}
+                                {contentIndex > 0 && (
+                                  <div className={styles.date}></div>
+                                )}
+                                <div className={styles.contentWrapper}>
+                                  <img
+                                    src="/images/history/icons/ellipse-2808.svg"
+                                    alt=""
+                                    className={styles.dotIcon}
+                                  />
+                                  <div className={styles.contentText}>{contentItem.content}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })}
+
+                      <div className={styles.divider}></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'awards' && (
+            <div className={styles.awardsSection}>
+              {/* Mobile Header */}
+              <div className={styles.awardsMobileHeader}>
+                <h2 className={styles.awardsMobileTitle}>AWARDS</h2>
+                <p className={styles.awardsMobileSubtitle}>수상/인증</p>
+              </div>
+              {/* Desktop Header */}
+              <div className={styles.awardsTitleSection}>
+                <h2 className={styles.awardsMainTitle}>AWARDS &</h2>
+              </div>
+              <div className={styles.awardsContent}>
+                <div className={styles.awardsSidebar}>
+                  <h3 className={styles.awardsSidebarTitle}>수상/인증</h3>
+                </div>
+                <div className={styles.awardsList}>
+                  {awardsLoading ? (
+                    <div className={styles.loading}>
+                      <p>로딩 중...</p>
+                    </div>
+                  ) : awardsError ? (
+                    <div className={styles.error}>
+                      <p>{awardsError}</p>
+                    </div>
+                  ) : awardsData.length === 0 ? (
+                    <div className={styles.loading}>
+                      <p>수상/인증 데이터가 없습니다.</p>
+                    </div>
+                  ) : (
+                    awardsData.map((yearData, index) => {
+                      const sortedItems = yearData.items;
+
+                      if (sortedItems.length === 0) return null;
 
                       return (
-                        <div key={month} className={styles.dateGroup}>
-                          {allContentItems.map((contentItem, contentIndex) => (
-                            <div key={`${contentItem.id}-${contentIndex}`} className={styles.historyItem}>
-                              {contentIndex === 0 && (
-                                <div className={styles.date}>{month}</div>
-                              )}
-                              {contentIndex > 0 && (
-                                <div className={styles.date}></div>
-                              )}
-                              <div className={styles.contentWrapper}>
-                                <img
-                                  src="/images/history/icons/ellipse-2808.svg"
-                                  alt=""
-                                  className={styles.dotIcon}
-                                />
-                                <div className={styles.contentText}>{contentItem.content}</div>
+                        <div key={yearData.year} className={styles.awardsYearGroup}>
+                          {/* Divider above each year section */}
+                          <div className={styles.awardsYearDivider} />
+                          <div className={`${styles.awardsYearTitle} ${index === 0 ? styles.awardsYearTitleFirst : ''}`}>
+                            <h3>{yearData.year}</h3>
+                          </div>
+                          <div className={styles.awardsYearItems}>
+                            {sortedItems.map((item) => (
+                              <div key={item.id} className={styles.awardCard}>
+                                <div className={styles.awardCardImage}>
+                                  <div className={styles.awardCardImageBg} />
+                                  <div className={styles.awardCardImageContent}>
+                                    <img
+                                      src={item.image.url}
+                                      alt={item.name}
+                                      className={styles.awardCardImageInner}
+                                    />
+                                  </div>
+                                </div>
+                                <div className={styles.awardCardInfo}>
+                                  <p className={styles.awardCardCategory}>{item.source}</p>
+                                  <p className={styles.awardCardName}>{item.name}</p>
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
                       );
-                    })}
-
-                    <div className={styles.divider}></div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'awards' && (
-          <div className={styles.awardsSection}>
-            {/* Mobile Header */}
-            <div className={styles.awardsMobileHeader}>
-              <h2 className={styles.awardsMobileTitle}>AWARDS</h2>
-              <p className={styles.awardsMobileSubtitle}>수상/인증</p>
-            </div>
-            {/* Desktop Header */}
-            <div className={styles.awardsTitleSection}>
-              <h2 className={styles.awardsMainTitle}>AWARDS &</h2>
-            </div>
-            <div className={styles.awardsContent}>
-              <div className={styles.awardsSidebar}>
-                <h3 className={styles.awardsSidebarTitle}>수상/인증</h3>
+                    })
+                  )}
+                </div>
               </div>
-              <div className={styles.awardsList}>
-                {awardsLoading ? (
+            </div>
+          )}
+
+          {activeTab === 'ci' && (
+            <>
+              <div className={styles.ciHeroSection}>
+                <div className={styles.ciHeroBackground}>
+                  <img
+                    src="/images/ci/9844a29d90ae507ab287ea64f6569520850a850a.jpg"
+                    alt="CI Guide Background"
+                    className={styles.ciHeroImage}
+                  />
+                  <div className={styles.ciHeroOverlay} />
+                </div>
+                <p className={styles.ciHeroLabel}>(CI 가이드)</p>
+                <div className={styles.ciHeroTitle}>
+                  <h2 className={styles.ciHeroTitleItalic}>CI</h2>
+                  <h2 className={styles.ciHeroTitleRegular}>GUIDE</h2>
+                </div>
+                <div className={styles.ciHeroContent}>
+                </div>
+              </div>
+
+              <div className={styles.ciContentSection}>
+                <div className={styles.ciColorGuideSection}>
+                  <div className={styles.ciColorGuideHeader}>
+                    <div className={styles.ciColorGuideLogo}>
+                      <a
+                        href="/images/logo/logo-hd_w.png"
+                        download="modoo-logo-horizontal-white.png"
+                        className={styles.ciColorGuideLogoLink}
+                        title="로고 다운로드 (가로형 화이트)"
+                      >
+                        <img src="/images/logo/logo-hd_w.png" alt="MODOO CONSULTING Logo" className={styles.ciColorGuideLogoImage} />
+                      </a>
+                    </div>
+                    <div className={styles.ciColorGuideDivider} />
+                    <p className={styles.ciColorGuideText}>
+                      세무법인 함께 컬러는,<br />
+                      <span className={styles.ciColorGuideHighlight}>신뢰</span>, <span className={styles.ciColorGuideHighlight}>전문성</span>, <span className={styles.ciColorGuideHighlight}>안정감</span>을 상징합니다.
+                    </p>
+                  </div>
+                  <div className={styles.ciColorGuideItemsDivider} />
+                  <div className={styles.ciColorGuideItems}>
+                    <div className={styles.ciColorGuideItem}>
+                      <div className={styles.ciColorGuideIcon}>
+                        <img src="/images/ci/trust.svg" alt="Trust" />
+                      </div>
+                      <div className={styles.ciColorGuideItemContent}>
+                        <h3 className={styles.ciColorGuideItemTitle}>신뢰</h3>
+                        <p className={styles.ciColorGuideItemSubtitle}>Trust</p>
+                      </div>
+                      <p className={styles.ciColorGuideItemDescription}>
+                        풍부한 경험과 체계적인 분석으로<br />
+                        정확한 해결책을 제시합니다.<br />
+                        세무, 회계, 재무를 아우르는 통합 전문성으로<br />
+                        고객의 비즈니스에 실질적인 가치를 더합니다.
+                      </p>
+                    </div>
+                    <div className={styles.ciColorGuideDividerVertical} />
+                    <div className={styles.ciColorGuideItem}>
+                      <div className={styles.ciColorGuideIcon}>
+                        <img src="/images/ci/work.svg" alt="Expertise" />
+                      </div>
+                      <div className={styles.ciColorGuideItemContent}>
+                        <h3 className={styles.ciColorGuideItemTitle}>전문성</h3>
+                        <p className={styles.ciColorGuideItemSubtitle}>Expertise</p>
+                      </div>
+                      <p className={styles.ciColorGuideItemDescription}>
+                        풍부한 경험과 체계적인 분석으로<br />
+                        정확한 해결책을 제시합니다.<br />
+                        세무, 회계, 재무를 아우르는 통합 전문성으로<br />
+                        고객의 비즈니스에 실질적인 가치를 더합니다.
+                      </p>
+                    </div>
+                    <div className={styles.ciColorGuideDividerVertical} />
+                    <div className={styles.ciColorGuideItem}>
+                      <div className={styles.ciColorGuideIcon}>
+                        <img src="/images/ci/leaves.svg" alt="Stability" />
+                      </div>
+                      <div className={styles.ciColorGuideItemContent}>
+                        <h3 className={styles.ciColorGuideItemTitle}>안정감</h3>
+                        <p className={styles.ciColorGuideItemSubtitle}>Stability</p>
+                      </div>
+                      <p className={styles.ciColorGuideItemDescription}>
+                        변화하는 세법 속에서도 일관된 관리와<br />
+                        지속 가능한 지원을 제공합니다.<br />
+                        고객의 현재를 지키고,<br />
+                        미래의 불안을 덜어주는 든든한 버팀목이 됩니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.ciCardsWrapper}>
+                  <div className={styles.ciLogoSection}>
+                    <div className={styles.ciSectionHeader}>
+                      <h3 className={styles.ciSectionTitle}>로고</h3>
+                      <div className={styles.ciSectionDivider} />
+                      <div className={styles.ciLogoItems}>
+                        <div className={styles.ciLogoItem}>
+                          <a
+                            href="/images/logo/logo-hd.png"
+                            download="modoo-logo-horizontal.png"
+                            className={styles.ciLogoDownloadLink}
+                            title="로고 다운로드 (가로형)"
+                          >
+                            <div className={styles.ciLogoBox}>
+                              <img src="/images/logo/logo-hd.png" alt="Logo Horizontal" className={styles.ciLogoImage} />
+                            </div>
+                          </a>
+                        </div>
+                        <div className={styles.ciLogoItem}>
+                          <a
+                            href="/images/logo/logo_s.png"
+                            download="modoo-logo-vertical.png"
+                            className={styles.ciLogoDownloadLink}
+                            title="로고 다운로드 (세로형)"
+                          >
+                            <div className={styles.ciLogoBox}>
+                              <img src="/images/logo/logo_s.png" alt="Logo Vertical" className={styles.ciLogoImage} />
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.ciColorPaletteSection}>
+                    <div className={styles.ciSectionHeader}>
+                      <h3 className={styles.ciSectionTitle}>컬러</h3>
+                      <div className={styles.ciSectionDivider} />
+                      <div className={styles.ciColorPaletteItems}>
+                        <div className={styles.ciColorPaletteItem}>
+                          <div className={styles.ciColorPaletteBox} style={{ background: 'linear-gradient(to left, #f39293 0%, #d23a39 50%, #bd2524 100%)' }}>
+                            <p className={styles.ciColorPaletteName}>Modoo Red</p>
+                            <div className={styles.ciColorPaletteInfo}>
+                              <div className={styles.ciColorPaletteInfoRow}>
+                                <span className={styles.ciColorPaletteInfoLabel}>RGB</span>
+                                <span className={styles.ciColorPaletteInfoValue}>189 / 37 / 36</span>
+                              </div>
+                              <div className={styles.ciColorPaletteInfoRow}>
+                                <span className={styles.ciColorPaletteInfoLabel}>CMYK</span>
+                                <span className={styles.ciColorPaletteInfoValue}>0 / 100 / 100 / 26</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className={styles.ciColorPaletteItem}>
+                          <div className={styles.ciColorPaletteBox} style={{ backgroundColor: '#7a7a7a' }}>
+                            <p className={styles.ciColorPaletteName}>Gray</p>
+                            <div className={styles.ciColorPaletteInfo}>
+                              <div className={styles.ciColorPaletteInfoRow}>
+                                <span className={styles.ciColorPaletteInfoLabel}>RGB</span>
+                                <span className={styles.ciColorPaletteInfoValue}>122 / 122 / 122</span>
+                              </div>
+                              <div className={styles.ciColorPaletteInfoRow}>
+                                <span className={styles.ciColorPaletteInfoLabel}>CMYK</span>
+                                <span className={styles.ciColorPaletteInfoValue}>0 / 0 / 0 / 52</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className={styles.ciColorPaletteItem}>
+                          <div className={styles.ciColorPaletteBox} style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e4' }}>
+                            <p className={styles.ciColorPaletteName} style={{ color: '#555' }}>White</p>
+                            <div className={styles.ciColorPaletteInfo}>
+                              <div className={styles.ciColorPaletteInfoRow}>
+                                <span className={styles.ciColorPaletteInfoLabel} style={{ color: '#8e8e8e' }}>RGB</span>
+                                <span className={styles.ciColorPaletteInfoValue} style={{ color: '#8e8e8e' }}>255 / 255 / 255</span>
+                              </div>
+                              <div className={styles.ciColorPaletteInfoRow}>
+                                <span className={styles.ciColorPaletteInfoLabel} style={{ color: '#8e8e8e' }}>CMYK</span>
+                                <span className={styles.ciColorPaletteInfoValue} style={{ color: '#8e8e8e' }}>0 / 0 / 0 / 0</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'branches' && (
+            <>
+              <div className={styles.branchesHero}>
+                <div className={styles.branchesHeroOverlay} />
+                <p className={styles.branchesHeroLabel}>(본점/지점 안내)</p>
+                <div className={styles.branchesHeroTitle}>
+                  <h2>OFFICE</h2>
+                  <h2 className={styles.branchesHeroTitleItalic}>LOCATIONS</h2>
+                </div>
+                <div className={styles.branchesHeroContent}>
+                </div>
+              </div>
+
+              <div className={styles.branchesContent}>
+                {branchesLoading ? (
                   <div className={styles.loading}>
                     <p>로딩 중...</p>
                   </div>
-                ) : awardsError ? (
+                ) : branchesError ? (
                   <div className={styles.error}>
-                    <p>{awardsError}</p>
-                  </div>
-                ) : awardsData.length === 0 ? (
-                  <div className={styles.loading}>
-                    <p>수상/인증 데이터가 없습니다.</p>
+                    <p>{branchesError}</p>
                   </div>
                 ) : (
-                  awardsData.map((yearData, index) => {
-                    const sortedItems = yearData.items;
+                  <>
+                    <div className={styles.branchesMapSection}>
+                      <div id="naver-map" className={styles.branchesMap} />
+                    </div>
 
-                    if (sortedItems.length === 0) return null;
-
-                    return (
-                      <div key={yearData.year} className={styles.awardsYearGroup}>
-                        {/* Divider above each year section */}
-                        <div className={styles.awardsYearDivider} />
-                        <div className={`${styles.awardsYearTitle} ${index === 0 ? styles.awardsYearTitleFirst : ''}`}>
-                          <h3>{yearData.year}</h3>
-                        </div>
-                        <div className={styles.awardsYearItems}>
-                          {sortedItems.map((item) => (
-                            <div key={item.id} className={styles.awardCard}>
-                              <div className={styles.awardCardImage}>
-                                <div className={styles.awardCardImageBg} />
-                                <div className={styles.awardCardImageContent}>
-                                  <img
-                                    src={item.image.url}
-                                    alt={item.name}
-                                    className={styles.awardCardImageInner}
-                                  />
-                                </div>
-                              </div>
-                              <div className={styles.awardCardInfo}>
-                                <p className={styles.awardCardCategory}>{item.source}</p>
-                                <p className={styles.awardCardName}>{item.name}</p>
+                    <div className={styles.branchesList}>
+                      {branchesData.map((branch, index) => (
+                        <React.Fragment key={branch.id}>
+                          <div
+                            className={styles.branchItem}
+                            onClick={() => {
+                              setSelectedBranch(branch);
+                              setIsBranchModalOpen(true);
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <div className={styles.branchHeader}>
+                              <h3 className={styles.branchName}>{branch.name}</h3>
+                              <div className={styles.branchSocialLinks}>
+                                {branch.blogUrl && (
+                                  <a href={formatUrl(branch.blogUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
+                                    <img src="/images/branches/icons/naver-blog.svg" alt="Naver Blog" />
+                                  </a>
+                                )}
+                                {branch.blogUrl && (branch.youtubeUrl || branch.instagramUrl || branch.websiteUrl) && (
+                                  <span className={styles.branchSocialDivider} />
+                                )}
+                                {branch.youtubeUrl && (
+                                  <>
+                                    <a href={formatUrl(branch.youtubeUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
+                                      <img src="/images/branches/icons/youtube.svg" alt="YouTube" />
+                                    </a>
+                                    {(branch.instagramUrl || branch.websiteUrl) && (
+                                      <span className={styles.branchSocialDivider} />
+                                    )}
+                                  </>
+                                )}
+                                {branch.instagramUrl && (
+                                  <>
+                                    <a href={formatUrl(branch.instagramUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
+                                      <img src="/images/branches/icons/instagram.svg" alt="Instagram" />
+                                    </a>
+                                    {branch.websiteUrl && (
+                                      <span className={styles.branchSocialDivider} />
+                                    )}
+                                  </>
+                                )}
+                                {branch.websiteUrl && (
+                                  <a href={formatUrl(branch.websiteUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
+                                    <img src="/images/branches/icons/website.svg" alt="Website" />
+                                  </a>
+                                )}
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })
+                            <div className={styles.branchAddress}>{branch.address}</div>
+                            <div className={styles.branchContactInfo}>
+                              {branch.phoneNumber && (
+                                <div className={styles.branchContactRow}>
+                                  <span className={styles.branchContactLabel}>TEL</span>
+                                  <span className={styles.branchContactValue}>{branch.phoneNumber}</span>
+                                </div>
+                              )}
+                              {branch.fax && (
+                                <div className={styles.branchContactRow}>
+                                  <span className={styles.branchContactLabel}>FAX</span>
+                                  <span className={styles.branchContactValue}>{branch.fax}</span>
+                                </div>
+                              )}
+                              {branch.email && (
+                                <div className={styles.branchContactRow}>
+                                  <span className={styles.branchContactLabel}>E-MAIL</span>
+                                  <span className={styles.branchContactValue}>{branch.email}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {index < branchesData.length - 1 && <div className={styles.branchDivider} />}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
-            </div>
-          </div>
-        )}
+            </>
+          )}
 
-        {activeTab === 'ci' && (
-          <>
-            <div className={styles.ciHeroSection}>
-              <div className={styles.ciHeroBackground}>
-                <img 
-                  src="/images/ci/9844a29d90ae507ab287ea64f6569520850a850a.jpg" 
-                  alt="CI Guide Background" 
-                  className={styles.ciHeroImage}
-                />
-                <div className={styles.ciHeroOverlay} />
-              </div>
-              <p className={styles.ciHeroLabel}>(CI 가이드)</p>
-              <div className={styles.ciHeroTitle}>
-                <h2 className={styles.ciHeroTitleItalic}>CI</h2>
-                <h2 className={styles.ciHeroTitleRegular}>GUIDE</h2>
-              </div>
-              <div className={styles.ciHeroContent}>
-              </div>
-            </div>
-
-            <div className={styles.ciContentSection}>
-              <div className={styles.ciColorGuideSection}>
-                <div className={styles.ciColorGuideHeader}>
-                  <div className={styles.ciColorGuideLogo}>
-                    <a 
-                      href="/images/logo/logo-hd_w.png" 
-                      download="modoo-logo-horizontal-white.png"
-                      className={styles.ciColorGuideLogoLink}
-                      title="로고 다운로드 (가로형 화이트)"
-                    >
-                      <img src="/images/logo/logo-hd_w.png" alt="MODOO CONSULTING Logo" className={styles.ciColorGuideLogoImage} />
-                    </a>
-                  </div>
-                  <div className={styles.ciColorGuideDivider} />
-                  <p className={styles.ciColorGuideText}>
-                    세무법인 함께 컬러는,<br />
-                    <span className={styles.ciColorGuideHighlight}>신뢰</span>, <span className={styles.ciColorGuideHighlight}>전문성</span>, <span className={styles.ciColorGuideHighlight}>안정감</span>을 상징합니다.
-                  </p>
-                </div>
-                <div className={styles.ciColorGuideItemsDivider} />
-                <div className={styles.ciColorGuideItems}>
-                  <div className={styles.ciColorGuideItem}>
-                    <div className={styles.ciColorGuideIcon}>
-                      <img src="/images/ci/trust.svg" alt="Trust" />
-                    </div>
-                    <div className={styles.ciColorGuideItemContent}>
-                      <h3 className={styles.ciColorGuideItemTitle}>신뢰</h3>
-                      <p className={styles.ciColorGuideItemSubtitle}>Trust</p>
-                    </div>
-                    <p className={styles.ciColorGuideItemDescription}>
-                      풍부한 경험과 체계적인 분석으로<br />
-                      정확한 해결책을 제시합니다.<br />
-                      세무, 회계, 재무를 아우르는 통합 전문성으로<br />
-                      고객의 비즈니스에 실질적인 가치를 더합니다.
-                    </p>
-                  </div>
-                  <div className={styles.ciColorGuideDividerVertical} />
-                  <div className={styles.ciColorGuideItem}>
-                    <div className={styles.ciColorGuideIcon}>
-                      <img src="/images/ci/work.svg" alt="Expertise" />
-                    </div>
-                    <div className={styles.ciColorGuideItemContent}>
-                      <h3 className={styles.ciColorGuideItemTitle}>전문성</h3>
-                      <p className={styles.ciColorGuideItemSubtitle}>Expertise</p>
-                    </div>
-                    <p className={styles.ciColorGuideItemDescription}>
-                      풍부한 경험과 체계적인 분석으로<br />
-                      정확한 해결책을 제시합니다.<br />
-                      세무, 회계, 재무를 아우르는 통합 전문성으로<br />
-                      고객의 비즈니스에 실질적인 가치를 더합니다.
-                    </p>
-                  </div>
-                  <div className={styles.ciColorGuideDividerVertical} />
-                  <div className={styles.ciColorGuideItem}>
-                    <div className={styles.ciColorGuideIcon}>
-                      <img src="/images/ci/leaves.svg" alt="Stability" />
-                    </div>
-                    <div className={styles.ciColorGuideItemContent}>
-                      <h3 className={styles.ciColorGuideItemTitle}>안정감</h3>
-                      <p className={styles.ciColorGuideItemSubtitle}>Stability</p>
-                    </div>
-                    <p className={styles.ciColorGuideItemDescription}>
-                      변화하는 세법 속에서도 일관된 관리와<br />
-                      지속 가능한 지원을 제공합니다.<br />
-                      고객의 현재를 지키고,<br />
-                      미래의 불안을 덜어주는 든든한 버팀목이 됩니다.
-                    </p>
-                  </div>
+          {activeTab === 'customers' && (
+            <>
+              <div className={styles.customersHero}>
+                <div className={styles.customersHeroOverlay} />
+                <p className={styles.customersHeroLabel}>(주요 고객)</p>
+                <h2 className={styles.customersHeroTitle}>PARTNERS</h2>
+                <div className={styles.customersHeroContent}>
                 </div>
               </div>
-
-              <div className={styles.ciCardsWrapper}>
-                <div className={styles.ciLogoSection}>
-                  <div className={styles.ciSectionHeader}>
-                    <h3 className={styles.ciSectionTitle}>로고</h3>
-                    <div className={styles.ciSectionDivider} />
-                    <div className={styles.ciLogoItems}>
-                      <div className={styles.ciLogoItem}>
-                        <a 
-                          href="/images/logo/logo-hd.png" 
-                          download="modoo-logo-horizontal.png"
-                          className={styles.ciLogoDownloadLink}
-                          title="로고 다운로드 (가로형)"
-                        >
-                          <div className={styles.ciLogoBox}>
-                            <img src="/images/logo/logo-hd.png" alt="Logo Horizontal" className={styles.ciLogoImage} />
-                          </div>
-                        </a>
-                      </div>
-                      <div className={styles.ciLogoItem}>
-                        <a 
-                          href="/images/logo/logo_s.png" 
-                          download="modoo-logo-vertical.png"
-                          className={styles.ciLogoDownloadLink}
-                          title="로고 다운로드 (세로형)"
-                        >
-                          <div className={styles.ciLogoBox}>
-                            <img src="/images/logo/logo_s.png" alt="Logo Vertical" className={styles.ciLogoImage} />
-                          </div>
-                        </a>
-                      </div>
-                    </div>
+              <div className={styles.customersSection}>
+                {customersLoading ? (
+                  <div className={styles.loading}>
+                    <p>로딩 중...</p>
                   </div>
-                </div>
-
-                <div className={styles.ciColorPaletteSection}>
-                <div className={styles.ciSectionHeader}>
-                  <h3 className={styles.ciSectionTitle}>컬러</h3>
-                  <div className={styles.ciSectionDivider} />
-                  <div className={styles.ciColorPaletteItems}>
-                    <div className={styles.ciColorPaletteItem}>
-                      <div className={styles.ciColorPaletteBox} style={{ background: 'linear-gradient(to left, #f39293 0%, #d23a39 50%, #bd2524 100%)' }}>
-                        <p className={styles.ciColorPaletteName}>Modoo Red</p>
-                        <div className={styles.ciColorPaletteInfo}>
-                          <div className={styles.ciColorPaletteInfoRow}>
-                            <span className={styles.ciColorPaletteInfoLabel}>RGB</span>
-                            <span className={styles.ciColorPaletteInfoValue}>189 / 37 / 36</span>
-                          </div>
-                          <div className={styles.ciColorPaletteInfoRow}>
-                            <span className={styles.ciColorPaletteInfoLabel}>CMYK</span>
-                            <span className={styles.ciColorPaletteInfoValue}>0 / 100 / 100 / 26</span>
-                          </div>
+                ) : customersError ? (
+                  <div className={styles.error}>
+                    <p>{customersError}</p>
+                  </div>
+                ) : customersData.length === 0 ? (
+                  <div className={styles.loading}>
+                    <p>주요 고객 데이터가 없습니다.</p>
+                  </div>
+                ) : (
+                  <div className={styles.customersGrid}>
+                    {customersData.map((item) => (
+                      <div key={item.id} className={styles.customerCard}>
+                        <div className={styles.customerLogo}>
+                          {item.websiteUrl ? (
+                            <a
+                              href={item.websiteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <img
+                                src={item.logo.url}
+                                alt="Customer Logo"
+                                className={styles.customerLogoImage}
+                              />
+                            </a>
+                          ) : (
+                            <img
+                              src={item.logo.url}
+                              alt="Customer Logo"
+                              className={styles.customerLogoImage}
+                            />
+                          )}
                         </div>
                       </div>
-                    </div>
-                    <div className={styles.ciColorPaletteItem}>
-                      <div className={styles.ciColorPaletteBox} style={{ backgroundColor: '#7a7a7a' }}>
-                        <p className={styles.ciColorPaletteName}>Gray</p>
-                        <div className={styles.ciColorPaletteInfo}>
-                          <div className={styles.ciColorPaletteInfoRow}>
-                            <span className={styles.ciColorPaletteInfoLabel}>RGB</span>
-                            <span className={styles.ciColorPaletteInfoValue}>122 / 122 / 122</span>
-                          </div>
-                          <div className={styles.ciColorPaletteInfoRow}>
-                            <span className={styles.ciColorPaletteInfoLabel}>CMYK</span>
-                            <span className={styles.ciColorPaletteInfoValue}>0 / 0 / 0 / 52</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.ciColorPaletteItem}>
-                      <div className={styles.ciColorPaletteBox} style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e4' }}>
-                        <p className={styles.ciColorPaletteName} style={{ color: '#555' }}>White</p>
-                        <div className={styles.ciColorPaletteInfo}>
-                          <div className={styles.ciColorPaletteInfoRow}>
-                            <span className={styles.ciColorPaletteInfoLabel} style={{ color: '#8e8e8e' }}>RGB</span>
-                            <span className={styles.ciColorPaletteInfoValue} style={{ color: '#8e8e8e' }}>255 / 255 / 255</span>
-                          </div>
-                          <div className={styles.ciColorPaletteInfoRow}>
-                            <span className={styles.ciColorPaletteInfoLabel} style={{ color: '#8e8e8e' }}>CMYK</span>
-                            <span className={styles.ciColorPaletteInfoValue} style={{ color: '#8e8e8e' }}>0 / 0 / 0 / 0</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {activeTab === 'branches' && (
-          <>
-            <div className={styles.branchesHero}>
-              <div className={styles.branchesHeroOverlay} />
-              <p className={styles.branchesHeroLabel}>(본점/지점 안내)</p>
-              <div className={styles.branchesHeroTitle}>
-                <h2>OFFICE</h2>
-                <h2 className={styles.branchesHeroTitleItalic}>LOCATIONS</h2>
-              </div>
-              <div className={styles.branchesHeroContent}>
-              </div>
-            </div>
-
-            <div className={styles.branchesContent}>
-              {branchesLoading ? (
-                <div className={styles.loading}>
-                  <p>로딩 중...</p>
-                </div>
-              ) : branchesError ? (
-                <div className={styles.error}>
-                  <p>{branchesError}</p>
-                </div>
-              ) : (
-                <>
-                  <div className={styles.branchesMapSection}>
-                    <div id="naver-map" className={styles.branchesMap} />
-                  </div>
-
-                  <div className={styles.branchesList}>
-                    {branchesData.map((branch, index) => (
-                      <React.Fragment key={branch.id}>
-                        <div
-                          className={styles.branchItem}
-                          onClick={() => {
-                            setSelectedBranch(branch);
-                            setIsBranchModalOpen(true);
-                          }}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <div className={styles.branchHeader}>
-                            <h3 className={styles.branchName}>{branch.name}</h3>
-                            <div className={styles.branchSocialLinks}>
-                              {branch.blogUrl && (
-                                <a href={formatUrl(branch.blogUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
-                                  <img src="/images/branches/icons/naver-blog.svg" alt="Naver Blog" />
-                                </a>
-                              )}
-                              {branch.blogUrl && (branch.youtubeUrl || branch.instagramUrl || branch.websiteUrl) && (
-                                <span className={styles.branchSocialDivider} />
-                              )}
-                              {branch.youtubeUrl && (
-                                <>
-                                  <a href={formatUrl(branch.youtubeUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
-                                    <img src="/images/branches/icons/youtube.svg" alt="YouTube" />
-                                  </a>
-                                  {(branch.instagramUrl || branch.websiteUrl) && (
-                                    <span className={styles.branchSocialDivider} />
-                                  )}
-                                </>
-                              )}
-                              {branch.instagramUrl && (
-                                <>
-                                  <a href={formatUrl(branch.instagramUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
-                                    <img src="/images/branches/icons/instagram.svg" alt="Instagram" />
-                                  </a>
-                                  {branch.websiteUrl && (
-                                    <span className={styles.branchSocialDivider} />
-                                  )}
-                                </>
-                              )}
-                              {branch.websiteUrl && (
-                                <a href={formatUrl(branch.websiteUrl)} target="_blank" rel="noopener noreferrer" className={styles.branchSocialLink}>
-                                  <img src="/images/branches/icons/website.svg" alt="Website" />
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                          <div className={styles.branchAddress}>{branch.address}</div>
-                          <div className={styles.branchContactInfo}>
-                            {branch.phoneNumber && (
-                              <div className={styles.branchContactRow}>
-                                <span className={styles.branchContactLabel}>TEL</span>
-                                <span className={styles.branchContactValue}>{branch.phoneNumber}</span>
-                              </div>
-                            )}
-                            {branch.fax && (
-                              <div className={styles.branchContactRow}>
-                                <span className={styles.branchContactLabel}>FAX</span>
-                                <span className={styles.branchContactValue}>{branch.fax}</span>
-                              </div>
-                            )}
-                            {branch.email && (
-                              <div className={styles.branchContactRow}>
-                                <span className={styles.branchContactLabel}>E-MAIL</span>
-                                <span className={styles.branchContactValue}>{branch.email}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        {index < branchesData.length - 1 && <div className={styles.branchDivider} />}
-                      </React.Fragment>
                     ))}
                   </div>
-                </>
-              )}
-            </div>
-          </>
-        )}
-
-        {activeTab === 'customers' && (
-          <>
-            <div className={styles.customersHero}>
-              <div className={styles.customersHeroOverlay} />
-              <p className={styles.customersHeroLabel}>(주요 고객)</p>
-              <h2 className={styles.customersHeroTitle}>PARTNERS</h2>
-              <div className={styles.customersHeroContent}>
+                )}
               </div>
-            </div>
-            <div className={styles.customersSection}>
-              {customersLoading ? (
-                <div className={styles.loading}>
-                  <p>로딩 중...</p>
-                </div>
-              ) : customersError ? (
-                <div className={styles.error}>
-                  <p>{customersError}</p>
-                </div>
-              ) : customersData.length === 0 ? (
-                <div className={styles.loading}>
-                  <p>주요 고객 데이터가 없습니다.</p>
-                </div>
-              ) : (
-                <div className={styles.customersGrid}>
-                  {customersData.map((item) => (
-                    <div key={item.id} className={styles.customerCard}>
-                      <div className={styles.customerLogo}>
-                        <img 
-                          src={item.logo.url} 
-                          alt="Customer Logo"
-                          className={styles.customerLogoImage}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        )}
+            </>
+          )}
 
-      </div>
+        </div>
 
-      <Footer />
+        <Footer />
 
-      {/* Floating Buttons */}
-      <div className={styles.floatingButtons}>
-        <FloatingButton
-          variant="consult"
-          label="상담 신청하기"
-          onClick={() => router.push('/consultation/apply')}
+        {/* Floating Buttons */}
+        <div className={styles.floatingButtons}>
+          <FloatingButton
+            variant="consult"
+            label="상담 신청하기"
+            onClick={() => router.push('/consultation/apply')}
+          />
+        </div>
+
+        {/* Branch Detail Modal */}
+        <BranchDetailModal
+          isOpen={isBranchModalOpen}
+          onClose={() => {
+            setIsBranchModalOpen(false);
+            setSelectedBranch(null);
+          }}
+          branch={selectedBranch}
         />
       </div>
-
-      {/* Branch Detail Modal */}
-      <BranchDetailModal
-        isOpen={isBranchModalOpen}
-        onClose={() => {
-          setIsBranchModalOpen(false);
-          setSelectedBranch(null);
-        }}
-        branch={selectedBranch}
-      />
-    </div>
     </>
   );
 };

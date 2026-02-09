@@ -946,7 +946,7 @@ const MyPage: React.FC = () => {
   if (loading || isAuthenticated === null) {
     return (
       <div className={styles.page}>
-       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.loading}>Loading...</div>
       </div>
@@ -957,7 +957,7 @@ const MyPage: React.FC = () => {
   if (!userProfile || isAuthenticated === false) {
     return (
       <div className={styles.page}>
-       <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+        <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
         <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         <div className={styles.loggedOutContainer}>
           <div className={styles.loggedOutContent}>
@@ -1009,7 +1009,7 @@ const MyPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-     <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true}/>
+      <Header variant="transparent" onMenuClick={() => setIsMenuOpen(true)} isFixed={true} />
       <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       {/* Mobile Layout */}
@@ -1113,7 +1113,11 @@ const MyPage: React.FC = () => {
                   </div>
                   <div className={styles.mobileFormRow}>
                     <p className={styles.mobileFormLabel}>이메일</p>
-                    <p className={styles.mobileFormValue}>{displayProfile.email || '-'}</p>
+                    <p className={styles.mobileFormValue}>{displayProfile.email
+                      ? displayProfile.email.includes("@")
+                        ? `${displayProfile.email.split("@")[0].slice(0, 5)}...@${displayProfile.email.split("@")[1]}`
+                        : displayProfile.email
+                      : "-"}</p>
                   </div>
                   <div className={styles.mobileFormRow}>
                     <p className={styles.mobileFormLabel}>간편 로그인</p>
@@ -1419,27 +1423,26 @@ const MyPage: React.FC = () => {
                       showPasswordToggle
                     />
                   </div>
-                <button
-                  type="submit"
-                  className={`${styles.mobilePasswordChangeButton} ${
-                    passwordForm.currentPassword &&
-                    getPasswordRuleFeedback(passwordForm.newPassword).valid &&
-                    passwordForm.newPassword === passwordForm.confirmPassword &&
-                    passwordForm.confirmPassword
-                      ? styles.mobilePasswordChangeButtonActive
-                      : ''
-                  }`}
-                  onClick={handleChangePassword}
-                  disabled={
-                    !passwordForm.currentPassword ||
-                    !getPasswordRuleFeedback(passwordForm.newPassword).valid ||
-                    passwordForm.newPassword !== passwordForm.confirmPassword ||
-                    !passwordForm.confirmPassword ||
-                    isChangingPassword
-                  }
-                >
-                  비밀번호 변경
-                </button>
+                  <button
+                    type="submit"
+                    className={`${styles.mobilePasswordChangeButton} ${passwordForm.currentPassword &&
+                        getPasswordRuleFeedback(passwordForm.newPassword).valid &&
+                        passwordForm.newPassword === passwordForm.confirmPassword &&
+                        passwordForm.confirmPassword
+                        ? styles.mobilePasswordChangeButtonActive
+                        : ''
+                      }`}
+                    onClick={handleChangePassword}
+                    disabled={
+                      !passwordForm.currentPassword ||
+                      !getPasswordRuleFeedback(passwordForm.newPassword).valid ||
+                      passwordForm.newPassword !== passwordForm.confirmPassword ||
+                      !passwordForm.confirmPassword ||
+                      isChangingPassword
+                    }
+                  >
+                    비밀번호 변경
+                  </button>
                 </form>
               </div>
             )}
@@ -1743,8 +1746,8 @@ const MyPage: React.FC = () => {
                           <div className={styles.mobileMemberCardHeader}>
                             <span className={styles.mobileMemberCardField}>{item.field}</span>
                             <span className={`${styles.mobileMemberCardStatus} ${item.status === ConsultationStatus.COMPLETED
-                                ? styles.mobileMemberCardStatusCompleted
-                                : styles.mobileMemberCardStatusWaiting
+                              ? styles.mobileMemberCardStatusCompleted
+                              : styles.mobileMemberCardStatusWaiting
                               }`}>
                               {getStatusLabel(item.status)}
                             </span>
@@ -2349,14 +2352,13 @@ const MyPage: React.FC = () => {
                         </div>
                         <button
                           type="submit"
-                          className={`${styles.changePasswordSubmitButton} ${
-                            passwordForm.currentPassword &&
-                            getPasswordRuleFeedback(passwordForm.newPassword).valid &&
-                            passwordForm.newPassword === passwordForm.confirmPassword &&
-                            passwordForm.confirmPassword
+                          className={`${styles.changePasswordSubmitButton} ${passwordForm.currentPassword &&
+                              getPasswordRuleFeedback(passwordForm.newPassword).valid &&
+                              passwordForm.newPassword === passwordForm.confirmPassword &&
+                              passwordForm.confirmPassword
                               ? styles.changePasswordSubmitButtonActive
                               : ''
-                          }`}
+                            }`}
                           disabled={
                             !passwordForm.currentPassword ||
                             !getPasswordRuleFeedback(passwordForm.newPassword).valid ||

@@ -553,6 +553,7 @@ const EducationPage: React.FC = () => {
                                 >
                                   <div className={styles.cardImage}>
                                     <img src={item.image?.url || '/images/education/default-thumbnail.png'} alt={item.name} />
+                                    {daysLeft <= 0 && <div className={styles.cardImageOverlay} />}
                                   </div>
                                   <div className={styles.cardContent}>
                                     <div className={styles.cardLabels}>
@@ -577,7 +578,7 @@ const EducationPage: React.FC = () => {
                                           <path d="M3 2V4M13 2V4M2 6H14M3 2H13C13.5523 2 14 2.44772 14 3V13C14 13.5523 13.5523 14 13 14H3C2.44772 14 2 13.5523 2 13V3C2 2.44772 2.44772 2 3 2Z" stroke="#d8d8d8" strokeWidth="1" strokeLinecap="round"/>
                                         </svg>
                                         <p className={styles.cardDate}>
-                                          {item.educationDates[0]} {item.educationTimeSlots[0]}
+                                          {item.educationDates[0].replace(/\-/g, '.')} {item.educationTimeSlots[0]}
                                         </p>
                                       </div>
                                     </div>

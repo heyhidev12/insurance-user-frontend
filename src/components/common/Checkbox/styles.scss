@@ -49,6 +49,9 @@
   &__label {
     @include pretendard-15-regular;
     color: $gray-30;
+    @media (max-width: $breakpoint-tablet) {
+      @include pretendard-13-regular;
+    }
   }
 
   // Icon
