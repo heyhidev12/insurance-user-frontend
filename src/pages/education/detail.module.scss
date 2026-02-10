@@ -330,6 +330,12 @@
   letter-spacing: -0.125px;
   color: white;
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: $breakpoint-tablet) {
     font-size: 22px;

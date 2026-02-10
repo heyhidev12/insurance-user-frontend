@@ -15,7 +15,6 @@
 // Red label for active recruitment
 .labelRed {
   background: rgba(255, 255, 255, 0.10);
-  ;
   padding: 8px;
   border-radius: 4px;
   @include pretendard-15-semibold;
@@ -1084,19 +1083,10 @@
   color: #002046;
 }
 
-.statusReceived {
-  background-color: #003675;
-  color: #f8f8fc;
-}
 
 .statusPending {
-  background-color: #555;
-  color: #f0f0f0;
-}
-
-.statusWaiting {
-  background-color: #555;
-  color: #f0f0f0;
+  background-color: $navy-50;
+  color: $gray-5;
 }
 
 // Pagination
@@ -2351,7 +2341,7 @@
   @media (max-width: 767px) {
     display: flex;
     flex-direction: column;
-    padding: 24px 20px 40px;
+    padding: 40px 20px 110px;
   }
 }
 
@@ -2359,12 +2349,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .mobileBackButton {
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2380,7 +2370,7 @@
 }
 
 .mobileTitle {
-  @include pretendard-21-semibold;
+  @include pretendard-25-semibold;
   color: white;
   margin: 0;
   flex: 1;
@@ -3165,7 +3155,6 @@
 .mobileApplicationTabs {
   display: flex;
   gap: 12px;
-  padding: 0 20px;
   margin-bottom: 0;
 }
 
@@ -3173,7 +3162,7 @@
   width: 100%;
   height: 1px;
   background-color: #555;
-  margin: 24px 0;
+  margin: 32px 0;
 }
 
 .mobileAppTab {
@@ -3187,7 +3176,7 @@
   align-items: center;
   gap: 4px;
 
-  @include pretendard-13-semibold;
+  @include pretendard-15-semibold;
   color: #8e8e8e;
 
   &.mobileAppTabActive {
@@ -3203,9 +3192,6 @@
   background-color: #fb7058;
 }
 
-.mobileTrainingContent {
-  padding: 0 20px;
-}
 
 .mobileDateFilter {
   display: flex;
@@ -3310,7 +3296,6 @@
   img {
     width: 20px;
     height: 20px;
-    filter: invert(1);
   }
 }
 
@@ -3326,6 +3311,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 32px;
+  margin-top: 56px;
 }
 
 .mobileResultsCount {
@@ -3349,7 +3335,7 @@
 .mobileCardGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 40px 24px;
 }
 
 .mobileEducationCard {
@@ -3365,6 +3351,7 @@
   aspect-ratio: 4 / 3;
   border-radius: 4px;
   overflow: hidden;
+  position: relative;
 
   img {
     width: 100%;
@@ -3373,6 +3360,14 @@
   }
 }
 
+.mobileCardImageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
 .mobileCardContent {
   display: flex;
   flex-direction: column;
@@ -3382,6 +3377,11 @@
 .mobileCardLabels {
   display: flex;
   gap: 4px;
+
+  .labelRed,.labelWhite,.labelGray{
+    padding: 7px;
+    @include pretendard-13-semibold;
+  }
 }
 
 .mobileCardLabelStatus {
@@ -3412,7 +3412,7 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 38px;
+  max-height: 40px;
 }
 
 .mobileCardLocation {
@@ -3463,7 +3463,7 @@
 
 .mobileMemberCardStatus {
   @include pretendard-13-semibold;
-  padding: 6px 10px;
+  padding: 7px;
   border-radius: 4px;
 }
 
@@ -3472,15 +3472,10 @@
   color: #002046;
 }
 
-.mobileMemberCardStatusReceived {
-  background-color: #003675;
-  color: #f8f8fc;
-}
-
 .mobileMemberCardStatusWaiting {
-  background-color: #555;
-  color: #f0f0f0;
-  font-size: 11px;
+  background-color: $navy-50;
+  color: $gray-5;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -3508,18 +3503,18 @@
 }
 
 .mobileMemberCardTag {
-  @include pretendard-13-semibold;
+  @include pretendard-13-regular;
   color: white;
 }
 
 .mobileMemberCardTagDivider {
   @include pretendard-13-regular;
-  color: #8e8e8e;
+  color: $gray-20;
 }
 
 .mobileMemberCardTagValue {
-  @include pretendard-13-regular;
-  color: #d8d8d8;
+  @include pretendard-13-semibold;
+  color: $gray-0;
 }
 
 .mobileMemberCardFooter {

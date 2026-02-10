@@ -285,6 +285,7 @@
   &__row--bottom {
     display: flex;
     align-items: center;
+    margin-top: 32px;
 
     @media (max-width: $breakpoint-tablet) {
       width: 100%;

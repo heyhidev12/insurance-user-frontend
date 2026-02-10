@@ -926,7 +926,7 @@ const MyPage: React.FC = () => {
       case ConsultationStatus.COMPLETED:
         return '상담완료';
       case ConsultationStatus.PENDING:
-        return '대기중';
+        return '접수완료';
       default:
         return status;
     }
@@ -1426,11 +1426,11 @@ const MyPage: React.FC = () => {
                   <button
                     type="submit"
                     className={`${styles.mobilePasswordChangeButton} ${passwordForm.currentPassword &&
-                        getPasswordRuleFeedback(passwordForm.newPassword).valid &&
-                        passwordForm.newPassword === passwordForm.confirmPassword &&
-                        passwordForm.confirmPassword
-                        ? styles.mobilePasswordChangeButtonActive
-                        : ''
+                      getPasswordRuleFeedback(passwordForm.newPassword).valid &&
+                      passwordForm.newPassword === passwordForm.confirmPassword &&
+                      passwordForm.confirmPassword
+                      ? styles.mobilePasswordChangeButtonActive
+                      : ''
                       }`}
                     onClick={handleChangePassword}
                     disabled={
@@ -1561,12 +1561,13 @@ const MyPage: React.FC = () => {
                   <div className={styles.mobilePeriodRow}>
                     <span className={styles.mobilePeriodLabel}>조회기간</span>
                     <div className={styles.mobilePeriodTabs}>
-                      {['오늘', '7일', '15일', '1개월', '6개월'].map((period) => (
+                      {([['오늘', 'today'], ['7일', '7days'], ['15일', '15days'], ['1개월', '1month'], ['6개월', '6months']] as [string, typeof dateFilter][]).map(([label, value]) => (
                         <button
-                          key={period}
-                          className={`${styles.mobilePeriodTab} ${period === '7일' ? styles.mobilePeriodTabActive : ''}`}
+                          key={value}
+                          className={`${styles.mobilePeriodTab} ${dateFilter === value ? styles.mobilePeriodTabActive : ''}`}
+                          onClick={() => setDateFilter(value)}
                         >
-                          {period}
+                          {label}
                         </button>
                       ))}
                     </div>
@@ -1628,19 +1629,20 @@ const MyPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className={styles.mobileCardGrid}>
-                    {trainingApplications.map((item) => (
-                      <div
+                    {trainingApplications.map((item) => {
+                      const daysLeft = getDaysUntilDeadline(item.recruitmentEndDate || "");
+                      return <div
                         key={item.id}
                         className={styles.mobileEducationCard}
                         onClick={() => router.push(`/education/${item.seminarId}`)}
                       >
                         <div className={styles.mobileCardImage}>
+                          {daysLeft <= 0 ? <div className={styles.mobileCardImageOverlay} /> : null}
                           <img src={item.image?.url || '/images/common/default-thumbnail.jpg'} alt={item.name} />
                         </div>
                         <div className={styles.mobileCardContent}>
                           <div className={styles.mobileCardLabels}>
                             {(() => {
-                              const daysLeft = getDaysUntilDeadline(item.recruitmentEndDate || "");
                               if (daysLeft <= 0) {
                                 return <span className={styles.labelGray}>신청마감</span>;
                               }
@@ -1654,11 +1656,12 @@ const MyPage: React.FC = () => {
                           <p className={styles.mobileCardLocation}>{item.location || '온라인'}</p>
                           <div className={styles.mobileCardDate}>
                             <img src="/images/common/calendar-icon.svg" alt="" />
-                            <span>{item.participationDate} 종료</span>
+                            <span>{item.participationDate.replaceAll('-', '.')} 종료</span>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      </div>;
+                    })}
+
                   </div>
                 )}
               </div>
@@ -1671,12 +1674,13 @@ const MyPage: React.FC = () => {
                   <div className={styles.mobilePeriodRow}>
                     <span className={styles.mobilePeriodLabel}>조회기간</span>
                     <div className={styles.mobilePeriodTabs}>
-                      {['오늘', '7일', '15일', '1개월', '6개월'].map((period) => (
+                      {([['오늘', 'today'], ['7일', '7days'], ['15일', '15days'], ['1개월', '1month'], ['6개월', '6months']] as [string, typeof dateFilter][]).map(([label, value]) => (
                         <button
-                          key={period}
-                          className={`${styles.mobilePeriodTab} ${period === '7일' ? styles.mobilePeriodTabActive : ''}`}
+                          key={value}
+                          className={`${styles.mobilePeriodTab} ${dateFilter === value ? styles.mobilePeriodTabActive : ''}`}
+                          onClick={() => setDateFilter(value)}
                         >
-                          {period}
+                          {label}
                         </button>
                       ))}
                     </div>
@@ -2353,11 +2357,11 @@ const MyPage: React.FC = () => {
                         <button
                           type="submit"
                           className={`${styles.changePasswordSubmitButton} ${passwordForm.currentPassword &&
-                              getPasswordRuleFeedback(passwordForm.newPassword).valid &&
-                              passwordForm.newPassword === passwordForm.confirmPassword &&
-                              passwordForm.confirmPassword
-                              ? styles.changePasswordSubmitButtonActive
-                              : ''
+                            getPasswordRuleFeedback(passwordForm.newPassword).valid &&
+                            passwordForm.newPassword === passwordForm.confirmPassword &&
+                            passwordForm.confirmPassword
+                            ? styles.changePasswordSubmitButtonActive
+                            : ''
                             }`}
                           disabled={
                             !passwordForm.currentPassword ||
