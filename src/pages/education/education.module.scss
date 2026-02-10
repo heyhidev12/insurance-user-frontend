@@ -294,10 +294,10 @@
 // newSection의 그리드는 1줄만 표시 (최대 3개)
 .newSection {
   @media (max-width: $breakpoint-tablet) {
-    margin-left: -24px;
-    margin-right: -24px;
-    padding-left: 24px;
-    padding-right: 24px;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .educationGrid {
@@ -312,11 +312,11 @@
     @media (max-width: $breakpoint-tablet) {
       display: flex;
       overflow-x: auto;
-      margin-left: -24px;
-      margin-right: -24px;
-      padding-left: 24px;
-      padding-right: 24px;
-      width: calc(100% + 48px);
+      margin-left: -20px;
+      margin-right: -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      width: calc(100% + 40px);
     }
   }
 }
