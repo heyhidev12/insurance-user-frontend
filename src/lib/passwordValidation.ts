@@ -1,13 +1,13 @@
 /**
- * Shared password validation: 6–12 chars, letters + numbers + special characters.
+ * Shared password validation: 8–16 chars, letters + numbers + special characters.
  * Used for Signup, ResetPassword, and My (change password).
  */
 
-export const PASSWORD_MIN_LENGTH = 6;
-export const PASSWORD_MAX_LENGTH = 12;
+export const PASSWORD_MIN_LENGTH = 8;
+export const PASSWORD_MAX_LENGTH = 16;
 
 export const PASSWORD_RULE_MESSAGE =
-  '비밀번호는 6~12자이며 영문, 숫자, 특수문자 중 2가지 이상을 조합해야 합니다.';
+  '비밀번호는 8~16자이며 영문, 숫자, 특수문자 중 2가지 이상을 조합해야 합니다.';
 
 const HAS_LETTER = /[a-zA-Z]/;
 const HAS_NUMBER = /[0-9]/;
@@ -30,11 +30,11 @@ export function getPasswordRuleFeedback(password: string): PasswordRuleFeedback 
   const lengthOk = len >= PASSWORD_MIN_LENGTH && len <= PASSWORD_MAX_LENGTH;
   const lengthLabel =
     len === 0
-      ? `6~12자`
+      ? `8~16자`
       : len < PASSWORD_MIN_LENGTH
         ? `${len}/${PASSWORD_MIN_LENGTH}자`
         : len > PASSWORD_MAX_LENGTH
-          ? `12자 이하`
+          ? `16자 이하`
           : `${len}자`;
   const hasLetter = HAS_LETTER.test(password);
   const hasNumber = HAS_NUMBER.test(password);
