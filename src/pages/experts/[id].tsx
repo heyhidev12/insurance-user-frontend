@@ -697,22 +697,13 @@ const ExpertDetailPage: React.FC = () => {
                             <div className={styles.newsInfo}>
                               <div className={styles.newsHeader}>
                                 <p className={styles.newsCategory}>
-                                  {
-                                    news.subMinorCategory
-                                      ? news.subMinorCategory.name
-                                      : '카테고리'
-                                  }
-
+                                  {news.subMinorCategory ? news.subMinorCategory.name : '카테고리 명'}
                                 </p>
                                 <h3 className={styles.newsTitle}>{news.title}</h3>
                               </div>
                               <div className={styles.newsMeta}>
-                                {news.authorName && (
-                                  <>
-                                    <span className={styles.newsAuthor}>{news.authorName}</span>
-                                    <span className={styles.newsSeparator}>•</span>
-                                  </>
-                                )}
+                                <span className={styles.newsAuthor}>{news.authorName ? news.authorName : "작성자"}</span>
+                                <span className={styles.newsSeparator}></span>
                                 {news.createdAt && (
                                   <span className={styles.newsDate}>{formatDate(news.createdAt)}</span>
                                 )}

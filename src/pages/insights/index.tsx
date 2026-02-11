@@ -565,10 +565,8 @@ const InsightsPage: React.FC = () => {
           ? b.subcategory.name
           : (typeof b.category?.name === 'string' ? b.category.name : '');
       } else if (sortField === 'author') {
-        // 현재 작성자명이 하드코딩되어 있어서 실제로는 정렬이 안되지만,
-        // API에서 author 정보가 오면 여기서 처리
-        aValue = '작성자명';
-        bValue = '작성자명';
+        aValue = a.authorName || '작성자';
+        bValue = b.authorName || '작성자';
       }
 
       if (sortOrder === 'asc') {
@@ -790,11 +788,11 @@ const InsightsPage: React.FC = () => {
                                       size="web"
                                       title={item.title}
                                       imageUrl={item.thumbnail?.url}
-                                      category={typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리명')}
+                                      category={item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                       description={plainContent.length > 150
                                         ? `${plainContent.substring(0, 150)}...`
                                         : plainContent}
-                                      author={item.authorName ? item.authorName : "작성자명"}
+                                      author={item.authorName ? item.authorName : "작성자"}
                                       date={item.createdAt ? formatDate(item.createdAt) : ''}
                                       onClick={() => handleItemClick(item.id)}
                                       className={item.isMainExposed ? styles.featuredCard : ''}
@@ -821,11 +819,11 @@ const InsightsPage: React.FC = () => {
                                       size="web"
                                       title={item.title}
                                       imageUrl={item.thumbnail?.url}
-                                      category={typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리명')}
+                                      category={item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                       description={plainContent.length > 150
                                         ? `${plainContent.substring(0, 150)}...`
                                         : plainContent}
-                                      author="작성자명"
+                                      author={item.authorName ? item.authorName : "작성자"}
                                       date={item.createdAt ? formatDate(item.createdAt) : ''}
                                       onClick={() => handleItemClick(item.id)}
                                       className={item.isMainExposed ? styles.featuredCard : ''}
@@ -855,11 +853,11 @@ const InsightsPage: React.FC = () => {
                                     size="web"
                                     title={item.title}
                                     imageUrl={item.thumbnail?.url}
-                                    category={typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리명')}
+                                    category={item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                     description={plainContent.length > 200
                                       ? `${plainContent.substring(0, 200)}...`
                                       : plainContent}
-                                    author="작성자명"
+                                    author={item.authorName ? item.authorName : "작성자"}
                                     date={item.createdAt ? formatDate(item.createdAt) : ''}
                                     onClick={() => handleItemClick(item.id)}
                                     className={item.isMainExposed ? styles.featuredCard : ''}
@@ -956,7 +954,7 @@ const InsightsPage: React.FC = () => {
                                           />
                                         )}
                                     </div>
-                                    <div className={styles.libraryListCell}>{   item.authorName ? item.authorName: "작성자명"}</div>
+                                    <div className={styles.libraryListCell}>{item.authorName ? item.authorName : "작성자"}</div>
                                     <div className={styles.libraryListCell}>
                                       {item.createdAt ? formatDate(item.createdAt) : '2025.10.14 13:05'}
                                     </div>
@@ -975,7 +973,7 @@ const InsightsPage: React.FC = () => {
                                   >
                                     <div className={styles.mobileListRowTop}>
                                       <span className={styles.mobileListCategory}>
-                                        {typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리 명')}
+                                        {item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                       </span>
                                       <span className={styles.mobileListDate}>
                                         {item.createdAt ? formatDate(item.createdAt) : '2025.06.08'}
@@ -983,7 +981,7 @@ const InsightsPage: React.FC = () => {
                                     </div>
                                     <div className={styles.mobileListTitle}>{item.title}</div>
                                     <div className={styles.mobileListRowBottom}>
-                                      <span className={styles.mobileListAuthor}>작성자명</span>
+                                      <span className={styles.mobileListAuthor}>{item.authorName ? item.authorName : "작성자"}</span>
                                     </div>
                                   </div>
                                 ))}
@@ -1144,12 +1142,12 @@ const InsightsPage: React.FC = () => {
                                   <div className={styles.libraryCardContent}>
                                     <div className={styles.libraryCardHeader}>
                                       <p className={styles.libraryCardCategory}>
-                                        {typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리명')}
+                                        {item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                       </p>
                                       <h3 className={styles.libraryCardTitle}>{item.title}</h3>
                                     </div>
                                     <div className={styles.libraryCardFooter}>
-                                      <span className={styles.libraryCardAuthor}>작성자명</span>
+                                      <span className={styles.libraryCardAuthor}>{item.authorName ? item.authorName : "작성자"}</span>
                                       <span className={styles.cardDivider} />
                                       <span className={styles.libraryCardDate}>
                                         {item.createdAt ? formatDate(item.createdAt) : '2026.01.28'}
@@ -1179,11 +1177,11 @@ const InsightsPage: React.FC = () => {
                                     size="web"
                                     title={item.title}
                                     imageUrl={item.thumbnail?.url}
-                                    category={typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리명')}
+                                    category={item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                     description={plainContent.length > 200
                                       ? `${plainContent.substring(0, 200)}...`
                                       : plainContent}
-                                    author="작성자명"
+                                    author={item.authorName ? item.authorName : "작성자"}
                                     date={item.createdAt ? formatDate(item.createdAt) : ''}
                                     onClick={() => handleItemClick(item.id)}
                                     className={item.isMainExposed ? styles.featuredCard : ''}
@@ -1265,12 +1263,12 @@ const InsightsPage: React.FC = () => {
                                       {(currentPage - 1) * 20 + index + 1}
                                     </div>
                                     <div className={`${styles.libraryListCell} ${styles.categoryCell}`}>
-                                      {typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리 명')}
+                                      {item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                     </div>
                                     <div className={`${styles.libraryListCell} ${styles.titleCell}`}>
                                       <span className={styles.libraryListTitle}>{item.title}</span>
                                     </div>
-                                    <div className={styles.libraryListCell}>작성자명</div>
+                                    <div className={styles.libraryListCell}>{item.authorName ? item.authorName : "작성자"}</div>
                                     <div className={styles.libraryListCell}>
                                       {item.createdAt ? formatDate(item.createdAt) : '2025.10.14 13:05'}
                                     </div>
@@ -1289,7 +1287,7 @@ const InsightsPage: React.FC = () => {
                                   >
                                     <div className={styles.mobileListRowTop}>
                                       <span className={styles.mobileListCategory}>
-                                        {typeof item.subcategory?.name === 'string' ? item.subcategory.name : (typeof item.category?.name === 'string' ? item.category.name : '카테고리 명')}
+                                        {item.subMinorCategory ? item.subMinorCategory.name : '카테고리 명'}
                                       </span>
                                       <span className={styles.mobileListDate}>
                                         {item.createdAt ? formatDate(item.createdAt) : '2025.06.08'}
@@ -1298,7 +1296,7 @@ const InsightsPage: React.FC = () => {
                                     <div className={styles.mobileListTitle}>
                                       {item.title}
                                     </div>
-                                    <div className={styles.mobileListAuthor}>작성자명</div>
+                                    <div className={styles.mobileListAuthor}>{item.authorName ? item.authorName : "작성자"}</div>
                                     <div className={styles.mobileListBottom}>
                                       <span className={styles.mobileListNo}>NO.{(currentPage - 1) * 20 + index + 1}</span>
                                       <span className={styles.mobileListViews}>

@@ -74,7 +74,7 @@ interface Expert {
     id: number;
     url: string;
   };
-  workAreas?: string[] | Array<{ id: number; value: string }>;
+  categories?: Array<{ categoryId: number; categoryName: string; displayOrder: number }>;
   tags?: string[]; // 전문 분야 태그
 }
 
@@ -87,7 +87,8 @@ interface InsightItem {
   };
   createdAt?: string;
   category?: string | { id: number; name: string; type: string }; // 카테고리 (문자열 또는 객체)
-  author?: string; // 작성자
+  authorName?: string; // 작성자
+  subMinorCategory?: { id: number; name: string };
 }
 
 interface InsightResponse {
@@ -296,10 +297,10 @@ const BusinessAreaDetailPage: React.FC = () => {
 
   const fetchRelatedData = async () => {
     try {
-      // 관련 업무 세무사 가져오기 (workArea 파라미터 사용)
+      // 관련 업무 세무사 가져오기 (categoryId 파라미터 사용)
       if (id && typeof id === 'string') {
         try {
-          const url = `${API_ENDPOINTS.MEMBERS}?page=1&limit=20&workArea=${data?.minorCategory?.id}`;
+          const url = `${API_ENDPOINTS.MEMBERS}?page=1&limit=20&categoryId=${data?.minorCategory?.id}`;
           console.log('Calling members API:', url);
           const membersResponse = await get<Expert[] | { items: Expert[]; data: Expert[] }>(url);
           console.log('Members API response:', membersResponse);
@@ -313,11 +314,11 @@ const BusinessAreaDetailPage: React.FC = () => {
               const response = membersResponse.data as { items?: Expert[]; data?: Expert[] };
               expertsList = response.items || response.data || [];
             }
-            // workAreas를 tags로 변환
+            // categories를 tags로 변환
             expertsList = expertsList.map(expert => ({
               ...expert,
-              tags: expert.workAreas 
-                ? expert.workAreas.map(area => typeof area === 'string' ? area : area.value)
+              tags: expert.categories 
+                ? expert.categories.map(cat => cat.categoryName)
                 : expert.tags || [],
               tel: expert.tel || expert.phoneNumber,
               position: expert.position || expert.affiliation || '세무사',
@@ -922,24 +923,14 @@ const BusinessAreaDetailPage: React.FC = () => {
                         )}
                         <div className={styles.newsInfo}>
                           <div className={styles.newsHeader}>
-                            {news.category && (
-                              <p className={styles.newsCategory}>
-                                {typeof news.category === 'string' 
-                                  ? news.category 
-                                  : (typeof news.category === 'object' && news.category?.name 
-                                    ? news.category.name 
-                                    : '카테고리')}
-                              </p>
-                            )}
+                            <p className={styles.newsCategory}>
+                              {news.subMinorCategory ? news.subMinorCategory.name : '카테고리 명'}
+                            </p>
                             <h3 className={styles.newsTitle}>{news.title}</h3>
                           </div>
                           <div className={styles.newsMeta}>
-                            {news.author && (
-                              <>
-                                <span className={styles.newsAuthor}>{news.author}</span>
-                                <span className={styles.newsSeparator}>•</span>
-                              </>
-                            )}
+                            <span className={styles.newsAuthor}>{news.authorName ? news.authorName : "작성자"}</span>
+                            <span className={styles.newsSeparator}></span>
                             {news.createdAt && (
                               <span className={styles.newsDate}>{formatDate(news.createdAt)}</span>
                             )}

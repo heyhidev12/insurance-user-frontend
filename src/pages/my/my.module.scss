@@ -43,7 +43,7 @@
   }
 
   @media (max-width: $breakpoint-tablet) {
-    padding: 0 24px;
+    padding: 0 20px;
   }
 }
 
@@ -1024,6 +1024,7 @@
   padding: 16px 12px;
   align-items: flex-start;
   transition: background-color 0.2s ease;
+  align-items: center;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
@@ -1072,7 +1073,7 @@
 
 .statusBadge {
   display: inline-block;
-  padding: 7px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
   @include pretendard-13-semibold;
   text-align: center;
@@ -3379,7 +3380,7 @@
   gap: 4px;
 
   .labelRed,.labelWhite,.labelGray{
-    padding: 7px;
+    padding: 2px 5px;
     @include pretendard-13-semibold;
   }
 }
@@ -3394,7 +3395,7 @@
 }
 
 .mobileCardLabelType {
-  padding: 7px;
+  padding: 2px 5px;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.1);
 
@@ -3463,7 +3464,7 @@
 
 .mobileMemberCardStatus {
   @include pretendard-13-semibold;
-  padding: 7px;
+  padding: 2px 7px;
   border-radius: 4px;
 }
 

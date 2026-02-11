@@ -38,7 +38,7 @@
   }
 
   @media (max-width: 768px) {
-    padding: 0 24px;
+    padding: 0 20px;
   }
 }
 
@@ -148,6 +148,15 @@
   @media (max-width: 768px) {
     display: block;
     margin-bottom: 96px;
+    overflow: scroll;
+    scrollbar-width: none;
+    margin-right: -20px;
+    margin-left: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
@@ -158,8 +167,8 @@
   @media (max-width: 768px) {
     display: block;
     margin-bottom: 48px;
-    padding-left: 47.5px;
-    padding-right: 47.5px;
+    padding-left: 32px;
+    padding-right: 32px;
 
     :global(.searchfield) {
       border-bottom: 1px solid #555;
@@ -350,6 +359,7 @@
 
   @media (max-width: 768px) {
     gap: 24px;
+    width: 100%;
   }
 }
 

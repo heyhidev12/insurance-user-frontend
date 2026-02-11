@@ -7,6 +7,7 @@ import PageHeader from '@/components/common/PageHeader';
 import FloatingButton from '@/components/common/FloatingButton';
 import Icon from '@/components/common/Icon';
 import Card from '@/components/common/Card';
+import Pagination from '@/components/common/Pagination';
 import SEO from '@/components/SEO';
 import { get } from '@/lib/api';
 import { API_ENDPOINTS } from '@/config/api';
@@ -74,7 +75,7 @@ const ExpertsPage: React.FC = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const ITEMS_PER_PAGE = 20;
+  const ITEMS_PER_PAGE = isMobile ? 6 : 12;
 
   // 모바일 감지
   useEffect(() => {
@@ -195,7 +196,7 @@ const ExpertsPage: React.FC = () => {
     } finally {
       setIsLoadingExperts(false);
     }
-  }, [selectedFieldId, searchKeyword]);
+  }, [selectedFieldId, searchKeyword, ITEMS_PER_PAGE]);
 
   const handleFieldSelect = (category: Category) => {
     setSelectedField(category.name);
@@ -464,31 +465,14 @@ const ExpertsPage: React.FC = () => {
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className={styles.paginationWrapper}>
-                      <button
-                        className={styles.paginationButton}
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      >
-                        <Icon type="arrow-left" size={20} />
-                      </button>
-                      <div className={styles.paginationNumbers}>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                          <button
-                            key={page}
-                            className={`${styles.paginationNumber} ${currentPage === page ? styles.paginationNumberActive : ''}`}
-                            onClick={() => handlePageChange(page)}
-                          >
-                            {page}
-                          </button>
-                        ))}
-                      </div>
-                      <button
-                        className={styles.paginationButton}
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      >
-                        <Icon type="arrow-right" size={20} />
-                      </button>
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => {
+                          handlePageChange(page);
+                        }}
+                        visiblePages={4}
+                      />
                     </div>
                   )}
                 </div>

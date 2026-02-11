@@ -11,9 +11,7 @@
   width: 48px;
   height: 48px;
   padding: 0;
-  border: none;
   border-radius: $radius-circle;
-  background-color: $gray-70;
   color: $white;
   cursor: pointer;
   box-shadow: $shadow-md;
@@ -24,6 +22,9 @@
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
+border: 1px solid rgba(255, 255, 255, 0.10);
+background: rgba(45, 45, 45, 0.90);
+box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.20);
 
   &.visible {
     opacity: 1;
@@ -49,7 +50,7 @@
     bottom: 40px;
     width: 40px;
     height: 40px;
-    background-color: $black;
+    
 
     &:hover {
       background-color: $gray-90;

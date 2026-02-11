@@ -222,7 +222,7 @@ const ConsultationApplyPage: React.FC = () => {
     if (value) {
       try {
         const response = await get<MembersResponse>(
-          `${API_ENDPOINTS.MEMBERS}?page=1&limit=100&workArea=${value}`
+          `${API_ENDPOINTS.MEMBERS}?page=1&limit=100&categoryId=${value}`
         );
         if (response.data?.items) {
           const options: SelectOption[] = [

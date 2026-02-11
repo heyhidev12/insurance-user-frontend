@@ -84,10 +84,11 @@
     gap: 16px;
     max-height: none;
     -webkit-overflow-scrolling: touch;
-    
+
     &::-webkit-scrollbar {
       display: none;
     }
+
     scrollbar-width: none;
   }
 }
@@ -163,6 +164,7 @@
   &::-webkit-scrollbar {
     display: none;
   }
+
   scrollbar-width: none;
 
   @media (max-width: $breakpoint-tablet) {
@@ -275,7 +277,7 @@
   align-items: center;
   justify-content: center;
   z-index: 0;
-  
+
   span {
     font-family: $font-montserrat;
     font-weight: $font-weight-light;
@@ -283,7 +285,7 @@
     color: #d8d8d8;
     text-align: center;
     padding: 0 24px;
-    
+
     @media (max-width: $breakpoint-tablet) {
       font-size: 24px;
     }
@@ -602,7 +604,7 @@
     @media (max-width: $breakpoint-tablet) {
       display: -webkit-box;
       -webkit-line-clamp: 2;
-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -785,7 +787,7 @@ line-clamp: 2;
 }
 
 // overviewFieldTitle이 flex 아이템으로 고정 너비 유지
-.overviewContentLayout > .overviewFieldTitle {
+.overviewContentLayout>.overviewFieldTitle {
   flex-shrink: 0;
   flex-grow: 0;
   flex-basis: 179px;
@@ -883,7 +885,12 @@ line-clamp: 2;
       color: #ffffff !important;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       color: #ffffff !important;
       font-family: $font-pretendard;
       font-weight: $font-weight-semibold;
@@ -911,8 +918,9 @@ line-clamp: 2;
     table {
       border-color: rgba(255, 255, 255, 0.2);
       color: #ffffff !important;
-      
-      th, td {
+
+      th,
+      td {
         border-color: rgba(255, 255, 255, 0.2);
         color: #ffffff !important;
       }
@@ -922,7 +930,11 @@ line-clamp: 2;
       color: #ffffff !important;
     }
 
-    span, div, li, ul, ol {
+    span,
+    div,
+    li,
+    ul,
+    ol {
       color: #ffffff !important;
     }
   }
@@ -1085,7 +1097,12 @@ line-clamp: 2;
       color: #ffffff;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       color: #ffffff;
       font-family: $font-pretendard;
       font-weight: $font-weight-semibold;
@@ -1112,8 +1129,9 @@ line-clamp: 2;
 
     table {
       border-color: rgba(255, 255, 255, 0.2);
-      
-      th, td {
+
+      th,
+      td {
         border-color: rgba(255, 255, 255, 0.2);
         color: #d8d8d8;
       }
@@ -1134,7 +1152,7 @@ line-clamp: 2;
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    
+
     &.visible {
       opacity: 1;
       transform: translateY(0);
@@ -1145,7 +1163,7 @@ line-clamp: 2;
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s;
-    
+
     &.visible {
       opacity: 1;
       transform: translateY(0);
@@ -1194,7 +1212,7 @@ line-clamp: 2;
   margin-right: calc(-50vw + 50%);
   background-color: #151515;
   padding: 16px 0 160px 0;
-  
+
 
   @media (max-width: $breakpoint-tablet) {
     padding: 0px 0 130px 0;
@@ -1277,9 +1295,11 @@ line-clamp: 2;
 .contactMainTitle {
   font-family: $font-montserrat;
   font-style: normal;
-  font-weight: 300; /* Light */
+  font-weight: 300;
+  /* Light */
   font-size: 100px;
-  line-height: 150%; /* 180px */
+  line-height: 150%;
+  /* 180px */
   letter-spacing: -3px;
   color: #ffffff;
   margin: 0 0 24px 0;
@@ -1316,9 +1336,11 @@ line-clamp: 2;
 .contactDescription {
   font-family: $font-pretendard;
   font-style: normal;
-  font-weight: 700; /* Bold */
+  font-weight: 700;
+  /* Bold */
   font-size: 25px;
-  line-height: 145%; /* 36.25px */
+  line-height: 145%;
+  /* 36.25px */
   letter-spacing: -0.2px;
   color: #ffffff;
   margin: 0;
@@ -1351,6 +1373,11 @@ line-clamp: 2;
   &:hover {
     background-color: #ffffff;
     color: #151515;
+    svg{
+      path{
+        stroke: #151515;
+      }
+    }
   }
 
   @media (max-width: $breakpoint-tablet) {
@@ -1386,7 +1413,7 @@ line-clamp: 2;
 
   &:hover:not(:disabled) {
     background-color: #ffffff;
-    
+
     :global(.icon) {
       :global(path) {
         stroke: #151515;
@@ -1433,6 +1460,7 @@ line-clamp: 2;
     padding-right: 20px;
     transform: none !important;
     gap: 16px; // 모든 카드 사이에 일정한 간격
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -1558,7 +1586,7 @@ line-clamp: 2;
   @media (max-width: $breakpoint-tablet) {
     font-size: 13px;
     gap: 6px;
-    
+
   }
 }
 
@@ -1570,7 +1598,7 @@ line-clamp: 2;
   flex-shrink: 0;
 
   @media (max-width: $breakpoint-tablet) {
-   width: 40px;
+    width: 40px;
   }
 }
 
@@ -1645,6 +1673,7 @@ line-clamp: 2;
     padding-right: 20px;
     transform: none !important;
     gap: 16px;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -1706,8 +1735,8 @@ line-clamp: 2;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  
-    @media (max-width: $breakpoint-tablet) {
+
+  @media (max-width: $breakpoint-tablet) {
     gap: 6px;
   }
 
@@ -1739,13 +1768,14 @@ line-clamp: 2;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 56px;
+  max-height: 48px;
 
-    @media (max-width: $breakpoint-tablet) {
-    font-size: 17px;}
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 17px;
+  }
 
 }
 
@@ -1796,6 +1826,7 @@ line-clamp: 2;
     padding-right: 20px;
     transform: none !important;
     gap: 16px;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -1841,6 +1872,7 @@ line-clamp: 2;
     min-width: 213px;
     flex-shrink: 0;
     gap: 16px;
+    border-radius: 8px;
   }
 }
 
@@ -1856,18 +1888,21 @@ line-clamp: 2;
     height: 100%;
     object-fit: cover;
   }
+  @media (max-width: $breakpoint-tablet) {
+    border-radius: 8px 8px 0 0;
+  }
 }
 
 .newsInfo {
   padding: 0 24px 32px 24px;
   display: flex;
-  // flex-direction: column;
+  flex-direction: column;
   gap: 48px;
 
   @media (max-width: $breakpoint-tablet) {
     padding: 0 12px 24px 12px;
     flex-direction: column;
-    gap: 8px;
+    gap: 24px;
   }
 }
 
@@ -1876,7 +1911,7 @@ line-clamp: 2;
   flex-direction: column;
   gap: 8px;
 
-    @media (max-width: $breakpoint-tablet) {
+  @media (max-width: $breakpoint-tablet) {
     gap: 6px;
   }
 
@@ -1891,7 +1926,7 @@ line-clamp: 2;
   color: #94b9e3;
   margin: 0;
 
-    @media (max-width: $breakpoint-tablet) {
+  @media (max-width: $breakpoint-tablet) {
     font-size: 13px;
   }
 
@@ -1907,7 +1942,7 @@ line-clamp: 2;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 56px;
@@ -1931,6 +1966,9 @@ line-clamp: 2;
   line-height: 1.5;
   letter-spacing: -0.075px;
   color: #d8d8d8;
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+  }
 }
 
 .newsSeparator {
@@ -1957,10 +1995,13 @@ line-clamp: 2;
 .newsDate {
   font-family: $font-pretendard;
   font-weight: $font-weight-regular;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
-  color: #888888;
+  color: #d8d8d8;
   margin: 0;
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 13px;
+  }
 }
 
 // Full Width Sections (for sections after Contact)
@@ -2025,4 +2066,3 @@ line-clamp: 2;
     gap: 12px;
   }
 }
-

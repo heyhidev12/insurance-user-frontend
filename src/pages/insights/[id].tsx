@@ -725,12 +725,12 @@ const InsightDetailPage: React.FC = () => {
           <div className={styles.content}>
             <div className={styles.headerSection}>
               <div className={styles.titleWrapper}>
-                <div className={styles.category}>{typeof insight.subMinorCategory?.name === 'string' ? insight.subMinorCategory.name : (typeof insight.category?.name === 'string' ? insight.category.name : '카테고리명')}</div>
+                <div className={styles.category}>{insight.subMinorCategory ? insight.subMinorCategory.name : '카테고리 명'}</div>
                 <h1 className={styles.title}>{insight.title}</h1>
               </div>
               <div className={styles.meta}>
                 <div className={styles.metaLeft}>
-                  <span className={styles.author}>{insight.authorName ? insight.authorName : "작성자명"}</span>
+                  <span className={styles.author}>{insight.authorName ? insight.authorName : "작성자"}</span>
                   <span className={styles.divider}></span>
                   <span className={styles.date}>{formatDate(insight.createdAt)}</span>
                 </div>
