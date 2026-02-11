@@ -78,7 +78,7 @@ $color-card-bg: #1e1e1e;
     color: $color-white;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -92,7 +92,7 @@ line-clamp: 2;
     color: $color-gray-50;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -285,7 +285,7 @@ line-clamp: 2;
 
     .card__description {
       -webkit-line-clamp: 2;
-line-clamp: 2;
+      line-clamp: 2;
     }
 
     .card__meta {
@@ -320,7 +320,7 @@ line-clamp: 2;
 
     .card__title {
       -webkit-line-clamp: 2;
-line-clamp: 2;
+      line-clamp: 2;
     }
 
     .card__location {
@@ -388,6 +388,7 @@ line-clamp: 2;
     .card__title {
       font-size: 21px;
       -webkit-line-clamp: 1;
+      line-clamp: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -396,6 +397,7 @@ line-clamp: 2;
 
     .card__description {
       -webkit-line-clamp: 3;
+      line-clamp: 3;
     }
 
     .card__meta {
