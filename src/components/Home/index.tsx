@@ -177,11 +177,11 @@ const TestMotion: React.FC = () => {
   React.useEffect(() => {
     const fetchExperts = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/members?page=1&limit=20`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/members/random`);
         const data = await response.json();
 
-        if (data.items && Array.isArray(data.items)) {
-          const formattedExperts: ExpertCard[] = data.items.map((item: {
+        if (data && Array.isArray(data)) {
+          const formattedExperts: ExpertCard[] = data.map((item: {
             id: number;
             name: string;
             mainPhoto?: { url: string };

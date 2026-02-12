@@ -242,7 +242,7 @@ export const WithTimer: Story = {
     variant: 'line',
     label: '인증번호',
     placeholder: '인증번호를 입력해주세요',
-    timer: 180,
+    timer: 300,
     maxLength: 6,
     fullWidth: true,
   },
@@ -334,7 +334,7 @@ export const AuthFormExample: Story = {
         variant="line"
         label="인증번호"
         placeholder="인증번호를 입력해주세요"
-        timer={180}
+        timer={300}
         maxLength={6}
         fullWidth
       />

@@ -88,7 +88,7 @@ const FindPassword: React.FC = () => {
           return;
         }
 
-        setTimeLeft(180);
+        setTimeLeft(300);
         setIsTimerActive(true);
         setStep('verification');
       } else {
@@ -119,7 +119,7 @@ const FindPassword: React.FC = () => {
           return;
         }
 
-        setTimeLeft(180);
+        setTimeLeft(300);
         setIsTimerActive(true);
         setStep('verification');
       }
