@@ -1656,7 +1656,7 @@ const MyPage: React.FC = () => {
                           <p className={styles.mobileCardLocation}>{item.location || '온라인'}</p>
                           <div className={styles.mobileCardDate}>
                             <img src="/images/common/calendar-icon.svg" alt="" />
-                            <span>{item.participationDate.replaceAll('-', '.')} 종료</span>
+                            <span>{item.participationDate.replaceAll('-', '.')} {item.participationTime.split('~')[0]}</span>
                           </div>
                         </div>
                       </div>;

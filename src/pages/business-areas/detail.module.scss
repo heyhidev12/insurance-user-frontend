@@ -6,7 +6,6 @@
   color: white;
   display: flex;
   flex-direction: column;
-
   @media (max-width: 767px) {
     padding-top: 56px; // 모바일 고정 헤더 높이
   }
@@ -54,7 +53,7 @@
 
 .sidebarNav {
   position: sticky;
-  top: 120px;
+  top: 200px;
   align-self: flex-start;
   display: flex;
   flex-direction: column;
@@ -69,7 +68,6 @@
   @media (max-width: $breakpoint-desktop) {
     width: 220px;
     gap: 24px;
-    top: 100px;
     max-height: calc(100vh - 120px);
   }
 
@@ -450,7 +448,7 @@
 // Fixed Overview Banner - Shows when Overview section is scrolled past
 .overviewFixedBanner {
   position: fixed;
-  top: 0;
+  top: 80px;
   left: 0;
   width: 100vw;
   min-height: 100px;

@@ -809,7 +809,7 @@ const InsightDetailPage: React.FC = () => {
 
                   <div className={styles.commentForm}>
                     <div className={styles.commentFormHeader}>
-                      <span className={styles.commentAuthor}>작성자명</span>
+                      <span className={styles.commentAuthor}>{currentUser?.name || '작성자명'}</span>
                     </div>
                     <div className={styles.commentInputWrapper}>
                       <textarea
