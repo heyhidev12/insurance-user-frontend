@@ -25,6 +25,7 @@ interface UserProfile {
 interface MyApplication {
   id: number;
   status: ApplicationStatus;
+  participationDate?: string;
 }
 
 // Toast UI Viewer는 클라이언트 사이드에서만 로드
@@ -45,6 +46,7 @@ const EducationDetailPage: React.FC = () => {
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [applicationStatus, setApplicationStatus] = useState<ApplicationStatus | null>(null);
+  const [participationDate, setParticipationDate] = useState<string | null>(null);
   const [isApplicationLoading, setIsApplicationLoading] = useState(false);
 
   // 사용자 정보 가져오기
@@ -119,12 +121,16 @@ const EducationDetailPage: React.FC = () => {
 
       if (response.data) {
         setApplicationStatus(response.data.status);
+        if (response.data.participationDate) {
+          setParticipationDate(response.data.participationDate);
+        }
         return;
       }
 
       // 401 / 404 는 신청 이력 없음으로 처리
       if (response.status === 401 || response.status === 404) {
         setApplicationStatus(null);
+        setParticipationDate(null);
         return;
       }
 
@@ -492,12 +498,15 @@ const EducationDetailPage: React.FC = () => {
                     className={styles.dateIcon}
                   />
                   <p>
-                    {selectedDate || '참여 날짜 선택'}
+                    {(applicationStatus === 'WAITING' || applicationStatus === 'CONFIRMED')
+                      ? (participationDate || selectedDate || '참여 날짜 선택')
+                      : (selectedDate || '참여 날짜 선택')}
                   </p>
                 </div>
                 <button 
                   className={styles.dateButton}
                   onClick={() => setIsDatePickerOpen(true)}
+                  disabled={applicationStatus === 'WAITING' || applicationStatus === 'CONFIRMED'}
                 >
                   날짜 선택
                 </button>

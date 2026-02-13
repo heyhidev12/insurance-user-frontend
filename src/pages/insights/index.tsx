@@ -194,11 +194,7 @@ const InsightsPage: React.FC = () => {
         if (response.data && Array.isArray(response.data)) {
           // Use backend response directly - no frontend filtering
           setInsightsHierarchical(response.data);
-
-          // 첫 번째 카테고리를 기본 탭으로 설정 (아직 설정되지 않은 경우)
-          if (response.data.length > 0 && !activeTab) {
-            setActiveTab(String(response.data[0].category.id));
-          }
+          // activeTab is set solely by the URL processing effect below
         }
       } catch (err) {
         console.error('Failed to fetch insights hierarchical:', err);
@@ -219,66 +215,85 @@ const InsightsPage: React.FC = () => {
   }));
 
   // CONSOLIDATED URL Parameter Processing
-  // This handles all URL params in one place to avoid race conditions
+  // This is the SOLE source of truth for activeTab.
+  // It reads category from the URL and syncs state accordingly.
+  // If no category is in the URL, it defaults to the first one AND persists it to the URL.
   useEffect(() => {
     if (!router.isReady || insightsHierarchical.length === 0) return;
 
     const { category, sub, search } = router.query;
-    console.log('[URL Init] Processing URL params - category:', category, 'sub:', sub, 'search:', search);
 
-    // Step 1: Determine active tab from URL or default to first
+    // Step 1: Determine active tab from URL — never silently fall back
     let targetTabId: string;
+    let needsUrlUpdate = false;
+
     if (typeof category === 'string') {
       const found = insightsHierarchical.find(d => String(d.category.id) === category);
       if (found) {
         targetTabId = category;
       } else {
+        // Invalid category in URL → use first and correct the URL
         targetTabId = String(insightsHierarchical[0].category.id);
+        needsUrlUpdate = true;
       }
     } else {
+      // No category in URL → use first and persist to URL
       targetTabId = String(insightsHierarchical[0].category.id);
+      needsUrlUpdate = true;
     }
 
     // Step 2: Get the category data for display type
     const targetCategory = insightsHierarchical.find(d => String(d.category.id) === targetTabId);
 
-    // Step 3: Set display type IMMEDIATELY based on category type
+    // Step 3: Set display type based on category type
     if (targetCategory?.category.type) {
       const displayType = getDisplayTypeFromCategoryType(targetCategory.category.type);
-      console.log('[URL Init] Setting libraryDisplayType to:', displayType, 'for category type:', targetCategory.category.type);
       setLibraryDisplayType(displayType);
     }
 
-    // Step 4: Set active tab
-    if (activeTab !== targetTabId) {
-      console.log('[URL Init] Setting activeTab to:', targetTabId);
-      setActiveTab(targetTabId);
-    }
+    // Step 4: Always set active tab from URL (sole source of truth)
+    setActiveTab(targetTabId);
 
     // Step 5: Process sub parameter for category filter
     if (sub !== undefined && typeof sub === 'string') {
       if (sub === '0') {
         setCategoryFilter('all');
-        console.log('[URL Init] Set categoryFilter to "all" (sub=0)');
       } else if (targetCategory) {
         const subcategory = targetCategory.subcategories.find(s => String(s.id) === sub);
         if (subcategory) {
           setCategoryFilter(subcategory.name as CategoryFilter);
-          console.log('[URL Init] Set categoryFilter to:', subcategory.name);
         } else {
           setCategoryFilter('all');
-          console.log('[URL Init] Subcategory not found, defaulting to "all"');
         }
       }
+    } else {
+      // No sub in URL → reset to all
+      setCategoryFilter('all');
     }
 
     // Step 6: Process search parameter
     if (search && typeof search === 'string') {
       setSearchQuery(search);
-      console.log('[URL Init] Set searchQuery to:', search);
-    } else if (searchQuery) {
-      // Clear search if not in URL (returning from somewhere)
+    } else {
       setSearchQuery('');
+    }
+
+    // Step 7: If category was missing or invalid, update URL so refresh/back works
+    if (needsUrlUpdate) {
+      const queryParams: Record<string, string> = { category: targetTabId };
+      if (typeof sub === 'string') {
+        queryParams.sub = sub;
+      } else {
+        queryParams.sub = '0';
+      }
+      if (search && typeof search === 'string') {
+        queryParams.search = search;
+      }
+      router.replace(
+        { pathname: '/insights', query: queryParams },
+        undefined,
+        { shallow: true }
+      );
     }
   }, [router.isReady, router.query.category, router.query.sub, router.query.search, insightsHierarchical]);
 
@@ -287,7 +302,6 @@ const InsightsPage: React.FC = () => {
     if (currentCategory?.category.type) {
       const displayType = getDisplayTypeFromCategoryType(currentCategory.category.type);
       if (libraryDisplayType !== displayType) {
-        console.log('[Tab Change] Updating libraryDisplayType to:', displayType);
         setLibraryDisplayType(displayType);
       }
     }
@@ -322,8 +336,6 @@ const InsightsPage: React.FC = () => {
     if (searchQuery.trim()) {
       query.search = searchQuery.trim();
     }
-
-    console.log('[handleItemClick] Navigating to detail with query:', query);
 
     router.push({
       pathname: `/insights/${id}`,
@@ -434,7 +446,6 @@ const InsightsPage: React.FC = () => {
   // Fetch insights when filters change
   useEffect(() => {
     if (router.isReady && activeTab && insightsHierarchical.length > 0) {
-      console.log('[Fetch Trigger] activeTab:', activeTab, 'categoryFilter:', categoryFilter, 'libraryDisplayType:', libraryDisplayType);
       fetchInsights();
     }
   }, [router.isReady, activeTab, categoryFilter, insightsHierarchical.length, currentPage, searchQuery]);
@@ -468,8 +479,6 @@ const InsightsPage: React.FC = () => {
     if (query.trim()) {
       queryParams.search = query.trim();
     }
-
-    console.log('[handleSearch] Updating URL with:', queryParams);
 
     router.replace(
       {
@@ -513,8 +522,6 @@ const InsightsPage: React.FC = () => {
       queryParams.search = searchQuery.trim();
     }
 
-    console.log('[handleCategoryChange] Updating URL with:', queryParams);
-
     router.replace(
       {
         pathname: '/insights',
@@ -532,8 +539,6 @@ const InsightsPage: React.FC = () => {
     setCategoryFilter('all');
     setSearchQuery('');
 
-    // URL update - always include sub=0 for "all"
-    console.log('[handleTabChange] Switching to tab:', tabId, 'with sub=0');
     router.push(`/insights?category=${tabId}&sub=0`, undefined, { shallow: true });
   }, [router]);
 
@@ -657,7 +662,7 @@ const InsightsPage: React.FC = () => {
               {currentCategory && (
                 <>
                   <div className={styles.columnTitleSection}>
-                    <h2 className={styles.columnTitle}>{currentCategory.category.name.toUpperCase()}</h2>
+                    <h2 className={styles.columnTitle}>{currentCategory.category.name.toUpperCase()==="칼럼" ? "Column" : currentCategory.category.name.toUpperCase()}</h2>
                     <p className={styles.columnSubtitle}>{currentCategory.category.name}</p>
                   </div>
 
